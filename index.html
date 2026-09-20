@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="EUHqycznH1dHNs3hFEc5WZ">
+<head data-page-node-id="Lrak284MG2RNfp6fAYcMPy">
+<meta charset="UTF-8" data-page-node-id="nZuQzpuUE5SMLIMbRitJxb">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="sXjZ7F1REbq1J3zTnz9VUZ">
+<title>GameJam Production Board</title>
+<style>
+:root{
+  --bg:#0b0e13; --panel:#11161e; --panel2:#171d27; --line:#27303d;
+  --text:#edf2f7; --muted:#8e9aaa; --accent:#7c6cff; --green:#35c98b;
+  --yellow:#e8b94d; --red:#ef6675; --blue:#54a7ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh}
+header{height:64px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:24px;background:#0d1117;position:sticky;top:0;z-index:10}
+.logo{font-weight:800;font-size:18px;letter-spacing:.3px;white-space:nowrap}
+.logo span{color:var(--accent)}
+.nav{display:flex;gap:5px}
+.nav button{background:none;border:0;color:var(--muted);padding:8px 12px;border-radius:7px}
+.nav button.active,.nav button:hover{background:#1a2030;color:white}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.badge{padding:4px 9px;border-radius:999px;background:#192321;color:#6ee6ae;font-size:12px;border:1px solid #234637;white-space:nowrap}
+.badge.sync-live{background:#192321;color:#6ee6ae;border-color:#234637}
+.badge.sync-wait{background:#2a2718;color:#e8cf7a;border-color:#4a4326}
+.badge.sync-demo{background:#2b1e21;color:#ff9aa5;border-color:#4d2a31}
+.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#2a2449;color:#c9c1ff;font-weight:700}
+main{padding:22px 24px 40px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px;flex-wrap:wrap}
+h1{margin:0 0 5px;font-size:25px}
+.subtitle{color:var(--muted)}
+.actions{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:#151b24;color:#dfe5ee;padding:9px 13px;border-radius:7px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px}
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:7px}
+.stat-value{font-size:25px;font-weight:750}
+.stat-note{font-size:11px;color:var(--muted);margin-top:4px}
+.progress{height:5px;background:#242b36;border-radius:9px;margin-top:9px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search{flex:1;min-width:220px;background:var(--panel);border:1px solid var(--line);color:white;padding:9px 12px;border-radius:7px;outline:none}
+select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);padding:9px 10px;border-radius:7px}
+.board-wrap{overflow-x:auto;padding-bottom:8px}
+.board{display:grid;grid-template-columns:repeat(7,minmax(245px,1fr));gap:10px;min-width:1750px}
+.column{background:#0f141b;border:1px solid var(--line);border-radius:10px;min-height:470px;transition:border-color .15s}
+.column.over{border-color:var(--accent);background:#12172a}
+.col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
+.col-title{font-weight:700;font-size:13px}
+.count{color:var(--muted);font-size:11px;background:#1b222d;border-radius:12px;padding:2px 7px}
+.cards{padding:9px;min-height:420px}
+.card{position:relative;background:var(--panel2);border:1px solid #293241;border-radius:8px;padding:11px;margin-bottom:8px;cursor:grab;transition:.15s}
+.card:hover{border-color:#465266;transform:translateY(-1px)}
+.card.dragging{opacity:.45}
+.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.priority{font-size:10px;font-weight:800;padding:3px 6px;border-radius:4px}
+.p0{background:#3a1d25;color:#ff8894}.p1{background:#3a321b;color:#f4cf67}.p2{background:#1d2d3c;color:#75baff}
+.type{font-size:10px;color:var(--muted);margin-left:auto}
+.del{position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:5px;border:1px solid #3a2530;background:#2a1a20;color:#ff9aa5;font-size:13px;line-height:1;display:none;place-items:center;padding:0}
+.card:hover .del{display:grid}
+.card h3{font-size:13px;margin:9px 0 7px;padding-right:18px}
+.card-desc{font-size:11px;color:#9ca7b6;margin-bottom:9px}
+.card-foot{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;gap:6px}
+.owner{display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-avatar{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#30394a;color:#dbe3ef;font-size:9px;font-weight:700;flex:0 0 auto}
+.tag{padding:3px 6px;border-radius:4px;background:#202734;flex:0 0 auto}
+.blocked{border-color:#65323b}
+.blocked .tag{color:#ff8995;background:#351c23}
+.empty{padding:18px 10px;text-align:center;color:#4d5765;font-size:11px;border:1px dashed #232b36;border-radius:7px}
+.section{margin-top:25px}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}
+.section h2{font-size:16px;margin:0}
+.section-sub{font-size:12px;color:var(--muted)}
+.timeline{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px;overflow:auto}
+.days{display:grid;grid-template-columns:repeat(14,1fr);min-width:900px;gap:5px}
+.day{font-size:10px;color:var(--muted);text-align:center}
+.day.today{color:var(--accent);font-weight:700}
+.milestone{margin-top:10px;display:grid;grid-template-columns:repeat(14,1fr);gap:5px;min-width:900px}
+.ms{height:34px;border-radius:5px;background:#242b36;display:flex;align-items:center;justify-content:center;font-size:10px;color:#c7cfdb}
+.ms.major{background:#2b2850;color:#d7d0ff;border:1px solid #514a93}
+.ms.warn{background:#47351d;color:#f0cc72}
+.team{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.member{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px}
+.member-top{display:flex;align-items:center;gap:9px}
+.big-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#292f40;font-weight:800;flex:0 0 auto}
+.member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
+.bar{height:5px;background:#252c36;border-radius:5px;margin-top:11px;overflow:hidden}.bar i{height:100%;display:block;background:var(--blue);transition:width .3s}
+.member-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center}
+.modal{width:min(520px,92vw);background:#131922;border:1px solid #303a49;border-radius:12px;padding:20px;box-shadow:0 20px 80px #000;max-height:90vh;overflow:auto}
+.modal h2{margin:0 0 15px}.form{display:grid;gap:10px}.form label{font-size:11px;color:var(--muted);display:block}
+.form input,.form select,.form textarea{width:100%;margin-top:5px;background:#0e131a;border:1px solid var(--line);color:white;padding:9px;border-radius:6px;outline:none;font-family:inherit}
+.form textarea{resize:vertical;min-height:52px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.toast{position:fixed;right:20px;bottom:20px;background:#e9edf2;color:#111;padding:10px 14px;border-radius:8px;display:none;z-index:30;max-width:min(360px,80vw)}
+.toast.err{background:#7c2733;color:#ffe9ec}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr 1fr}header{padding:0 12px}.nav{display:none}main{padding:16px 12px}}
+</style>
+</head>
+<body data-page-node-id="FW7p95yrL9Zomv3zBqCVFq">
+<div class="app" data-page-node-id="3TBnfz4VZ9q4H7IruOvQGg">
+<header data-page-node-id="qqapLvLGpuMAbf0ktR2rP5">
+  <div class="logo" data-page-node-id="5jKNvqX4PZVv8goXWPUq9z">JAM<span data-page-node-id="280Asi0Uita8KeWPlrCVu1">BOARD</span></div>
+  <div class="nav" data-page-node-id="iwmGAf5UqyyF7FWBEZeUIE">
+    <button class="active" data-page-node-id="sfLklwzRAGjqou7WDOHBjQ">Board</button><button data-page-node-id="FaAvmtvBpkwlV1hpaAgGN3">Timeline</button><button data-page-node-id="9AJ2VR3rFQ4AMvRU7GlnFl">Team</button>
+  </div>
+  <div class="header-right" data-page-node-id="vD9xAhAaBHLeQuaUZrbHTc">
+    <span class="badge sync-wait" id="syncBadge" data-page-node-id="9eT0oOOvpKRyEF6ECZCDSf">● 连接中…</span>
+    <span class="badge" data-page-node-id="qu1qc0Ea73GIbPNsLwnV5i">DAY <span id="dayNum" data-page-node-id="cZsIYGPwTXJpuxrn69Ctja">–</span> / 14</span>
+    <div class="avatar" data-page-node-id="cwi4fbnzmeRBttQ3wzKD7I">PM</div>
+  </div>
+</header>
+
+<main data-page-node-id="IKxBle1TeBPlDfd4pHVEzA">
+  <div class="top" data-page-node-id="yn6Rhco1kcJ2zB3G1cqcir">
+    <div data-page-node-id="E2Y6aPcbU5PykrAbLfcU2Q"><h1 data-page-node-id="OyW3a1yk2Qwzp2IfreY2CC">Project Nebula</h1><div class="subtitle" data-page-node-id="0RQw5k8ekj39FrlpZ3ps74">2 Week GameJam · 5 Members · Vertical Slice → Feature Complete</div></div>
+    <div class="actions" data-page-node-id="jM0nNBMI86rnwbbmlf5AFA">
+      <button class="btn" id="seedBtn" onclick="seedDemo()" disabled data-page-node-id="xLddOIjuxqbe4bB2aNWgH5">写入示例任务</button>
+      <button class="btn primary" onclick="openModal()" data-page-node-id="mOb5t1h0IvCjG93UeL3FVc">＋ New Task</button>
+    </div>
+  </div>
+
+  <div class="stats" data-page-node-id="pH4BWAS5QFwUEBibKYs4Ru">
+    <div class="stat" data-page-node-id="A5CvACRUU4ytnbjH5THKjO"><div class="stat-label" data-page-node-id="iTqRLyfZeAtvWq8OiWEbKC">TOTAL TASKS</div><div class="stat-value" id="total" data-page-node-id="ErMatrYfWsyMxRiMTlCpBa">0</div><div class="stat-note" id="priBreak" data-page-node-id="9aTPKdMC2CwDHS7qMumf6m">P0 0 · P1 0 · P2 0</div></div>
+    <div class="stat" data-page-node-id="ovdmOwXDQLxvEtyCqagCla"><div class="stat-label" data-page-node-id="h425fjzjNkvxx2g7EXfjzN">COMPLETION</div><div class="stat-value" id="completion" data-page-node-id="dxBFXVXu0znraLTdGi5vdc">0%</div><div class="progress" data-page-node-id="qDo7t8b4n6cNX8GVV2H2Dv"><i id="progress" style="width:0%" data-page-node-id="9u7jQTIBpgsqijD6oig2GZ"></i></div></div>
+    <div class="stat" data-page-node-id="9BNkcBTkvamDPvrjttLfFw"><div class="stat-label" data-page-node-id="SLA3tjH4K4kuDQPILDAtVC">IN PROGRESS</div><div class="stat-value" id="doing" data-page-node-id="8FxDeoJJvjRae1c5yhp0NQ">0</div><div class="stat-note" data-page-node-id="pY5KSqOBjXZqZEbZnD6ncO">WIP limit: 5</div></div>
+    <div class="stat" data-page-node-id="f48b8F1TzrlQy4ZZ89kOhD"><div class="stat-label" data-page-node-id="eMB1UgVECOFVdU7d763yS6">BLOCKED</div><div class="stat-value" id="blocked" data-page-node-id="Avm1kDtuKgpX7cdRC4byEF">0</div><div class="stat-note" data-page-node-id="OlsgasbxvZde1FmexddVyj">Needs PM attention</div></div>
+    <div class="stat" data-page-node-id="dvRIONfhx66YK4avr3kqR4"><div class="stat-label" data-page-node-id="rCwFpevjtnNJxpBZMVxDFU">NEXT MILESTONE</div><div class="stat-value" style="font-size:20px" data-page-node-id="1WD3Ru8WT6MKtzMtuw9j7l">Day 7</div><div class="stat-note" data-page-node-id="Rtn8wVLP7mQKaE3jtjHP8S">Feature Freeze</div></div>
+  </div>
+
+  <div class="toolbar" data-page-node-id="7bv2ixxku0JYxVIJTuswHA">
+    <input class="search" id="search" placeholder="搜索任务、负责人、标签..." oninput="render()" data-page-node-id="2nQmQGbpStflRHhsD8Kld7">
+    <select id="priorityFilter" onchange="render()" data-page-node-id="QzVzvuADMvgZUqWIDGUhu0"><option value="all" data-page-node-id="jiYPxG4xIx4yQl3oWvTENF">全部优先级</option><option data-page-node-id="Cw6ksQSRitPdw5cFOP8AYC">P0</option><option data-page-node-id="fTgfSTGwmcO5hBfMGzjgkh">P1</option><option data-page-node-id="eXsGuydbcCAfUVMgJZqu8v">P2</option></select>
+    <select id="ownerFilter" onchange="render()" data-page-node-id="vE3b8VxxVaw6FghQcr3xDN"><option value="all" data-page-node-id="AyWfJIbQ5gxS6yNPr2VWAn">全部成员</option></select>
+  </div>
+
+  <div class="board-wrap" data-page-node-id="Mn2zvGq9lzA3HUzmG0GAQR"><div class="board" id="board" data-page-node-id="oEz89DGhaqWCNCQtY9wh6S"></div></div>
+
+  <section class="section" data-page-node-id="EedCUQH1pQFGZLaCE0M8QA">
+    <div class="section-head" data-page-node-id="eYDStNEtAW8qFFhAAxwsBE"><div data-page-node-id="X76MXJMd8s1sCRBAs0jWmA"><h2 data-page-node-id="HUYwC9wsiE3aPz6MR23AVE">14-Day Milestones</h2><div class="section-sub" data-page-node-id="PB2GiXT1LNX6CnQ1eFwdDu">PM 用于判断项目是否偏离关键节点</div></div></div>
+    <div class="timeline" data-page-node-id="VeTyXxu6DAc1pdLArZ75JM">
+      <div class="days" id="days" data-page-node-id="354cGhsuZE02BFEk6bkaWg"></div>
+      <div class="milestone" data-page-node-id="svavZwuqfnOZ3AKE9qhSwp">
+        <div class="ms major" style="grid-column:1/3" data-page-node-id="Xwn5TY2HvQcr2SdNasS1Y3">Core Idea</div>
+        <div class="ms major" style="grid-column:3/5" data-page-node-id="svIJ85ieqOFO0DBryThjiU">Prototype</div>
+        <div class="ms major" style="grid-column:5/8" data-page-node-id="oCw8KrBZY3MC5ae8QpRXnv">Vertical Slice</div>
+        <div class="ms warn" style="grid-column:8/9" data-page-node-id="P3mInA1KHmmKW5EbNDgMdL">FREEZE</div>
+        <div class="ms" style="grid-column:9/12" data-page-node-id="6Qixw798M4kDsf38q3DhYM">Content</div>
+        <div class="ms" style="grid-column:12/14" data-page-node-id="37JFWxGK129yufiB6GdwtY">Polish</div>
+        <div class="ms major" style="grid-column:14/15" data-page-node-id="gz3EZUHWZ23IycFXzLm7Lw">FINAL</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-page-node-id="X3vOKvwwRBhKuPdBkKD4dr">
+    <div class="section-head" data-page-node-id="0Uo431ePgBJdAhilLZBMVm"><div data-page-node-id="liSesq8WqGDLqcSFn6BP2b"><h2 data-page-node-id="8PEqQ6zghTa3mP65RcJzCj">Team Workload</h2><div class="section-sub" data-page-node-id="QBNenqeK23GGBBvg9mwqaO">WIP 太高时，PM 应该优先帮忙拆任务或解决阻塞</div></div></div>
+    <div class="team" id="team" data-page-node-id="FcGAH68P3FO9BT7gmzdbvB"></div>
+  </section>
+</main>
+</div>
+
+<div class="overlay" id="modal" data-page-node-id="DZIfmgEIKZ61AKQk3PiYRN">
+  <div class="modal" data-page-node-id="75KNEuYlXcEmHUqhRzmj2u">
+    <h2 data-page-node-id="bk5c3Rp49wTyxxFlXr6yMe">创建任务</h2>
+    <div class="form" data-page-node-id="PmoGGxC3xZhBGm28brxF0X">
+      <label data-page-node-id="e1ZbeMlX0RxEXLFdDvARLh">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="XOI5aRf5TbCgm2EaD1SRB1"></label>
+      <label data-page-node-id="sjbSB5DzjECY159gXUuft2">负责人<select id="newOwner" data-page-node-id="gjhv8G95xfVaCh5ALLs4O7"></select></label>
+      <label data-page-node-id="yZGQFqSqx1z0E3rzgjA1KH">初始状态<select id="newStatus" data-page-node-id="m2iH6nBXpGwkrDam8JEcKs"></select></label>
+      <label data-page-node-id="1j1P5GXRzTxu7Cl3KaVnyi">优先级<select id="newPriority" data-page-node-id="Zl3kLsb8AU61uRExC6BuWo"><option data-page-node-id="GnN8kkoEbRQEmbjRI7NH2E">P0</option><option data-page-node-id="WLPwlEp0FifucTmEhTXc7D">P1</option><option data-page-node-id="gEIlPIflTVIkGlnNmFSTIO">P2</option></select></label>
+      <label data-page-node-id="tHPn0Tnx3Y88MjmTTK7LbA">类型<select id="newType" data-page-node-id="xddjoKx8dskcoE2GIoFmps"><option data-page-node-id="S5CHJzDkVuH77m5nyRHM0s">Programming</option><option data-page-node-id="Pv6A1S4TGVlqll4k0lVZ4o">Art</option><option data-page-node-id="yteMWdyFPpDmHqU2UaEDAE">Design</option><option data-page-node-id="XRRKmwUnjFuqoUUvrrVsNM">Production</option></select></label>
+      <label data-page-node-id="YB7RN0KfXGPd2HZqajhGX6">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+    </div>
+    <div class="modal-actions" data-page-node-id="39A39yON9vSF0eldqBfpXf"><button class="btn" onclick="closeModal()" data-page-node-id="0IfaZg7hfeBvGue8Rsrwv3">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="496G3ev4v117MOZGEqg5R7">创建</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" data-page-node-id="ZffD3P5InbOhxVNLRCAnCT"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc,
+  doc, writeBatch, serverTimestamp, query, orderBy
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+/* ============================================================
+   1) 改成你自己的配置
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBdtuXxxWxXgykqw1KQ9ItvwzQZ8pYxXK0",   // ← 从 Firebase 控制台整段复制，不要手打/截断
+  authDomain: "one-up-six-down.firebaseapp.com",
+  projectId: "one-up-six-down",
+  storageBucket: "one-up-six-down.firebasestorage.app",
+  messagingSenderId: "614099694809",
+  appId: "1:614099694809:web:2d086e028d773fc9d6fac8"
+};
+
+const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
+const JAM_START  = "2026-09-16"; // ← 开赛日期（用来算 DAY n），不想算就留空 ""
+const MEMBERS    = ["程序 A","程序 B","美术","PM A","PM B"]; // 新任务下拉里的候选人
+
+/* ============================================================
+   2) 状态列 & 别名映射（兼容中英文 / 大小写）
+   ============================================================ */
+const STATUS_DEFS = [
+  {id:"backlog", title:"Backlog", sub:"待规划", aliases:["backlog","待规划","待办","未规划","想法"]},
+  {id:"ready",   title:"Ready",   sub:"待开始", aliases:["ready","todo","待开始","就绪"]},
+  {id:"doing",   title:"Doing",   sub:"进行中", aliases:["doing","in progress","inprogress","wip","进行中","开发中"]},
+  {id:"review",  title:"Review",  sub:"待验收", aliases:["review","待验收","评审中"]},
+  {id:"testing", title:"Testing", sub:"测试中", aliases:["testing","test","qa","测试中"]},
+  {id:"blocked", title:"Blocked", sub:"阻塞",   aliases:["blocked","阻塞","卡住","被阻塞"]},
+  {id:"done",    title:"Done",    sub:"已完成", aliases:["done","已完成","完成","closed"]}
+];
+const STATUS_ORDER = STATUS_DEFS.map(s=>s.id);
+
+function normalizeStatus(raw){
+  const s = String(raw==null?"":raw).trim().toLowerCase();
+  for(const def of STATUS_DEFS) if(def.aliases.includes(s)) return def.id;
+  return "backlog";
+}
+function normalizePriority(raw){
+  const s = String(raw==null?"":raw).trim().toUpperCase();
+  return ["P0","P1","P2"].includes(s) ? s : "P2";
+}
+
+/* ============================================================
+   3) 状态
+   ============================================================ */
+let tasks = [];                 // 服务器数据（经规范化）
+let live  = false;              // 是否成功连上 Firestore
+let booting = true;             // 首次拉取是否还在进行
+let db = null;
+const PRI_RANK = {P0:0,P1:1,P2:2};
+
+const DEMO_TASKS = [
+  {title:"确定核心玩法循环",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"玩家目标、输入、反馈、胜负条件"},
+  {title:"Player Controller",owner:"程序 A",priority:"P0",type:"Programming",status:"done",desc:"移动、跳跃、基础碰撞"},
+  {title:"玩家攻击系统",owner:"程序 A",priority:"P0",type:"Programming",status:"doing",desc:"攻击判定与伤害流程"},
+  {title:"玩家攻击动画",owner:"美术",priority:"P0",type:"Art",status:"review",desc:"Idle / Attack / Hit"},
+  {title:"Enemy 基础 AI",owner:"程序 B",priority:"P0",type:"Programming",status:"doing",desc:"Idle → Chase → Attack"},
+  {title:"Enemy Sprite",owner:"美术",priority:"P0",type:"Art",status:"doing",desc:"基础敌人视觉资源"},
+  {title:"敌人攻击规则",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"攻击距离、前摇、CD、伤害"},
+  {title:"伤害 / 死亡系统",owner:"程序 A",priority:"P0",type:"Programming",status:"ready",desc:"HP、受伤、死亡、无敌帧"},
+  {title:"Vertical Slice 关卡",owner:"程序 B",priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
+  {title:"场景背景",owner:"美术",priority:"P1",type:"Art",status:"ready",desc:"第一版场景视觉"},
+  {title:"HUD",owner:"程序 A",priority:"P1",type:"Programming",status:"review",desc:"HP、技能、提示"},
+  {title:"HUD 素材",owner:"美术",priority:"P1",type:"Art",status:"blocked",desc:"等待 UI 规范"},
+  {title:"游戏流程管理",owner:"程序 B",priority:"P0",type:"Programming",status:"ready",desc:"Start / Win / Lose / Restart"},
+  {title:"数值第一版",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"玩家、敌人、伤害、CD"},
+  {title:"镜头反馈",owner:"程序 A",priority:"P1",type:"Programming",status:"backlog",desc:"Screen Shake / Hit Stop"},
+  {title:"敌人受击特效",owner:"美术",priority:"P1",type:"Art",status:"backlog",desc:"Hit / Death VFX"},
+  {title:"音效清单",owner:"PM B",priority:"P1",type:"Production",status:"doing",desc:"整理攻击、受击、UI 音效需求"},
+  {title:"Audio Manager",owner:"程序 B",priority:"P1",type:"Programming",status:"blocked",desc:"等待音频资源格式确认"},
+  {title:"Boss 设计",owner:"PM A",priority:"P1",type:"Design",status:"ready",desc:"攻击模式与阶段"},
+  {title:"Boss 实现",owner:"程序 B",priority:"P1",type:"Programming",status:"backlog",desc:"Feature Freeze 后再做"},
+  {title:"Tutorial",owner:"PM B",priority:"P2",type:"Design",status:"backlog",desc:"新手提示"},
+  {title:"菜单 UI",owner:"美术",priority:"P1",type:"Art",status:"testing",desc:"开始、设置、退出"},
+  {title:"Build Pipeline",owner:"程序 B",priority:"P0",type:"Programming",status:"done",desc:"Windows 导出验证"},
+  {title:"最终试玩验收",owner:"PM B",priority:"P0",type:"Production",status:"ready",desc:"Day 13-14 全流程测试"}
+];
+
+/* ============================================================
+   4) 工具函数
+   ============================================================ */
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function avatar(owner){
+  const s = String(owner||"?").trim();
+  let m;
+  if(/^美术/.test(s)) return "美";
+  if((m = s.match(/^程序(员)?\s*([A-Za-z0-9]+)$/))) return "P"+m[2].toUpperCase();
+  if((m = s.match(/^(PM|项目经理)\s*([A-Za-z0-9]+)$/i))) return "M"+m[2].toUpperCase();
+  return s.slice(0,2) || "?";
+}
+function jamDay(){
+  if(!JAM_START) return "–";
+  const d = Math.floor((Date.now() - new Date(JAM_START+"T00:00:00+08:00").getTime())/86400000)+1;
+  return d >= 1 ? d : "–";
+}
+function deadlineTag(t){
+  if(t.status==="blocked") return "需处理";
+  return "Day " + (t.priority==="P0" ? 5 : 8);
+}
+
+/* ============================================================
+   5) Firestore 连接
+   ============================================================ */
+function setSync(mode, text){
+  const el = document.getElementById("syncBadge");
+  el.className = "badge sync-" + mode;
+  el.textContent = text;
+}
+
+function startFirestore(){
+  initializeApp(firebaseConfig);
+  db = getFirestore();
+  const col = collection(db, COLLECTION);
+  onSnapshot(col,
+    snap => {
+      live = true;
+      booting = false;
+      tasks = snap.docs.map(d => {
+        const v = d.data() || {};
+        return {
+          id: d.id,
+          title: v.title || "(未命名任务)",
+          owner: v.owner || "未分配",
+          priority: normalizePriority(v.priority),
+          type: v.type || "Programming",
+          status: normalizeStatus(v.status),
+          desc: v.desc || v.description || "",
+          seq: v.order ?? 0
+        };
+      });
+      setSync("live", "● 已同步");
+      document.getElementById("seedBtn").disabled = tasks.length > 0;
+      render();
+    },
+    err => {
+      console.error("[firestore]", err);
+      fallBack("Firestore 读取失败，已切到本地演示数据（改动不会保存）", err);
+    }
+  );
+}
+
+function fallBack(msg, err){
+  live = false;
+  booting = false;
+  tasks = DEMO_TASKS.map((t,i)=>({...t, id:"demo-"+i, seq:i}));
+  setSync("demo", "○ 离线演示");
+  document.getElementById("seedBtn").disabled = true;
+  render();
+  showToast(msg + (err ? "  · " + (err.code || err.message || "") : ""), true);
+}
+
+/* ============================================================
+   6) 渲染
+   ============================================================ */
+function render(){
+  const q  = document.getElementById("search").value.trim().toLowerCase();
+  const pf = document.getElementById("priorityFilter").value;
+  const of_ = document.getElementById("ownerFilter").value;
+
+  // 负责人下拉：用真实数据重建（保留当前选择）
+  const owners = [...new Set(tasks.map(t=>t.owner))].sort();
+  const osel = document.getElementById("ownerFilter");
+  const keep = owners.includes(of_) ? of_ : "all";
+  osel.innerHTML = '<option value="all">全部成员</option>' +
+    owners.map(o=>`<option value="${esc(o)}"${o===keep?" selected":""}>${esc(o)}</option>`).join("");
+
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+
+  STATUS_DEFS.forEach(def => {
+    let list = tasks.filter(t => t.status === def.id);
+    if(pf !== "all") list = list.filter(t => t.priority === pf);
+    if(keep !== "all") list = list.filter(t => t.owner === keep);
+    if(q) list = list.filter(t => [t.title,t.owner,t.type,t.desc].join(" ").toLowerCase().includes(q));
+    list.sort((a,b)=> (PRI_RANK[a.priority]-PRI_RANK[b.priority]) || String(a.title).localeCompare(String(b.title),"zh"));
+
+    const col = document.createElement("div");
+    col.className = "column";
+    col.innerHTML =
+      `<div class="col-head"><div><div class="col-title">${def.title}</div>` +
+      `<div style="font-size:10px;color:#697586">${def.sub}</div></div>` +
+      `<span class="count">${list.length}</span></div><div class="cards"></div>`;
+    const cards = col.querySelector(".cards");
+
+    if(!list.length){
+      cards.innerHTML = booting
+        ? '<div class="empty">正在连接 Firestore…</div>'
+        : '<div class="empty">拖任务到这里</div>';
+    }
+    list.forEach(t => {
+      const c = document.createElement("div");
+      c.className = "card" + (def.id === "blocked" ? " blocked" : "");
+      c.draggable = true;
+      c.dataset.id = t.id;
+      c.innerHTML =
+        `<button class="del" title="删除任务">×</button>` +
+        `<div class="card-top"><span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
+        `<span class="type">${esc(t.type)}</span></div>` +
+        `<h3>${esc(t.title)}</h3>` +
+        (t.desc ? `<div class="card-desc">${esc(t.desc)}</div>` : "") +
+        `<div class="card-foot"><span class="owner"><span class="mini-avatar">${esc(avatar(t.owner))}</span>${esc(t.owner)}</span>` +
+        `<span class="tag">${esc(deadlineTag(t))}</span></div>`;
+
+      c.querySelector(".del").onclick = e => { e.stopPropagation(); removeTask(t); };
+      c.onclick = () => showToast(`${t.title} · ${t.owner}`);
+      c.addEventListener("dragstart", e => {
+        c.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", t.id);
+        e.dataTransfer.effectAllowed = "move";
+      });
+      c.addEventListener("dragend", () => c.classList.remove("dragging"));
+      cards.appendChild(c);
+    });
+
+    cards.addEventListener("dragover", e => { e.preventDefault(); col.classList.add("over"); });
+    cards.addEventListener("dragleave", () => col.classList.remove("over"));
+    cards.addEventListener("drop", e => {
+      e.preventDefault(); col.classList.remove("over");
+      const id = e.dataTransfer.getData("text/plain");
+      const t = tasks.find(x => x.id === id);
+      if(!t || t.status === def.id) return;
+      moveTask(t, def.id);
+    });
+    board.appendChild(col);
+  });
+
+  updateStats();
+}
+
+function updateStats(){
+  const total = tasks.length;
+  const done  = tasks.filter(t=>t.status==="done").length;
+  const doing = tasks.filter(t=>t.status==="doing").length;
+  const blk   = tasks.filter(t=>t.status==="blocked").length;
+  const pct   = total ? Math.round(done/total*100) : 0;
+  document.getElementById("total").textContent = total;
+  document.getElementById("priBreak").textContent =
+    `P0 ${tasks.filter(t=>t.priority==="P0").length} · P1 ${tasks.filter(t=>t.priority==="P1").length} · P2 ${tasks.filter(t=>t.priority==="P2").length}`;
+  document.getElementById("completion").textContent = pct + "%";
+  document.getElementById("progress").style.width = pct + "%";
+  document.getElementById("doing").textContent = doing;
+  document.getElementById("blocked").textContent = blk;
+  renderTeam();
+}
+
+function renderTeam(){
+  const box = document.getElementById("team");
+  const names = [...new Set([...MEMBERS, ...tasks.map(t=>t.owner)])].sort();
+  box.innerHTML = names.map(n => {
+    const mine   = tasks.filter(t=>t.owner===n);
+    const active = mine.filter(t=>["doing","review","testing"].includes(t.status)).length;
+    const load   = Math.min(100, active*25 + mine.filter(t=>t.status==="blocked").length*10);
+    const role   = mine.length ? [...new Set(mine.map(t=>t.type))].join(" / ") : "暂无任务";
+    return `<div class="member"><div class="member-top"><div class="big-avatar">${esc(avatar(n))}</div>` +
+      `<div><div class="member-name">${esc(n)}</div><div class="role">${esc(role)}</div></div></div>` +
+      `<div class="bar"><i style="width:${load}%"></i></div>` +
+      `<div class="member-meta"><span>${active} active</span><span>${load}%</span></div></div>`;
+  }).join("");
+}
+
+/* ============================================================
+   7) 写操作
+   ============================================================ */
+async function moveTask(t, status){
+  if(!live){
+    t.status = status; render();
+    showToast(`本地已移动（未连库）：${t.title}`);
+    return;
+  }
+  try{
+    await updateDoc(doc(db, COLLECTION, t.id), { status, updatedAt: serverTimestamp() });
+    showToast(`已移动到 ${STATUS_DEFS.find(s=>s.id===status).title}：${t.title}`);
+  }catch(e){
+    console.error(e);
+    showToast("移动失败：" + (e.code || e.message), true);
+  }
+}
+
+async function removeTask(t){
+  if(!confirm(`删除任务「${t.title}」？\n此操作不可撤销。`)) return;
+  if(!live){ showToast("离线演示模式下无法删除", true); return; }
+  try{
+    await deleteDoc(doc(db, COLLECTION, t.id));
+    showToast("已删除：" + t.title);
+  }catch(e){
+    showToast("删除失败：" + (e.code || e.message), true);
+  }
+}
+
+function openModal(){
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("newTitle").focus();
+}
+function closeModal(){ document.getElementById("modal").style.display = "none"; }
+
+async function createTask(){
+  const title = document.getElementById("newTitle").value.trim();
+  if(!title){ showToast("任务名不能为空", true); return; }
+  const payload = {
+    title,
+    owner:    document.getElementById("newOwner").value,
+    status:   document.getElementById("newStatus").value,
+    priority: document.getElementById("newPriority").value,
+    type:     document.getElementById("newType").value,
+    desc:     document.getElementById("newDesc").value.trim(),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  };
+  try{
+    if(live){
+      await addDoc(collection(db, COLLECTION), payload);
+    }else{
+      tasks.push({...payload, id:"local-"+Date.now(), seq:0});
+      render();
+    }
+    document.getElementById("newTitle").value = "";
+    document.getElementById("newDesc").value = "";
+    closeModal();
+    showToast("任务已创建");
+  }catch(e){
+    console.error(e);
+    showToast("创建失败：" + (e.code || e.message), true);
+  }
+}
+
+async function seedDemo(){
+  if(!live){ showToast("未连接 Firestore，无法写入", true); return; }
+  if(!confirm(`把 ${DEMO_TASKS.length} 条示例任务写入 Firestore 的「${COLLECTION}」集合？`)) return;
+  const b = writeBatch(db);
+  DEMO_TASKS.forEach((t,i) => {
+    b.set(doc(collection(db, COLLECTION)), {
+      ...t, order: i, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+    });
+  });
+  try{
+    await b.commit();
+    showToast("示例任务已写入");
+  }catch(e){
+    showToast("写入失败：" + (e.code || e.message), true);
+  }
+}
+
+function showToast(msg, isErr){
+  const x = document.getElementById("toast");
+  x.textContent = msg;
+  x.className = "toast" + (isErr ? " err" : "");
+  x.style.display = "block";
+  clearTimeout(window.tt);
+  window.tt = setTimeout(()=>{ x.style.display = "none"; }, isErr ? 4200 : 1800);
+}
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.createTask = createTask;
+window.seedDemo = seedDemo;
+window.render = render;
+
+/* ============================================================
+   8) 启动
+   ============================================================ */
+(function boot(){
+  document.getElementById("dayNum").textContent = jamDay();
+  // 14 天时间轴
+  const days = document.getElementById("days");
+  const today = typeof jamDay() === "number" ? jamDay() : -1;
+  for(let i=1;i<=14;i++){
+    const d = document.createElement("div");
+    d.className = "day" + (i===today ? " today" : "");
+    d.textContent = "DAY " + i;
+    days.appendChild(d);
+  }
+  // 新任务弹窗下拉
+  document.getElementById("newOwner").innerHTML  = MEMBERS.map(m=>`<option>${esc(m)}</option>`).join("");
+  document.getElementById("newStatus").innerHTML = STATUS_DEFS.map(s=>`<option value="${s.id}">${s.title} · ${s.sub}</option>`).join("");
+
+  render();  // 先画出骨架，别让首屏空着
+
+  // 8 秒还没等到响应就给个提示
+  setTimeout(() => {
+    if(booting) showToast("Firestore 响应较慢：检查网络，或确认规则已发布", true);
+  }, 8000);
+
+  try{
+    startFirestore();
+  }catch(e){
+    fallBack("Firebase 初始化失败，已切到本地演示数据", e);
+  }
+})();
+</script>
+</body>
+</html>
