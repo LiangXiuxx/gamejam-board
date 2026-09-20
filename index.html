@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GameJam Production Board</title>
+<title>上一休六工作室 · Game Jam 看板</title>
 <style>
 :root{
   --bg:#0b0e13; --panel:#11161e; --panel2:#171d27; --line:#27303d;
@@ -87,7 +87,8 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 .btn.toggle.on{background:#3a2026;border-color:#6b2f3a;color:#ff9aa5}
 .empty{padding:18px 10px;text-align:center;color:#4d5765;font-size:11px;border:1px dashed #232b36;border-radius:7px;opacity:0;transition:opacity .15s}
 .empty.on,body.dragging .empty{opacity:1}
-.section{margin-top:25px}
+.section{margin-top:25px;scroll-margin-top:80px}
+.board-wrap{scroll-margin-top:80px}
 .section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}
 .section h2{font-size:16px;margin:0}
 .section-sub{font-size:12px;color:var(--muted)}
@@ -131,7 +132,9 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
 <header>
   <div class="logo">JAM<span>BOARD</span></div>
   <div class="nav">
-    <button class="active">看板</button><button>时间轴</button><button>团队</button>
+    <button class="active" onclick="jump('secBoard', this)">看板</button>
+    <button onclick="jump('secTimeline', this)">时间轴</button>
+    <button onclick="jump('secTeam', this)">团队</button>
   </div>
   <div class="header-right">
     <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
@@ -148,8 +151,7 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
 
   <div class="top">
     <div>
-      <h1>星云计划</h1>
-      <div class="subtitle">2 周 Game Jam · 5 人小队 · 从垂直切片到功能完整</div>
+      <h1>上一休六工作室</h1>
     </div>
     <div class="actions">
       <button class="btn primary" onclick="openModal()">＋ 新建任务</button>
@@ -171,9 +173,9 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
     <button class="btn toggle" id="blkFilter" onclick="toggleBlkFilter()">只看阻塞</button>
   </div>
 
-  <div class="board-wrap"><div class="board" id="board"></div></div>
+  <div class="board-wrap" id="secBoard"><div class="board" id="board"></div></div>
 
-  <section class="section">
+  <section class="section" id="secTimeline">
     <div class="section-head"><div><h2>14 天里程碑<span class="sub">14-DAY MILESTONES</span></h2><div class="section-sub">用来判断项目有没有偏离关键节点</div></div></div>
     <div class="timeline">
       <div class="days" id="days"></div>
@@ -189,7 +191,7 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="secTeam">
     <div class="section-head"><div><h2>团队负载<span class="sub">TEAM WORKLOAD</span></h2><div class="section-sub">WIP 偏高时，PM 优先帮忙拆任务或解决阻塞</div></div></div>
     <div class="team" id="team"></div>
   </section>
@@ -380,6 +382,13 @@ function hideBanner(){
   document.getElementById("banner").classList.remove("show");
 }
 function retryConnect(){ location.reload(); }
+
+// 顶部导航跳到对应区块（不是三个独立页面，一屏能看全就别做多页面）
+function jump(id, btn){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+  document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b === btn));
+}
 
 function startFirestore(){
   initializeApp(firebaseConfig);
@@ -697,6 +706,7 @@ window.openModal = openModal;
 window.closeModal = closeModal;
 window.createTask = createTask;
 window.retryConnect = retryConnect;
+window.jump = jump;
 window.toggleBlkFilter = toggleBlkFilter;
 window.closeReject = closeReject;
 window.confirmReject = confirmReject;
