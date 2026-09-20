@@ -56,61 +56,76 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 .cards{padding:9px;min-height:420px}
 .card{position:relative;background:var(--panel2);border:1px solid #293241;border-radius:8px;padding:11px;margin-bottom:8px;cursor:grab;transition:.15s}
 .card:hover{border-color:#465266;transform:translateY(-1px)}
-.card.dragging{opacity:.45}
-.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.card.dragging{opacity:.45}.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .priority{font-size:10px;font-weight:800;padding:3px 6px;border-radius:4px}
 .p0{background:#3a1d25;color:#ff8894}.p1{background:#3a321b;color:#f4cf67}.p2{background:#1d2d3c;color:#75baff}
 .type{font-size:10px;color:var(--muted);margin-left:auto}
-.card-acts{position:absolute;top:7px;right:7px;display:none;gap:4px}
-.card:hover .card-acts{display:flex}
-.cbtn{width:20px;height:20px;border-radius:5px;border:1px solid #3a2530;background:#2a1a20;color:#ff9aa5;font-size:12px;line-height:1;display:grid;place-items:center;padding:0}
-.cbtn.warn{background:#2a2418;border-color:#4a4326;color:#e8cf7a}
-.cbtn:hover{filter:brightness(1.35)}
-.flagbar{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0 8px}
-.flag{font-size:10px;padding:2px 7px;border-radius:4px;background:#202734;color:#c7cfdb;cursor:default}
-.flag.act{cursor:pointer}
-.flag.act:hover{filter:brightness(1.3)}
-.flag.blk{background:#351c23;color:#ff8995}
-.flag.rw{background:#3a321b;color:#f4cf67}
-.card-desc.note{color:#f0cc72;background:#2a2418;border-radius:4px;padding:5px 7px}
+.card-desc.note{color:#f0cc72;background:#2a2418;border-radius:4px;padding:5px 7px;margin-bottom:9px}
 .card-desc.note b{color:#ffd98a;font-weight:600}
-.card h3{font-size:13px;margin:9px 0 7px;padding-right:18px}
+.card h3{font-size:13px;margin:9px 0 7px}
 .card-desc{font-size:11px;color:#9ca7b6;margin-bottom:9px}
 .card-foot{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;gap:6px}
 .owner{display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mini-avatar{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#30394a;color:#dbe3ef;font-size:9px;font-weight:700;flex:0 0 auto}
 .tag{padding:3px 6px;border-radius:4px;background:#202734;flex:0 0 auto}
-.tag.flag{cursor:pointer;border:1px solid transparent;user-select:none}
-.tag.flag:hover{border-color:#4a5566}
-.tag.flag.on{color:#ff8995;background:#351c23;border-color:#65323b}
-.card.blocked{border-color:#65323b;box-shadow:inset 3px 0 0 #ef6675}
-.btn.toggle.on{background:#3a2026;border-color:#6b2f3a;color:#ff9aa5}
+.btn.danger{background:#3a2026;border-color:#6b2f3a;color:#ff9aa5;margin-right:auto}
 .empty{padding:18px 10px;text-align:center;color:#4d5765;font-size:11px;border:1px dashed #232b36;border-radius:7px;opacity:0;transition:opacity .15s}
 .empty.on,body.dragging .empty{opacity:1}
-.section{margin-top:25px;scroll-margin-top:80px}
-.board-wrap{scroll-margin-top:80px}
-.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:10px}
-.section h2{font-size:16px;margin:0}
-.section-sub{font-size:12px;color:var(--muted)}
-.timeline{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:17px;overflow:auto}
-.days{display:grid;grid-template-columns:repeat(14,1fr);min-width:900px;gap:5px}
-.day{font-size:10px;color:var(--muted);text-align:center}
-.day.today{color:var(--accent);font-weight:700}
-.milestone{margin-top:10px;display:grid;grid-template-columns:repeat(14,1fr);gap:5px;min-width:900px}
-.ms{height:34px;border-radius:5px;background:#242b36;display:flex;align-items:center;justify-content:center;font-size:10px;color:#c7cfdb}
-.ms.major{background:#2b2850;color:#d7d0ff;border:1px solid #514a93}
-.ms.warn{background:#47351d;color:#f0cc72}
-.team{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.member{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:13px}
-.member-top{display:flex;align-items:center;gap:9px}
-.big-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#292f40;font-weight:800;flex:0 0 auto}
-.member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
-.bar{height:5px;background:#252c36;border-radius:5px;margin-top:11px;overflow:hidden}.bar i{height:100%;display:block;background:var(--blue);transition:width .3s}
-.member-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
 .sub{display:block;font-size:9.5px;color:#5d6875;font-weight:500;letter-spacing:.5px;margin-top:2px}
 i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-left:4px}
-.ms{flex-direction:column;gap:0;line-height:1.25}
-.ms em{font-style:normal;font-size:8.5px;opacity:.6;letter-spacing:.3px}
+.section-sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* ============ 视图切换（三个 tab 是三个视图，不是三个独立页面）============ */
+.view{display:none}
+.view.active{display:block}
+
+/* ============ 甘特图 ============ */
+.gantt-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11.5px;color:var(--muted)}
+.gantt-legend span{display:flex;align-items:center;gap:6px}
+.gantt-legend i{width:11px;height:11px;border-radius:3px;display:block}
+.gantt{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px 16px;overflow-x:auto}
+.g-inner{min-width:940px}
+.g-head{display:flex;align-items:flex-end;margin-bottom:4px}
+.g-name{width:216px;flex:0 0 216px;font-size:11px;color:var(--muted);padding-left:2px}
+.g-days{flex:1;display:grid;grid-template-columns:repeat(14,1fr)}
+.g-days div{font-size:10px;color:#5b6674;text-align:center;padding-bottom:5px;border-left:1px solid #1c232d}
+.g-days div.today{color:var(--accent);font-weight:700}
+.g-row{display:flex;align-items:center;height:32px;border-top:1px solid #1a212a}
+.g-row:hover{background:#141a24}
+.g-label{width:216px;flex:0 0 216px;display:flex;align-items:center;gap:7px;padding-right:12px;overflow:hidden}
+.g-label .gt{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.g-label .gt:hover{color:var(--accent);text-decoration:underline}
+.g-track{flex:1;position:relative;height:32px;
+  background-image:repeating-linear-gradient(to right,#1c232d 0,#1c232d 1px,transparent 1px,transparent 7.142857%)}
+.g-seg{position:absolute;top:7px;height:18px;border-radius:4px;min-width:2px}
+.g-seg.todo{background:#3a4354}
+.g-seg.doing{background:#5b5bd6}
+.g-seg.review{background:#c9a227}
+.g-seg.done{background:#2f9e6b}
+.g-seg:hover{filter:brightness(1.3);z-index:3}
+.g-now{position:absolute;top:3px;bottom:3px;width:2px;background:#7c6cff;opacity:.65;pointer-events:none;z-index:2}
+.g-empty{padding:26px;text-align:center;color:#5b6674;font-size:12px}
+.g-note{margin-top:12px;font-size:11.5px;color:#5b6674}
+
+/* ============ 团队 ============ */
+.team{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.member{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.member-top{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.big-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#292f40;font-weight:800;flex:0 0 auto}
+.member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
+.member-counts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.mc{font-size:10px;padding:2px 7px;border-radius:4px;background:#202734;color:#c7cfdb}
+.mc.doing{background:#25255a;color:#b9b6ff}
+.mc.review{background:#3a321b;color:#f4cf67}
+.mc.done{background:#1e3229;color:#6ee6ae}
+.member-tasks{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+.mtask{display:flex;align-items:center;gap:8px;padding:6px 5px;border-radius:5px;cursor:pointer}
+.mtask:hover{background:#151b25}
+.mtask .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.dot.todo{background:#3a4354}.dot.doing{background:#5b5bd6}.dot.review{background:#c9a227}.dot.done{background:#2f9e6b}
+.mtask .mt{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtask .mp{font-size:9.5px;font-weight:800;padding:2px 5px;border-radius:3px}
+.mempty{font-size:11.5px;color:#5d6875;padding:8px 5px}
 .banner{display:none;margin:0 0 16px;padding:12px 14px;border-radius:9px;background:#3a2026;border:1px solid #6b2f3a;color:#ffd9df;font-size:12.5px;line-height:1.6;align-items:center;gap:12px;flex-wrap:wrap}
 .banner.show{display:flex}
 .banner b{color:#ff9aa5}
@@ -121,9 +136,21 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
 .modal h2{margin:0 0 15px}.form{display:grid;gap:10px}.form label{font-size:11px;color:var(--muted);display:block}
 .form input,.form select,.form textarea{width:100%;margin-top:5px;background:#0e131a;border:1px solid var(--line);color:white;padding:9px;border-radius:6px;outline:none;font-family:inherit}
 .form textarea{resize:vertical;min-height:52px}
+.form.two{grid-template-columns:1fr 1fr}
+.form .span2{grid-column:1/-1}
+.hist{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.hist-title{font-size:11px;color:var(--muted);margin-bottom:8px}
+.hrow{display:flex;gap:9px;align-items:baseline;font-size:11.5px;color:#aeb8c6;padding:4px 0}
+.hrow .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;position:relative;top:-1px}
+.hrow .ht{color:#6f7a88;flex:0 0 auto;font-variant-numeric:tabular-nums}
+.hrow .hn{color:#f0cc72}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.toast{position:fixed;right:20px;bottom:20px;background:#e9edf2;color:#111;padding:10px 14px;border-radius:8px;display:none;z-index:30;max-width:min(360px,80vw)}
+.toast{position:fixed;right:20px;bottom:20px;background:#e9edf2;color:#111;padding:10px 14px;border-radius:8px;display:none;z-index:30;max-width:min(420px,86vw);align-items:center;gap:12px}
+.toast.show{display:flex}
+.toast .undo{display:none;background:#111;color:#fff;border:0;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;flex:0 0 auto}
+.toast.undoable .undo{display:inline-block}
 .toast.err{background:#7c2733;color:#ffe9ec}
+.toast.err .undo{background:#ffe9ec;color:#7c2733}
 @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr 1fr}header{padding:0 12px}.nav{display:none}main{padding:16px 12px}}
 </style>
 </head>
@@ -132,9 +159,9 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
 <header>
   <div class="logo">JAM<span>BOARD</span></div>
   <div class="nav">
-    <button class="active" onclick="jump('secBoard', this)">看板</button>
-    <button onclick="jump('secTimeline', this)">时间轴</button>
-    <button onclick="jump('secTeam', this)">团队</button>
+    <button class="active" data-view="board"    onclick="setView('board')">看板</button>
+    <button               data-view="timeline" onclick="setView('timeline')">时间轴</button>
+    <button               data-view="team"     onclick="setView('team')">团队</button>
   </div>
   <div class="header-right">
     <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
@@ -149,50 +176,53 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
     <button class="btn go" onclick="retryConnect()">重试连接</button>
   </div>
 
-  <div class="top">
-    <div>
-      <h1>上一休六工作室</h1>
-    </div>
-    <div class="actions">
-      <button class="btn primary" onclick="openModal()">＋ 新建任务</button>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
-    <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
-    <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
-    <div class="stat"><div class="stat-label">阻塞<span class="sub">BLOCKED</span></div><div class="stat-value" id="blocked">0</div><div class="stat-note">需要 PM 介入</div></div>
-    <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px">第 7 天</div><div class="stat-note">功能冻结</div></div>
-  </div>
-
-  <div class="toolbar">
-    <input class="search" id="search" placeholder="搜索任务、负责人、标签…" oninput="render()">
-    <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
-    <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
-    <button class="btn toggle" id="blkFilter" onclick="toggleBlkFilter()">只看阻塞</button>
-  </div>
-
-  <div class="board-wrap" id="secBoard"><div class="board" id="board"></div></div>
-
-  <section class="section" id="secTimeline">
-    <div class="section-head"><div><h2>14 天里程碑<span class="sub">14-DAY MILESTONES</span></h2><div class="section-sub">用来判断项目有没有偏离关键节点</div></div></div>
-    <div class="timeline">
-      <div class="days" id="days"></div>
-      <div class="milestone">
-        <div class="ms major" style="grid-column:1/3"><b>核心玩法</b><em>CORE IDEA</em></div>
-        <div class="ms major" style="grid-column:3/5"><b>可玩原型</b><em>PROTOTYPE</em></div>
-        <div class="ms major" style="grid-column:5/8"><b>垂直切片</b><em>VERTICAL SLICE</em></div>
-        <div class="ms warn" style="grid-column:8/9"><b>冻结</b><em>FREEZE</em></div>
-        <div class="ms" style="grid-column:9/12"><b>内容填充</b><em>CONTENT</em></div>
-        <div class="ms" style="grid-column:12/14"><b>打磨</b><em>POLISH</em></div>
-        <div class="ms major" style="grid-column:14/15"><b>提交</b><em>FINAL</em></div>
+  <!-- ========== 看板 ========== -->
+  <section class="view active" id="view-board">
+    <div class="top">
+      <div><h1>上一休六工作室</h1></div>
+      <div class="actions">
+        <button class="btn primary" onclick="openCreate()">＋ 新建任务</button>
       </div>
     </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
+      <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
+      <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
+      <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px">第 7 天</div><div class="stat-note">功能冻结</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()">
+      <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
+      <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
+    </div>
+
+    <div class="board-wrap"><div class="board" id="board"></div></div>
   </section>
 
-  <section class="section" id="secTeam">
-    <div class="section-head"><div><h2>团队负载<span class="sub">TEAM WORKLOAD</span></h2><div class="section-sub">WIP 偏高时，PM 优先帮忙拆任务或解决阻塞</div></div></div>
+  <!-- ========== 时间轴（甘特图）========== -->
+  <section class="view" id="view-timeline">
+    <div class="top">
+      <div>
+        <h1>时间轴<span class="sub">TIMELINE</span></h1>
+        <div class="section-sub">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
+      </div>
+      <div class="actions"><button class="btn" onclick="renderGantt()">刷新</button></div>
+    </div>
+    <div class="gantt-legend" id="ganttLegend"></div>
+    <div class="gantt" id="gantt"></div>
+  </section>
+
+  <!-- ========== 团队 ========== -->
+  <section class="view" id="view-team">
+    <div class="top">
+      <div>
+        <h1>团队<span class="sub">TEAM</span></h1>
+        <div class="section-sub">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
+      </div>
+    </div>
     <div class="team" id="team"></div>
   </section>
 </main>
@@ -226,7 +256,32 @@ i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-le
     </div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
+<div class="overlay" id="detailModal">
+  <div class="modal">
+    <h2>任务详情</h2>
+    <div class="form two">
+      <label class="span2">任务名称<input id="dTitle"></label>
+      <label>负责人<select id="dOwner"></select></label>
+      <label>状态<select id="dStatus"></select></label>
+      <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
+      <label>类型<select id="dType"></select></label>
+      <label class="span2">描述（验收标准）<textarea id="dDesc"></textarea></label>
+    </div>
+    <div class="hist">
+      <div class="hist-title">阶段记录<span class="sub">STATUS HISTORY</span></div>
+      <div id="dHist"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="deleteDetail()">删除任务</button>
+      <button class="btn" onclick="closeDetail()">取消</button>
+      <button class="btn primary" onclick="saveDetail()">保存</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -258,25 +313,26 @@ const MEMBERS    = ["程序 A","程序 B","美术","PM A","PM B"]; // 新任务�
    ============================================================ */
 /* 四列，按工作真实的推进顺序：没动手 → 在做 → 做完等人点头 → 点头了
    「测试」不是独立的列：谁做的谁自己测，属于"在做"的一部分；
-   做完才进"待验收"（PM/策划试玩确认）。「阻塞」是标记不是列，见 blocked 字段。 */
+   做完才进"待验收"（PM/策划试玩确认）。 */
 const STATUS_DEFS = [
   {id:"todo",   zh:"待办",   en:"TO DO",
    aliases:["todo","backlog","ready","待办","待规划","待开始","未开始","想法","灵感"]},
   {id:"doing",  zh:"进行中", en:"IN PROGRESS",
-   aliases:["doing","in progress","inprogress","wip","进行中","开发中","在做","blocked","阻塞","卡住","被阻塞"]},
+   aliases:["doing","in progress","inprogress","wip","进行中","开发中","在做",
+            "blocked","阻塞","卡住","被阻塞"]},
   {id:"review", zh:"待验收", en:"REVIEW",
    aliases:["review","testing","test","qa","待验收","验收","评审中","测试中","测试"]},
   {id:"done",   zh:"已完成", en:"DONE",
    aliases:["done","closed","已完成","完成","已发布"]}
 ];
+const STATUS_IDS = STATUS_DEFS.map(s => s.id);
 
-// 旧数据里 status=blocked 的，迁移成 doing + 阻塞标记；
-// 直接在库里手写 "阻塞" 也能被识别成标记。
-const BLOCKED_WORDS = ["blocked","阻塞","卡住","被阻塞","被卡","block"];
-
-function isBlockedWord(raw){
-  return BLOCKED_WORDS.includes(String(raw==null?"":raw).trim().toLowerCase());
+function statusDef(id){
+  return STATUS_DEFS.find(s => s.id === id) || STATUS_DEFS[0];
 }
+
+/* 甘特图一天的毫秒数 */
+const DAY_MS = 86400000;
 
 // 入库值 -> [中文, 英文]
 const TYPE_DEFS = [
@@ -289,7 +345,7 @@ const TYPE_DEFS = [
 function normalizeStatus(raw){
   const s = String(raw==null?"":raw).trim().toLowerCase();
   for(const def of STATUS_DEFS) if(def.aliases.includes(s)) return def.id;
-  return "backlog";
+  return "todo";
 }
 function normalizePriority(raw){
   const s = String(raw==null?"":raw).trim().toUpperCase();
@@ -327,13 +383,13 @@ const DEMO_TASKS = [
   {title:"Vertical Slice 关卡",owner:"程序 B",priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
   {title:"场景背景",owner:"美术",priority:"P1",type:"Art",status:"todo",desc:"第一版场景视觉"},
   {title:"HUD",owner:"程序 A",priority:"P1",type:"Programming",status:"review",desc:"HP、技能、提示"},
-  {title:"HUD 素材",owner:"美术",priority:"P1",type:"Art",status:"doing",blocked:true,desc:"等待 UI 规范"},
+  {title:"HUD 素材",owner:"美术",priority:"P1",type:"Art",status:"doing",desc:"等待 UI 规范"},
   {title:"游戏流程管理",owner:"程序 B",priority:"P0",type:"Programming",status:"todo",desc:"Start / Win / Lose / Restart"},
   {title:"数值第一版",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"玩家、敌人、伤害、CD"},
   {title:"镜头反馈",owner:"程序 A",priority:"P1",type:"Programming",status:"todo",desc:"Screen Shake / Hit Stop"},
   {title:"敌人受击特效",owner:"美术",priority:"P1",type:"Art",status:"todo",desc:"Hit / Death VFX"},
   {title:"音效清单",owner:"PM B",priority:"P1",type:"Production",status:"doing",desc:"整理攻击、受击、UI 音效需求"},
-  {title:"Audio Manager",owner:"程序 B",priority:"P1",type:"Programming",status:"doing",blocked:true,desc:"等待音频资源格式确认"},
+  {title:"Audio Manager",owner:"程序 B",priority:"P1",type:"Programming",status:"doing",desc:"等待音频资源格式确认"},
   {title:"Boss 设计",owner:"PM A",priority:"P1",type:"Design",status:"todo",desc:"攻击模式与阶段"},
   {title:"Boss 实现",owner:"程序 B",priority:"P1",type:"Programming",status:"todo",desc:"Feature Freeze 后再做"},
   {title:"Tutorial",owner:"PM B",priority:"P2",type:"Design",status:"todo",desc:"新手提示"},
@@ -383,11 +439,80 @@ function hideBanner(){
 }
 function retryConnect(){ location.reload(); }
 
-// 顶部导航跳到对应区块（不是三个独立页面，一屏能看全就别做多页面）
-function jump(id, btn){
-  const el = document.getElementById(id);
-  if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-  document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b === btn));
+function jamStartMs(){ return new Date(JAM_START + "T00:00:00+08:00").getTime(); }
+function jamEndMs(){ return jamStartMs() + 14 * DAY_MS; }
+function dayOf(ms){ return Math.floor((ms - jamStartMs()) / DAY_MS) + 1; }   // 第几天，1 起
+function pctOf(ms){                                                          // 在 14 天里的位置%
+  return Math.min(100, Math.max(0, (ms - jamStartMs()) / (14 * DAY_MS) * 100));
+}
+
+/* Firestore Timestamp / Date / 数字 / 字符串 统一转毫秒 */
+function toMs(v){
+  if(v == null) return null;
+  if(typeof v === "number") return v;
+  if(typeof v === "string"){ const t = Date.parse(v); return isNaN(t) ? null : t; }
+  if(typeof v.toMillis === "function") return v.toMillis();
+  if(v.seconds != null) return v.seconds * 1000 + Math.floor((v.nanoseconds || 0) / 1e6);
+  if(v instanceof Date) return v.getTime();
+  return null;
+}
+function fmtDT(ms){
+  const d = new Date(ms);
+  return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
+function fmtDay(ms){
+  const d = new Date(ms);
+  return `${d.getMonth()+1}/${d.getDate()}`;
+}
+
+/* ---- 历史记录（甘特图的数据来源）----
+   每次状态变化往 history 里追加一条 {to, at}。误拖由「撤销」补救，
+   而不是靠降低记录频率——每天一个快照会把两次快照之间的变化全丢掉。 */
+function normalizeHistory(raw, fallbackAt, status){
+  const out = [];
+  if(Array.isArray(raw)){
+    for(const e of raw){
+      if(!e) continue;
+      const at = toMs(e.at);
+      const to = STATUS_IDS.includes(e.to) ? e.to : normalizeStatus(e.to);
+      if(at) out.push({ to, at });
+    }
+  }
+  out.sort((a,b) => a.at - b.at);
+  if(!out.length){
+    // 老数据没有 history：退化成"从创建时间起一直是当前状态"
+    out.push({ to: status, at: fallbackAt || Date.now() });
+  }
+  return out;
+}
+
+/* 把 history 切成甘特图上的色段：[{status, from, to}] */
+function toSegments(hist, nowMs){
+  const segs = [];
+  for(let i = 0; i < hist.length; i++){
+    const from = hist[i].at;
+    const to   = (i + 1 < hist.length) ? hist[i+1].at : nowMs;
+    segs.push({ status: hist[i].to, from, to: Math.max(to, from) });
+  }
+  return segs;
+}
+
+function shortDur(ms){
+  const h = ms / 3600000;
+  if(h < 1)   return Math.max(1, Math.round(ms/60000)) + " 分";
+  if(h < 48)  return (Math.round(h*10)/10) + " 小时";
+  return (Math.round(h/24*10)/10) + " 天";
+}
+
+/* 视图切换（三个 tab 是三个视图，不是三个独立页面）*/
+function setView(name, push){
+  const ok = ["board","timeline","team"];
+  if(!ok.includes(name)) name = "board";
+  document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
+  document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.view === name));
+  if(push !== false && location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+  if(name === "timeline") renderGantt();
+  if(name === "team")     renderTeam();
 }
 
 function startFirestore(){
@@ -400,18 +525,20 @@ function startFirestore(){
       booting = false;
       tasks = snap.docs.map(d => {
         const v = d.data() || {};
+        const status = normalizeStatus(v.status);
+        const created = toMs(v.createdAt) || toMs(v.updatedAt) || Date.now();
         return {
           id: d.id,
           title: v.title || "(未命名任务)",
           owner: v.owner || "未分配",
           priority: normalizePriority(v.priority),
           type: v.type || "Programming",
-          status: normalizeStatus(v.status),
+          status,
           desc: v.desc || v.description || "",
-          // 阻塞是标记不是列；兼容老数据里 status=blocked / 手敲中文"阻塞"
-          blocked: v.blocked === true || isBlockedWord(v.status),
           rework: Number(v.rework) || 0,
           reviewNote: v.reviewNote || "",
+          createdAt: created,
+          history: normalizeHistory(v.history, created, status),
           seq: v.order ?? 0
         };
       });
@@ -429,7 +556,16 @@ function startFirestore(){
 function fallBack(msg, err){
   live = false;
   booting = false;
-  tasks = DEMO_TASKS.map((t,i)=>({...t, id:"demo-"+i, seq:i}));
+  // 示例数据也要有 history，否则甘特图是空的
+  const t0 = jamStartMs() + DAY_MS * 0.3;
+  tasks = DEMO_TASKS.map((t,i)=>{
+    const at = t0 + i * 3600000 * 7;
+    const order = ["todo","doing","review","done"];
+    const upto  = order.indexOf(t.status);
+    const hist  = [{ to:"todo", at }];
+    for(let k=1;k<=upto;k++) hist.push({ to: order[k], at: at + k * 3600000 * 20 });
+    return { ...t, id:"demo-"+i, seq:i, createdAt:at, rework:0, reviewNote:"", history:hist };
+  });
   setSync("demo", "○ 未连接");
   const code = err ? (err.code || err.message || "") : "";
   showBanner(
@@ -445,7 +581,15 @@ function fallBack(msg, err){
 /* ============================================================
    6) 渲染
    ============================================================ */
+/* 数据一变，看板必然重画；时间轴/团队只在"正显示着"时才重画。
+   统一收口在这里，避免出现"首屏加载完了但某个视图还是空的"。 */
 function render(){
+  renderBoard();
+  if(document.getElementById("view-timeline").classList.contains("active")) renderGantt();
+  if(document.getElementById("view-team").classList.contains("active"))     renderTeam();
+}
+
+function renderBoard(){
   const q  = document.getElementById("search").value.trim().toLowerCase();
   const pf = document.getElementById("priorityFilter").value;
   const of_ = document.getElementById("ownerFilter").value;
@@ -465,7 +609,6 @@ function render(){
     if(pf !== "all") list = list.filter(t => t.priority === pf);
     if(keep !== "all") list = list.filter(t => t.owner === keep);
     if(q) list = list.filter(t => [t.title,t.owner,t.type,t.desc].join(" ").toLowerCase().includes(q));
-    if(onlyBlocked) list = list.filter(t => t.blocked);
     list.sort((a,b)=> (PRI_RANK[a.priority]-PRI_RANK[b.priority]) || String(a.title).localeCompare(String(b.title),"zh"));
 
     const col = document.createElement("div");
@@ -482,33 +625,20 @@ function render(){
     }
     list.forEach(t => {
       const c = document.createElement("div");
-      c.className = "card" + (t.blocked ? " blocked" : "");
+      c.className = "card";
       c.draggable = true;
       c.dataset.id = t.id;
-
-      let flags = "";
-      if(t.blocked)   flags += `<span class="flag blk act" data-act="unblock" title="点一下解除阻塞">阻塞</span>`;
-      if(t.rework>0)  flags += `<span class="flag rw" title="${esc(t.reviewNote || "被打回过")}">返工 ×${t.rework}</span>`;
-
       c.innerHTML =
-        `<div class="card-acts">` +
-          `<button class="cbtn warn" data-act="block" title="${t.blocked ? "解除阻塞" : "标记为阻塞"}">${t.blocked ? "✓" : "!"}</button>` +
-          `<button class="cbtn" data-act="del" title="删除任务">×</button>` +
-        `</div>` +
         `<div class="card-top"><span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
         `<span class="type">${esc(typeZh(t.type))}<i class="en">${esc(typeEn(t.type))}</i></span></div>` +
         `<h3>${esc(t.title)}</h3>` +
         (t.desc ? `<div class="card-desc">${esc(t.desc)}</div>` : "") +
         (t.reviewNote ? `<div class="card-desc note"><b>驳回：</b>${esc(t.reviewNote)}</div>` : "") +
-        (flags ? `<div class="flagbar">${flags}</div>` : "") +
+        (t.rework > 0 ? `<div class="card-desc note">返工 ×${t.rework}</div>` : "") +
         `<div class="card-foot"><span class="owner"><span class="mini-avatar">${esc(avatar(t.owner))}</span>${esc(t.owner)}</span>` +
         `<span class="tag">${esc(deadlineTag(t))}</span></div>`;
 
-      c.querySelector('[data-act="del"]').onclick     = e => { e.stopPropagation(); removeTask(t); };
-      c.querySelector('[data-act="block"]').onclick   = e => { e.stopPropagation(); toggleBlocked(t); };
-      const ub = c.querySelector('[data-act="unblock"]');
-      if(ub) ub.onclick = e => { e.stopPropagation(); toggleBlocked(t); };
-      c.onclick = () => showToast(`${t.title} · ${t.owner}`);
+      c.onclick = () => openDetail(t);
       c.addEventListener("dragstart", e => {
         c.classList.add("dragging");
         document.body.classList.add("dragging");
@@ -546,7 +676,7 @@ function updateStats(){
   const total = tasks.length;
   const done  = tasks.filter(t=>t.status==="done").length;
   const doing = tasks.filter(t=>t.status==="doing").length;
-  const blk   = tasks.filter(t=>t.blocked).length;
+  const rev   = tasks.filter(t=>t.status==="review").length;
   const pct   = total ? Math.round(done/total*100) : 0;
   document.getElementById("total").textContent = total;
   document.getElementById("priBreak").textContent =
@@ -554,55 +684,118 @@ function updateStats(){
   document.getElementById("completion").textContent = pct + "%";
   document.getElementById("progress").style.width = pct + "%";
   document.getElementById("doing").textContent = doing;
-  document.getElementById("blocked").textContent = blk;
-  renderTeam();
+  document.getElementById("reviewCnt").textContent = rev;
 }
+
+/* ============================================================
+   团队视图：每个人手上具体有哪些任务、分别停在哪一步
+   ============================================================ */
+const ROLE_HINT = { todo:"待办", doing:"进行中", review:"待验收", done:"已完成" };
 
 function renderTeam(){
   const box = document.getElementById("team");
-  const names = [...new Set([...MEMBERS, ...tasks.map(t=>t.owner)])].sort();
-  box.innerHTML = names.map(n => {
-    const mine   = tasks.filter(t=>t.owner===n);
-    const active = mine.filter(t=>["doing","review"].includes(t.status)).length;
-    const load   = Math.min(100, active*25 + mine.filter(t=>t.blocked).length*10);
-    const role   = mine.length ? [...new Set(mine.map(t=>typeZh(t.type)))].join(" / ") : "暂无任务";
-    return `<div class="member"><div class="member-top"><div class="big-avatar">${esc(avatar(n))}</div>` +
-      `<div><div class="member-name">${esc(n)}</div><div class="role">${esc(role)}</div></div></div>` +
-      `<div class="bar"><i style="width:${load}%"></i></div>` +
-      `<div class="member-meta"><span>进行中 ${active}</span><span>${load}%</span></div></div>`;
+  if(!box) return;
+
+  // 有任务的人 + 预设成员，按"在手任务数"降序，让人一眼看到谁最忙
+  const names = [...new Set([...MEMBERS, ...tasks.map(t => t.owner)])].sort();
+  const rows = names.map(n => {
+    const mine = tasks.filter(t => t.owner === n);
+    const by = st => mine.filter(t => t.status === st);
+    return { name:n, mine, doing:by("doing").length, review:by("review").length,
+             todo:by("todo").length, done:by("done").length };
+  }).sort((a,b) => (b.doing + b.review) - (a.doing + a.review) || b.mine.length - a.mine.length);
+
+  box.innerHTML = rows.map(r => {
+    const role = r.mine.length ? [...new Set(r.mine.map(t => typeZh(t.type)))].join(" / ") : "暂无任务";
+    const counts =
+      `<span class="mc doing">进行中 ${r.doing}</span>` +
+      `<span class="mc review">待验收 ${r.review}</span>` +
+      `<span class="mc">待办 ${r.todo}</span>` +
+      `<span class="mc done">已完成 ${r.done}</span>`;
+
+    const list = r.mine.length
+      ? [...r.mine].sort((a,b) =>
+          (STATUS_IDS.indexOf(a.status) - STATUS_IDS.indexOf(b.status)) ||
+          (PRI_RANK[a.priority] - PRI_RANK[b.priority]) ||
+          String(a.title).localeCompare(String(b.title), "zh")
+        ).map(t =>
+          `<div class="mtask" data-id="${esc(t.id)}">` +
+            `<span class="dot ${t.status}"></span>` +
+            `<span class="mt">${esc(t.title)}</span>` +
+            `<span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
+          `</div>`
+        ).join("")
+      : `<div class="mempty">暂无任务</div>`;
+
+    return `<div class="member">` +
+      `<div class="member-top"><div class="big-avatar">${esc(avatar(r.name))}</div>` +
+        `<div><div class="member-name">${esc(r.name)}</div><div class="role">${esc(role)}</div></div></div>` +
+      `<div class="member-counts">${counts}</div>` +
+      `<div class="member-tasks">${list}</div>` +
+    `</div>`;
   }).join("");
+
+  box.querySelectorAll(".mtask").forEach(el => {
+    el.onclick = () => {
+      const t = tasks.find(x => x.id === el.dataset.id);
+      if(t) openDetail(t);
+    };
+  });
 }
 
 /* ============================================================
    7) 写操作
    ============================================================ */
-async function moveTask(t, status){
+/* 每次状态变化追加一条历史，甘特图就是靠它画出来的。
+   误拖不靠"降低记录频率"来防（每天一个快照会丢掉两次快照之间的所有变化），
+   而是靠下面的「撤销」。 */
+function pushHistory(t, toStatus){
+  const hist = Array.isArray(t.history) ? t.history.slice() : [];
+  hist.push({ to: toStatus, at: Date.now() });
+  return hist;
+}
+
+// 记录最近一次移动，供撤销使用
+let lastMove = null;
+let undoTask = null;
+
+async function moveTask(t, status, opts){
   if(!live){
     showToast("离线演示模式：改动不会保存，请先发布 Firestore 规则", true);
     render();
     return;
   }
-  const patch = { status, updatedAt: serverTimestamp() };
+  const from = t.status;
+  const hist = pushHistory(t, status);
+  const patch = { status, history: hist.map(h => ({ to: h.to, at: new Date(h.at) })), updatedAt: serverTimestamp() };
   // 通过验收：清掉驳回原因（返工次数保留，作为历史）
   if(status === "done") patch.reviewNote = "";
+
   try{
     await updateDoc(doc(db, COLLECTION, t.id), patch);
-    showToast(`已移到「${STATUS_DEFS.find(s=>s.id===status).zh}」：${t.title}`);
+    lastMove = { id: t.id, from, to: status, prevHistory: Array.isArray(t.history) ? t.history : [] };
+    showToast(`已移到「${statusDef(status).zh}」：${t.title}`, false, true);
   }catch(e){
     console.error(e);
     showToast("移动失败：" + (e.code || e.message), true);
   }
 }
 
-/* 阻塞是标记，不是列。任何列里的卡片都能被标记/解除。 */
-async function toggleBlocked(t){
-  if(!live){ showToast("离线演示模式：改动不会保存", true); return; }
-  const next = !t.blocked;
+/* 撤销误拖：状态退回，并删掉刚追加的那条历史 */
+async function undoMove(){
+  const m = lastMove;
+  lastMove = null;
+  if(!m) return;
+  if(!live){ showToast("离线演示模式：无法撤销", true); return; }
   try{
-    await updateDoc(doc(db, COLLECTION, t.id), { blocked: next, updatedAt: serverTimestamp() });
-    showToast(next ? `已标记阻塞：${t.title}` : `已解除阻塞：${t.title}`);
+    await updateDoc(doc(db, COLLECTION, m.id), {
+      status: m.from,
+      history: m.prevHistory.map(h => ({ to: h.to, at: new Date(h.at) })),
+      updatedAt: serverTimestamp()
+    });
+    showToast("已撤销，状态退回「" + statusDef(m.from).zh + "」");
   }catch(e){
-    showToast("操作失败：" + (e.code || e.message), true);
+    showToast("撤销失败：" + (e.code || e.message), true);
   }
 }
 
@@ -626,24 +819,19 @@ async function confirmReject(){
   const note = document.getElementById("rejectNote").value.trim();
   const n = (t.rework || 0) + 1;
   closeReject();
+  const hist = pushHistory(t, targetStatus);
   try{
     await updateDoc(doc(db, COLLECTION, t.id), {
       status: targetStatus,
       rework: n,
       reviewNote: note || "验收不合格",
+      history: hist.map(h => ({ to: h.to, at: new Date(h.at) })),
       updatedAt: serverTimestamp()
     });
-    showToast(`已打回「${STATUS_DEFS.find(s=>s.id===targetStatus).zh}」· 第 ${n} 次返工：${t.title}`);
+    showToast(`已打回「${statusDef(targetStatus).zh}」· 第 ${n} 次返工：${t.title}`, false, true);
   }catch(e){
     showToast("打回失败：" + (e.code || e.message), true);
   }
-}
-
-let onlyBlocked = false;
-function toggleBlkFilter(){
-  onlyBlocked = !onlyBlocked;
-  document.getElementById("blkFilter").classList.toggle("on", onlyBlocked);
-  render();
 }
 
 async function removeTask(t){
@@ -657,7 +845,7 @@ async function removeTask(t){
   }
 }
 
-function openModal(){
+function openCreate(){
   document.getElementById("modal").style.display = "flex";
   document.getElementById("newTitle").focus();
 }
@@ -672,13 +860,16 @@ async function createTask(){
     return;
   }
 
+  const now = new Date();
+  const status = document.getElementById("newStatus").value;
   const payload = {
     title,
     owner:    document.getElementById("newOwner").value,
-    status:   document.getElementById("newStatus").value,
+    status,
     priority: document.getElementById("newPriority").value,
     type:     document.getElementById("newType").value,
     desc:     document.getElementById("newDesc").value.trim(),
+    history:  [{ to: status, at: now }],
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   };
@@ -694,44 +885,217 @@ async function createTask(){
   }
 }
 
-function showToast(msg, isErr){
-  const x = document.getElementById("toast");
-  x.textContent = msg;
-  x.className = "toast" + (isErr ? " err" : "");
-  x.style.display = "block";
-  clearTimeout(window.tt);
-  window.tt = setTimeout(()=>{ x.style.display = "none"; }, isErr ? 4200 : 1800);
+/* ============================================================
+   任务详情 / 编辑
+   ============================================================ */
+let detailId = null;
+
+function openDetail(t){
+  detailId = t.id;
+  document.getElementById("dTitle").value    = t.title;
+  document.getElementById("dOwner").value    = t.owner;
+  document.getElementById("dStatus").value   = t.status;
+  document.getElementById("dPriority").value = t.priority;
+  document.getElementById("dType").value     = t.type;
+  document.getElementById("dDesc").value     = t.desc || "";
+
+  // 阶段记录：每条显示 状态 + 时间 + 停留时长
+  const hist = Array.isArray(t.history) && t.history.length ? t.history : [{ to:t.status, at:t.createdAt }];
+  const segs = toSegments(hist, Date.now());
+  const nowMs = Date.now();
+  document.getElementById("dHist").innerHTML = hist.map((h, i) => {
+    const dur  = i === 0 ? "" : shortDur(h.at - hist[i-1].at);
+    const live = (i === hist.length - 1);
+    return `<div class="hrow">` +
+      `<span class="dot ${h.to}"></span>` +
+      `<span class="ht">${fmtDT(h.at)}</span>` +
+      `<span>进入「${statusDef(h.to).zh}」</span>` +
+      `<span class="hn">${live ? "已停留 " + shortDur(nowMs - h.at) : dur}</span>` +
+    `</div>`;
+  }).join("") + `<div class="hrow" style="color:#5d6875">` +
+      `<span class="dot" style="background:#3a4354"></span>` +
+      `<span class="ht">${fmtDT(t.createdAt)}</span><span>创建任务</span></div>`;
+
+  document.getElementById("detailModal").style.display = "flex";
 }
-window.openModal = openModal;
-window.closeModal = closeModal;
-window.createTask = createTask;
+function closeDetail(){
+  document.getElementById("detailModal").style.display = "none";
+  detailId = null;
+}
+async function saveDetail(){
+  const t = tasks.find(x => x.id === detailId);
+  if(!t) return;
+  const title = document.getElementById("dTitle").value.trim();
+  if(!title){ showToast("任务名不能为空", true); return; }
+
+  const next = {
+    owner:    document.getElementById("dOwner").value,
+    status:   document.getElementById("dStatus").value,
+    priority: document.getElementById("dPriority").value,
+    type:     document.getElementById("dType").value,
+    desc:     document.getElementById("dDesc").value.trim()
+  };
+  const patch = { ...next, updatedAt: serverTimestamp() };
+  if(next.status !== t.status){
+    patch.history = pushHistory(t, next.status).map(h => ({ to: h.to, at: new Date(h.at) }));
+    if(next.status === "done") patch.reviewNote = "";
+  }
+  try{
+    await updateDoc(doc(db, COLLECTION, t.id), patch);
+    closeDetail();
+    showToast("已保存");
+  }catch(e){
+    showToast("保存失败：" + (e.code || e.message), true);
+  }
+}
+async function deleteDetail(){
+  const t = tasks.find(x => x.id === detailId);
+  if(!t) return;
+  const id = t.id;
+  if(!confirm(`删除任务「${t.title}」？\n此操作不可撤销。`)) return;
+  closeDetail();
+  if(!live){ showToast("离线演示模式：无法删除", true); return; }
+  try{
+    await deleteDoc(doc(db, COLLECTION, id));
+    showToast("已删除：" + t.title);
+  }catch(e){
+    showToast("删除失败：" + (e.code || e.message), true);
+  }
+}
+
+/* ============================================================
+   甘特图：横轴 14 天，一行一个任务，色段 = 在某个状态里待了多久
+   ============================================================ */
+function renderGantt(){
+  const box = document.getElementById("gantt");
+  if(!box) return;
+
+  // 图例
+  document.getElementById("ganttLegend").innerHTML =
+    STATUS_DEFS.map(s => `<span><i class="g-seg ${s.id}" style="position:static;top:auto;height:11px"></i>${s.zh}</span>`).join("") +
+    `<span style="margin-left:auto">紫色竖线 = 现在</span>`;
+
+  if(!tasks.length){
+    box.innerHTML = `<div class="g-empty">还没有任务。去「看板」新建一个，拖动它就能在这里看到时间轴。</div>`;
+    return;
+  }
+
+  const now   = Date.now();
+  const today = dayOf(now);
+
+  const head = `<div class="g-head"><div class="g-name">任务 / 负责人</div><div class="g-days">` +
+    Array.from({length:14}, (_,i) => {
+      const dd = new Date(jamStartMs() + i * DAY_MS);
+      return `<div class="${i+1 === today ? "today" : ""}">第${i+1}天<br><span style="font-size:9px">${fmtDay(dd.getTime())}</span></div>`;
+    }).join("") + `</div></div>`;
+
+  // 按负责人分组，组内按状态/优先级
+  const owners = [...new Set(tasks.map(t => t.owner))].sort(
+    (a,b) => tasks.filter(x=>x.owner===b).length - tasks.filter(x=>x.owner===a).length
+  );
+
+  const rows = owners.map(owner => {
+    const mine = tasks.filter(t => t.owner === owner).sort((a,b) =>
+      (STATUS_IDS.indexOf(a.status) - STATUS_IDS.indexOf(b.status)) ||
+      (PRI_RANK[a.priority] - PRI_RANK[b.priority]) ||
+      String(a.title).localeCompare(String(b.title), "zh"));
+
+    const head2 = `<div class="g-row" style="border-top:1px solid #232b36;background:#12171f">` +
+      `<div class="g-label"><span class="mini-avatar">${esc(avatar(owner))}</span>` +
+      `<span style="font-size:12px;font-weight:700">${esc(owner)}</span>` +
+      `<span style="font-size:10px;color:#5d6875">${mine.length} 个任务</span></div>` +
+      `<div class="g-track"></div></div>`;
+
+    const body = mine.map(t => {
+      const segs = toSegments(t.history, now);
+      const bars = segs.map(sg => {
+        const l = pctOf(sg.from), r = pctOf(sg.to);
+        const w = Math.max(r - l, 0.4);
+        const tip = `${statusDef(sg.status).zh} · ${fmtDT(sg.from)} → ${fmtDT(sg.to)}（${shortDur(sg.to - sg.from)}）`;
+        return `<div class="g-seg ${sg.status}" style="left:${l}%;width:${w}%" title="${esc(tip)}"></div>`;
+      }).join("");
+      const nowLine = (now >= jamStartMs() && now <= jamEndMs())
+        ? `<div class="g-now" style="left:${pctOf(now)}%"></div>` : "";
+      return `<div class="g-row">` +
+        `<div class="g-label"><span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
+        `<span class="gt" data-id="${esc(t.id)}" title="点开详情">${esc(t.title)}</span></div>` +
+        `<div class="g-track">${bars}${nowLine}</div></div>`;
+    }).join("");
+
+    return head2 + body;
+  }).join("");
+
+  box.innerHTML = `<div class="g-inner">${head}${rows}</div>` +
+    `<div class="g-note">色段数据来自看板上的拖动记录。<b>误拖了？</b>回到看板点提示里的「撤销」即可，` +
+    `不会在时间轴上留下痕迹。</div>`;
+
+  box.querySelectorAll(".gt").forEach(el => {
+    el.onclick = () => {
+      const t = tasks.find(x => x.id === el.dataset.id);
+      if(t) openDetail(t);
+    };
+  });
+}
+
+/* ============================================================
+   Toast（带「撤销」）
+   ============================================================ */
+function showToast(msg, isErr, undoable){
+  const x = document.getElementById("toast");
+  document.getElementById("toastMsg").textContent = msg;
+  x.className = "toast" + (isErr ? " err" : "") + (undoable ? " undoable" : "");
+  x.classList.add("show");
+  clearTimeout(window.tt);
+  window.tt = setTimeout(() => {
+    x.classList.remove("show");
+    if(undoable) lastMove = null;   // 过了撤销窗口就作废
+  }, undoable ? 6000 : (isErr ? 4200 : 1800));
+}
+
+window.openCreate   = openCreate;
+window.closeModal   = closeModal;
+window.createTask   = createTask;
 window.retryConnect = retryConnect;
-window.jump = jump;
-window.toggleBlkFilter = toggleBlkFilter;
-window.closeReject = closeReject;
-window.confirmReject = confirmReject;
-window.render = render;
+window.setView      = setView;
+window.closeReject  = closeReject;
+window.confirmReject= confirmReject;
+window.undoMove     = undoMove;
+window.openDetail   = openDetail;
+window.closeDetail  = closeDetail;
+window.saveDetail   = saveDetail;
+window.deleteDetail = deleteDetail;
+window.renderGantt  = renderGantt;
+window.render       = render;
 
 /* ============================================================
    8) 启动
    ============================================================ */
 (function boot(){
   document.getElementById("dayNum").textContent = jamDay();
-  // 14 天时间轴
-  const days = document.getElementById("days");
-  const today = typeof jamDay() === "number" ? jamDay() : -1;
-  for(let i=1;i<=14;i++){
-    const d = document.createElement("div");
-    d.className = "day" + (i===today ? " today" : "");
-    d.textContent = "第 " + i + " 天";
-    days.appendChild(d);
-  }
-  // 新任务弹窗下拉
-  document.getElementById("newOwner").innerHTML  = MEMBERS.map(m=>`<option>${esc(m)}</option>`).join("");
-  document.getElementById("newStatus").innerHTML = STATUS_DEFS.map(s=>`<option value="${s.id}">${s.zh} · ${s.en}</option>`).join("");
-  document.getElementById("newType").innerHTML   = TYPE_DEFS.map(t=>`<option value="${t.value}">${t.zh} · ${t.en}</option>`).join("");
+
+  // 弹窗下拉
+  const ownerOpts = MEMBERS.map(m => `<option>${esc(m)}</option>`).join("");
+  const statusOpts = STATUS_DEFS.map(s => `<option value="${s.id}">${s.zh} · ${s.en}</option>`).join("");
+  const typeOpts   = TYPE_DEFS.map(t => `<option value="${t.value}">${t.zh} · ${t.en}</option>`).join("");
+  ["newOwner","dOwner"].forEach(id => document.getElementById(id).innerHTML = ownerOpts);
+  ["newStatus","dStatus"].forEach(id => document.getElementById(id).innerHTML = statusOpts);
+  ["newType","dType"].forEach(id => document.getElementById(id).innerHTML = typeOpts);
 
   render();  // 先画出骨架，别让首屏空着
+
+  // 按 URL 的 #hash 决定打开哪个视图（方便直接把"时间轴"链接发给别人）
+  setView((location.hash || "#board").slice(1));
+  window.addEventListener("hashchange", () => setView((location.hash || "#board").slice(1), false));
+
+  // Esc 关闭弹窗
+  document.addEventListener("keydown", e => {
+    if(e.key !== "Escape") return;
+    ["modal","detailModal","rejectModal"].forEach(id => {
+      const el = document.getElementById(id);
+      if(el.style.display === "flex") el.style.display = "none";
+    });
+    detailId = null; rejectCtx = null;
+  });
 
   // 8 秒还没等到响应就给个提示
   setTimeout(() => {
