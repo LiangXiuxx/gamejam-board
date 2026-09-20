@@ -1,0 +1,52 @@
+rules_version = '2';
+
+// ============================================================
+// GameJam Board —— Firestore 安全规则
+// 目标：5 人小队，打开网页就能读写，不折腾登录。
+// 代价：知道网址的人都能改数据。给队友的链接不要外发。
+// ============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /tasks/{taskId} {
+      // 任何人都能读（页面要实时同步）
+      allow read: if true;
+
+      // 写入必须是一条"形状正确"的任务，防止有人乱塞字段撑爆数据库
+      allow create, update: if isValidTask();
+
+      // 允许删除（卡片上的 × 按钮）。想禁掉就改成 false。
+      allow delete: if true;
+    }
+
+    // 其它集合一律拒绝
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+
+  function isValidTask() {
+    let d = request.resource.data;
+    return d.title is string
+        && d.title.size() > 0
+        && d.title.size() <= 200
+        && (d.status == null || (d.status is string && d.status.size() <= 40))
+        && (d.priority == null || (d.priority is string && d.priority.size() <= 10))
+        && (d.owner == null || (d.owner is string && d.owner.size() <= 80))
+        && (d.type == null || (d.type is string && d.type.size() <= 40))
+        && (d.desc == null || (d.desc is string && d.desc.size() <= 2000));
+  }
+}
+
+// ============================================================
+// 【更安全的选择】如果不想让陌生人写数据：
+// 1) Firebase 控制台 → Authentication → Sign-in method → 启用「匿名」
+// 2) 把上面的 allow 换成下面这版（读也要求登录）
+// 3) 页面里加一句匿名登录：
+//    import { getAuth, signInAnonymously } from ".../firebase-auth.js";
+//    await signInAnonymously(getAuth());
+//
+//    allow read, write: if request.auth != null;
+//
+// 再进一步（真正防刷）：开启 App Check，把未验证的请求挡掉。
+// ============================================================
