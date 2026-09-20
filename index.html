@@ -91,6 +91,10 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 .member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
 .bar{height:5px;background:#252c36;border-radius:5px;margin-top:11px;overflow:hidden}.bar i{height:100%;display:block;background:var(--blue);transition:width .3s}
 .member-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+.sub{display:block;font-size:9.5px;color:#5d6875;font-weight:500;letter-spacing:.5px;margin-top:2px}
+i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-left:4px}
+.ms{flex-direction:column;gap:0;line-height:1.25}
+.ms em{font-style:normal;font-size:8.5px;opacity:.6;letter-spacing:.3px}
 .banner{display:none;margin:0 0 16px;padding:12px 14px;border-radius:9px;background:#3a2026;border:1px solid #6b2f3a;color:#ffd9df;font-size:12.5px;line-height:1.6;align-items:center;gap:12px;flex-wrap:wrap}
 .banner.show{display:flex}
 .banner b{color:#ff9aa5}
@@ -112,11 +116,11 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 <header>
   <div class="logo">JAM<span>BOARD</span></div>
   <div class="nav">
-    <button class="active">Board</button><button>Timeline</button><button>Team</button>
+    <button class="active">看板</button><button>时间轴</button><button>团队</button>
   </div>
   <div class="header-right">
     <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
-    <span class="badge">DAY <span id="dayNum">–</span> / 14</span>
+    <span class="badge">第 <span id="dayNum">–</span> / 14 天</span>
     <div class="avatar">PM</div>
   </div>
 </header>
@@ -128,23 +132,25 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
   </div>
 
   <div class="top">
-    <div><h1>Project Nebula</h1><div class="subtitle">2 Week GameJam · 5 Members · Vertical Slice → Feature Complete</div></div>
+    <div>
+      <h1>星云计划</h1>
+      <div class="subtitle">2 周 Game Jam · 5 人小队 · 从垂直切片到功能完整</div>
+    </div>
     <div class="actions">
-      <button class="btn" id="seedBtn" onclick="seedDemo()" disabled>写入示例任务</button>
-      <button class="btn primary" onclick="openModal()">＋ New Task</button>
+      <button class="btn primary" onclick="openModal()">＋ 新建任务</button>
     </div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="stat-label">TOTAL TASKS</div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
-    <div class="stat"><div class="stat-label">COMPLETION</div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
-    <div class="stat"><div class="stat-label">IN PROGRESS</div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP limit: 5</div></div>
-    <div class="stat"><div class="stat-label">BLOCKED</div><div class="stat-value" id="blocked">0</div><div class="stat-note">Needs PM attention</div></div>
-    <div class="stat"><div class="stat-label">NEXT MILESTONE</div><div class="stat-value" style="font-size:20px">Day 7</div><div class="stat-note">Feature Freeze</div></div>
+    <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
+    <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
+    <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
+    <div class="stat"><div class="stat-label">阻塞<span class="sub">BLOCKED</span></div><div class="stat-value" id="blocked">0</div><div class="stat-note">需要 PM 介入</div></div>
+    <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px">第 7 天</div><div class="stat-note">功能冻结</div></div>
   </div>
 
   <div class="toolbar">
-    <input class="search" id="search" placeholder="搜索任务、负责人、标签..." oninput="render()">
+    <input class="search" id="search" placeholder="搜索任务、负责人、标签…" oninput="render()">
     <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
     <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
   </div>
@@ -152,23 +158,23 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
   <div class="board-wrap"><div class="board" id="board"></div></div>
 
   <section class="section">
-    <div class="section-head"><div><h2>14-Day Milestones</h2><div class="section-sub">PM 用于判断项目是否偏离关键节点</div></div></div>
+    <div class="section-head"><div><h2>14 天里程碑<span class="sub">14-DAY MILESTONES</span></h2><div class="section-sub">用来判断项目有没有偏离关键节点</div></div></div>
     <div class="timeline">
       <div class="days" id="days"></div>
       <div class="milestone">
-        <div class="ms major" style="grid-column:1/3">Core Idea</div>
-        <div class="ms major" style="grid-column:3/5">Prototype</div>
-        <div class="ms major" style="grid-column:5/8">Vertical Slice</div>
-        <div class="ms warn" style="grid-column:8/9">FREEZE</div>
-        <div class="ms" style="grid-column:9/12">Content</div>
-        <div class="ms" style="grid-column:12/14">Polish</div>
-        <div class="ms major" style="grid-column:14/15">FINAL</div>
+        <div class="ms major" style="grid-column:1/3"><b>核心玩法</b><em>CORE IDEA</em></div>
+        <div class="ms major" style="grid-column:3/5"><b>可玩原型</b><em>PROTOTYPE</em></div>
+        <div class="ms major" style="grid-column:5/8"><b>垂直切片</b><em>VERTICAL SLICE</em></div>
+        <div class="ms warn" style="grid-column:8/9"><b>冻结</b><em>FREEZE</em></div>
+        <div class="ms" style="grid-column:9/12"><b>内容填充</b><em>CONTENT</em></div>
+        <div class="ms" style="grid-column:12/14"><b>打磨</b><em>POLISH</em></div>
+        <div class="ms major" style="grid-column:14/15"><b>提交</b><em>FINAL</em></div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="section-head"><div><h2>Team Workload</h2><div class="section-sub">WIP 太高时，PM 应该优先帮忙拆任务或解决阻塞</div></div></div>
+    <div class="section-head"><div><h2>团队负载<span class="sub">TEAM WORKLOAD</span></h2><div class="section-sub">WIP 偏高时，PM 优先帮忙拆任务或解决阻塞</div></div></div>
     <div class="team" id="team"></div>
   </section>
 </main>
@@ -176,13 +182,13 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 
 <div class="overlay" id="modal">
   <div class="modal">
-    <h2>创建任务</h2>
+    <h2>新建任务</h2>
     <div class="form">
       <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
       <label>负责人<select id="newOwner"></select></label>
       <label>初始状态<select id="newStatus"></select></label>
       <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="newType"><option>Programming</option><option>Art</option><option>Design</option><option>Production</option></select></label>
+      <label>类型<select id="newType"></select></label>
       <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
     <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
@@ -194,7 +200,7 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
   getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc,
-  doc, writeBatch, serverTimestamp, query, orderBy
+  doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 /* ============================================================
@@ -214,18 +220,27 @@ const JAM_START  = "2026-09-16"; // ← 开赛日期（用来算 DAY n），不�
 const MEMBERS    = ["程序 A","程序 B","美术","PM A","PM B"]; // 新任务下拉里的候选人
 
 /* ============================================================
-   2) 状态列 & 别名映射（兼容中英文 / 大小写）
+   2) 状态列 & 类型 & 别名映射（兼容中英文 / 大小写）
+   ------------------------------------------------------------
+   入库统一写英文标识符，界面显示用中文，英文作为小字副标题。
    ============================================================ */
 const STATUS_DEFS = [
-  {id:"backlog", title:"Backlog", sub:"待规划", aliases:["backlog","待规划","待办","未规划","想法"]},
-  {id:"ready",   title:"Ready",   sub:"待开始", aliases:["ready","todo","待开始","就绪"]},
-  {id:"doing",   title:"Doing",   sub:"进行中", aliases:["doing","in progress","inprogress","wip","进行中","开发中"]},
-  {id:"review",  title:"Review",  sub:"待验收", aliases:["review","待验收","评审中"]},
-  {id:"testing", title:"Testing", sub:"测试中", aliases:["testing","test","qa","测试中"]},
-  {id:"blocked", title:"Blocked", sub:"阻塞",   aliases:["blocked","阻塞","卡住","被阻塞"]},
-  {id:"done",    title:"Done",    sub:"已完成", aliases:["done","已完成","完成","closed"]}
+  {id:"backlog", zh:"待规划", en:"BACKLOG", aliases:["backlog","待规划","待办","未规划","想法"]},
+  {id:"ready",   zh:"待开始", en:"READY",   aliases:["ready","todo","待开始","就绪"]},
+  {id:"doing",   zh:"进行中", en:"DOING",   aliases:["doing","in progress","inprogress","wip","进行中","开发中"]},
+  {id:"review",  zh:"待验收", en:"REVIEW",  aliases:["review","待验收","评审中"]},
+  {id:"testing", zh:"测试中", en:"TESTING", aliases:["testing","test","qa","测试中"]},
+  {id:"blocked", zh:"阻塞",   en:"BLOCKED", aliases:["blocked","阻塞","卡住","被阻塞"]},
+  {id:"done",    zh:"已完成", en:"DONE",    aliases:["done","已完成","完成","closed"]}
 ];
-const STATUS_ORDER = STATUS_DEFS.map(s=>s.id);
+
+// 入库值 -> [中文, 英文]
+const TYPE_DEFS = [
+  {value:"Programming", zh:"程序", en:"Programming"},
+  {value:"Art",         zh:"美术", en:"Art"},
+  {value:"Design",      zh:"策划", en:"Design"},
+  {value:"Production",  zh:"制作", en:"Production"}
+];
 
 function normalizeStatus(raw){
   const s = String(raw==null?"":raw).trim().toLowerCase();
@@ -235,6 +250,16 @@ function normalizeStatus(raw){
 function normalizePriority(raw){
   const s = String(raw==null?"":raw).trim().toUpperCase();
   return ["P0","P1","P2"].includes(s) ? s : "P2";
+}
+function typeZh(raw){
+  const v = String(raw==null?"":raw).trim();
+  const hit = TYPE_DEFS.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
+  return hit ? hit.zh : (v || "未分类");
+}
+function typeEn(raw){
+  const v = String(raw==null?"":raw).trim();
+  const hit = TYPE_DEFS.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
+  return hit ? hit.en : v;
 }
 
 /* ============================================================
@@ -294,7 +319,7 @@ function jamDay(){
 }
 function deadlineTag(t){
   if(t.status==="blocked") return "需处理";
-  return "Day " + (t.priority==="P0" ? 5 : 8);
+  return "第 " + (t.priority==="P0" ? 5 : 8) + " 天";
 }
 
 /* ============================================================
@@ -338,7 +363,6 @@ function startFirestore(){
       });
       setSync("live", "● 已同步");
       hideBanner();
-      document.getElementById("seedBtn").disabled = tasks.length > 0;
       render();
     },
     err => {
@@ -353,7 +377,6 @@ function fallBack(msg, err){
   booting = false;
   tasks = DEMO_TASKS.map((t,i)=>({...t, id:"demo-"+i, seq:i}));
   setSync("demo", "○ 未连接");
-  document.getElementById("seedBtn").disabled = true;
   const code = err ? (err.code || err.message || "") : "";
   showBanner(
     `<b>未连接 Firestore</b> · 当前是离线演示模式，下面显示的是内置示例数据，` +
@@ -393,8 +416,7 @@ function render(){
     const col = document.createElement("div");
     col.className = "column";
     col.innerHTML =
-      `<div class="col-head"><div><div class="col-title">${def.title}</div>` +
-      `<div style="font-size:10px;color:#697586">${def.sub}</div></div>` +
+      `<div class="col-head"><div><div class="col-title">${def.zh}<span class="sub">${def.en}</span></div></div>` +
       `<span class="count">${list.length}</span></div><div class="cards"></div>`;
     const cards = col.querySelector(".cards");
 
@@ -411,7 +433,7 @@ function render(){
       c.innerHTML =
         `<button class="del" title="删除任务">×</button>` +
         `<div class="card-top"><span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
-        `<span class="type">${esc(t.type)}</span></div>` +
+        `<span class="type">${esc(typeZh(t.type))}<i class="en">${esc(typeEn(t.type))}</i></span></div>` +
         `<h3>${esc(t.title)}</h3>` +
         (t.desc ? `<div class="card-desc">${esc(t.desc)}</div>` : "") +
         `<div class="card-foot"><span class="owner"><span class="mini-avatar">${esc(avatar(t.owner))}</span>${esc(t.owner)}</span>` +
@@ -466,11 +488,11 @@ function renderTeam(){
     const mine   = tasks.filter(t=>t.owner===n);
     const active = mine.filter(t=>["doing","review","testing"].includes(t.status)).length;
     const load   = Math.min(100, active*25 + mine.filter(t=>t.status==="blocked").length*10);
-    const role   = mine.length ? [...new Set(mine.map(t=>t.type))].join(" / ") : "暂无任务";
+    const role   = mine.length ? [...new Set(mine.map(t=>typeZh(t.type)))].join(" / ") : "暂无任务";
     return `<div class="member"><div class="member-top"><div class="big-avatar">${esc(avatar(n))}</div>` +
       `<div><div class="member-name">${esc(n)}</div><div class="role">${esc(role)}</div></div></div>` +
       `<div class="bar"><i style="width:${load}%"></i></div>` +
-      `<div class="member-meta"><span>${active} active</span><span>${load}%</span></div></div>`;
+      `<div class="member-meta"><span>进行中 ${active}</span><span>${load}%</span></div></div>`;
   }).join("");
 }
 
@@ -485,7 +507,7 @@ async function moveTask(t, status){
   }
   try{
     await updateDoc(doc(db, COLLECTION, t.id), { status, updatedAt: serverTimestamp() });
-    showToast(`已移动到 ${STATUS_DEFS.find(s=>s.id===status).title}：${t.title}`);
+    showToast(`已移到「${STATUS_DEFS.find(s=>s.id===status).zh}」：${t.title}`);
   }catch(e){
     console.error(e);
     showToast("移动失败：" + (e.code || e.message), true);
@@ -540,23 +562,6 @@ async function createTask(){
   }
 }
 
-async function seedDemo(){
-  if(!live){ showToast("未连接 Firestore，无法写入", true); return; }
-  if(!confirm(`把 ${DEMO_TASKS.length} 条示例任务写入 Firestore 的「${COLLECTION}」集合？`)) return;
-  const b = writeBatch(db);
-  DEMO_TASKS.forEach((t,i) => {
-    b.set(doc(collection(db, COLLECTION)), {
-      ...t, order: i, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-    });
-  });
-  try{
-    await b.commit();
-    showToast("示例任务已写入");
-  }catch(e){
-    showToast("写入失败：" + (e.code || e.message), true);
-  }
-}
-
 function showToast(msg, isErr){
   const x = document.getElementById("toast");
   x.textContent = msg;
@@ -568,7 +573,6 @@ function showToast(msg, isErr){
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.createTask = createTask;
-window.seedDemo = seedDemo;
 window.retryConnect = retryConnect;
 window.render = render;
 
@@ -583,12 +587,13 @@ window.render = render;
   for(let i=1;i<=14;i++){
     const d = document.createElement("div");
     d.className = "day" + (i===today ? " today" : "");
-    d.textContent = "DAY " + i;
+    d.textContent = "第 " + i + " 天";
     days.appendChild(d);
   }
   // 新任务弹窗下拉
   document.getElementById("newOwner").innerHTML  = MEMBERS.map(m=>`<option>${esc(m)}</option>`).join("");
-  document.getElementById("newStatus").innerHTML = STATUS_DEFS.map(s=>`<option value="${s.id}">${s.title} · ${s.sub}</option>`).join("");
+  document.getElementById("newStatus").innerHTML = STATUS_DEFS.map(s=>`<option value="${s.id}">${s.zh} · ${s.en}</option>`).join("");
+  document.getElementById("newType").innerHTML   = TYPE_DEFS.map(t=>`<option value="${t.value}">${t.zh} · ${t.en}</option>`).join("");
 
   render();  // 先画出骨架，别让首屏空着
 
