@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="EUHqycznH1dHNs3hFEc5WZ">
-<head data-page-node-id="Lrak284MG2RNfp6fAYcMPy">
-<meta charset="UTF-8" data-page-node-id="nZuQzpuUE5SMLIMbRitJxb">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="sXjZ7F1REbq1J3zTnz9VUZ">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GameJam Production Board</title>
 <style>
 :root{
@@ -91,8 +91,13 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 .member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
 .bar{height:5px;background:#252c36;border-radius:5px;margin-top:11px;overflow:hidden}.bar i{height:100%;display:block;background:var(--blue);transition:width .3s}
 .member-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
-.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center}
-.modal{width:min(520px,92vw);background:#131922;border:1px solid #303a49;border-radius:12px;padding:20px;box-shadow:0 20px 80px #000;max-height:90vh;overflow:auto}
+.banner{display:none;margin:0 0 16px;padding:12px 14px;border-radius:9px;background:#3a2026;border:1px solid #6b2f3a;color:#ffd9df;font-size:12.5px;line-height:1.6;align-items:center;gap:12px;flex-wrap:wrap}
+.banner.show{display:flex}
+.banner b{color:#ff9aa5}
+.banner code{background:#2a161b;padding:1px 6px;border-radius:4px;color:#ffc9d1;font-size:11.5px}
+.banner .btn{padding:6px 11px;font-size:12px;margin-left:auto;flex:0 0 auto}
+.banner .btn.go{background:#7c6cff;border-color:#7c6cff;color:#fff}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center}.modal{width:min(520px,92vw);background:#131922;border:1px solid #303a49;border-radius:12px;padding:20px;box-shadow:0 20px 80px #000;max-height:90vh;overflow:auto}
 .modal h2{margin:0 0 15px}.form{display:grid;gap:10px}.form label{font-size:11px;color:var(--muted);display:block}
 .form input,.form select,.form textarea{width:100%;margin-top:5px;background:#0e131a;border:1px solid var(--line);color:white;padding:9px;border-radius:6px;outline:none;font-family:inherit}
 .form textarea{resize:vertical;min-height:52px}
@@ -102,83 +107,88 @@ select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);paddin
 @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr 1fr}header{padding:0 12px}.nav{display:none}main{padding:16px 12px}}
 </style>
 </head>
-<body data-page-node-id="FW7p95yrL9Zomv3zBqCVFq">
-<div class="app" data-page-node-id="3TBnfz4VZ9q4H7IruOvQGg">
-<header data-page-node-id="qqapLvLGpuMAbf0ktR2rP5">
-  <div class="logo" data-page-node-id="5jKNvqX4PZVv8goXWPUq9z">JAM<span data-page-node-id="280Asi0Uita8KeWPlrCVu1">BOARD</span></div>
-  <div class="nav" data-page-node-id="iwmGAf5UqyyF7FWBEZeUIE">
-    <button class="active" data-page-node-id="sfLklwzRAGjqou7WDOHBjQ">Board</button><button data-page-node-id="FaAvmtvBpkwlV1hpaAgGN3">Timeline</button><button data-page-node-id="9AJ2VR3rFQ4AMvRU7GlnFl">Team</button>
+<body>
+<div class="app">
+<header>
+  <div class="logo">JAM<span>BOARD</span></div>
+  <div class="nav">
+    <button class="active">Board</button><button>Timeline</button><button>Team</button>
   </div>
-  <div class="header-right" data-page-node-id="vD9xAhAaBHLeQuaUZrbHTc">
-    <span class="badge sync-wait" id="syncBadge" data-page-node-id="9eT0oOOvpKRyEF6ECZCDSf">● 连接中…</span>
-    <span class="badge" data-page-node-id="qu1qc0Ea73GIbPNsLwnV5i">DAY <span id="dayNum" data-page-node-id="cZsIYGPwTXJpuxrn69Ctja">–</span> / 14</span>
-    <div class="avatar" data-page-node-id="cwi4fbnzmeRBttQ3wzKD7I">PM</div>
+  <div class="header-right">
+    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
+    <span class="badge">DAY <span id="dayNum">–</span> / 14</span>
+    <div class="avatar">PM</div>
   </div>
 </header>
 
-<main data-page-node-id="IKxBle1TeBPlDfd4pHVEzA">
-  <div class="top" data-page-node-id="yn6Rhco1kcJ2zB3G1cqcir">
-    <div data-page-node-id="E2Y6aPcbU5PykrAbLfcU2Q"><h1 data-page-node-id="OyW3a1yk2Qwzp2IfreY2CC">Project Nebula</h1><div class="subtitle" data-page-node-id="0RQw5k8ekj39FrlpZ3ps74">2 Week GameJam · 5 Members · Vertical Slice → Feature Complete</div></div>
-    <div class="actions" data-page-node-id="jM0nNBMI86rnwbbmlf5AFA">
-      <button class="btn" id="seedBtn" onclick="seedDemo()" disabled data-page-node-id="xLddOIjuxqbe4bB2aNWgH5">写入示例任务</button>
-      <button class="btn primary" onclick="openModal()" data-page-node-id="mOb5t1h0IvCjG93UeL3FVc">＋ New Task</button>
+<main>
+  <div class="banner" id="banner">
+    <span id="bannerMsg"></span>
+    <button class="btn go" onclick="retryConnect()">重试连接</button>
+  </div>
+
+  <div class="top">
+    <div><h1>Project Nebula</h1><div class="subtitle">2 Week GameJam · 5 Members · Vertical Slice → Feature Complete</div></div>
+    <div class="actions">
+      <button class="btn" id="seedBtn" onclick="seedDemo()" disabled>写入示例任务</button>
+      <button class="btn primary" onclick="openModal()">＋ New Task</button>
     </div>
   </div>
 
-  <div class="stats" data-page-node-id="pH4BWAS5QFwUEBibKYs4Ru">
-    <div class="stat" data-page-node-id="A5CvACRUU4ytnbjH5THKjO"><div class="stat-label" data-page-node-id="iTqRLyfZeAtvWq8OiWEbKC">TOTAL TASKS</div><div class="stat-value" id="total" data-page-node-id="ErMatrYfWsyMxRiMTlCpBa">0</div><div class="stat-note" id="priBreak" data-page-node-id="9aTPKdMC2CwDHS7qMumf6m">P0 0 · P1 0 · P2 0</div></div>
-    <div class="stat" data-page-node-id="ovdmOwXDQLxvEtyCqagCla"><div class="stat-label" data-page-node-id="h425fjzjNkvxx2g7EXfjzN">COMPLETION</div><div class="stat-value" id="completion" data-page-node-id="dxBFXVXu0znraLTdGi5vdc">0%</div><div class="progress" data-page-node-id="qDo7t8b4n6cNX8GVV2H2Dv"><i id="progress" style="width:0%" data-page-node-id="9u7jQTIBpgsqijD6oig2GZ"></i></div></div>
-    <div class="stat" data-page-node-id="9BNkcBTkvamDPvrjttLfFw"><div class="stat-label" data-page-node-id="SLA3tjH4K4kuDQPILDAtVC">IN PROGRESS</div><div class="stat-value" id="doing" data-page-node-id="8FxDeoJJvjRae1c5yhp0NQ">0</div><div class="stat-note" data-page-node-id="pY5KSqOBjXZqZEbZnD6ncO">WIP limit: 5</div></div>
-    <div class="stat" data-page-node-id="f48b8F1TzrlQy4ZZ89kOhD"><div class="stat-label" data-page-node-id="eMB1UgVECOFVdU7d763yS6">BLOCKED</div><div class="stat-value" id="blocked" data-page-node-id="Avm1kDtuKgpX7cdRC4byEF">0</div><div class="stat-note" data-page-node-id="OlsgasbxvZde1FmexddVyj">Needs PM attention</div></div>
-    <div class="stat" data-page-node-id="dvRIONfhx66YK4avr3kqR4"><div class="stat-label" data-page-node-id="rCwFpevjtnNJxpBZMVxDFU">NEXT MILESTONE</div><div class="stat-value" style="font-size:20px" data-page-node-id="1WD3Ru8WT6MKtzMtuw9j7l">Day 7</div><div class="stat-note" data-page-node-id="Rtn8wVLP7mQKaE3jtjHP8S">Feature Freeze</div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">TOTAL TASKS</div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
+    <div class="stat"><div class="stat-label">COMPLETION</div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
+    <div class="stat"><div class="stat-label">IN PROGRESS</div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP limit: 5</div></div>
+    <div class="stat"><div class="stat-label">BLOCKED</div><div class="stat-value" id="blocked">0</div><div class="stat-note">Needs PM attention</div></div>
+    <div class="stat"><div class="stat-label">NEXT MILESTONE</div><div class="stat-value" style="font-size:20px">Day 7</div><div class="stat-note">Feature Freeze</div></div>
   </div>
 
-  <div class="toolbar" data-page-node-id="7bv2ixxku0JYxVIJTuswHA">
-    <input class="search" id="search" placeholder="搜索任务、负责人、标签..." oninput="render()" data-page-node-id="2nQmQGbpStflRHhsD8Kld7">
-    <select id="priorityFilter" onchange="render()" data-page-node-id="QzVzvuADMvgZUqWIDGUhu0"><option value="all" data-page-node-id="jiYPxG4xIx4yQl3oWvTENF">全部优先级</option><option data-page-node-id="Cw6ksQSRitPdw5cFOP8AYC">P0</option><option data-page-node-id="fTgfSTGwmcO5hBfMGzjgkh">P1</option><option data-page-node-id="eXsGuydbcCAfUVMgJZqu8v">P2</option></select>
-    <select id="ownerFilter" onchange="render()" data-page-node-id="vE3b8VxxVaw6FghQcr3xDN"><option value="all" data-page-node-id="AyWfJIbQ5gxS6yNPr2VWAn">全部成员</option></select>
+  <div class="toolbar">
+    <input class="search" id="search" placeholder="搜索任务、负责人、标签..." oninput="render()">
+    <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
+    <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
   </div>
 
-  <div class="board-wrap" data-page-node-id="Mn2zvGq9lzA3HUzmG0GAQR"><div class="board" id="board" data-page-node-id="oEz89DGhaqWCNCQtY9wh6S"></div></div>
+  <div class="board-wrap"><div class="board" id="board"></div></div>
 
-  <section class="section" data-page-node-id="EedCUQH1pQFGZLaCE0M8QA">
-    <div class="section-head" data-page-node-id="eYDStNEtAW8qFFhAAxwsBE"><div data-page-node-id="X76MXJMd8s1sCRBAs0jWmA"><h2 data-page-node-id="HUYwC9wsiE3aPz6MR23AVE">14-Day Milestones</h2><div class="section-sub" data-page-node-id="PB2GiXT1LNX6CnQ1eFwdDu">PM 用于判断项目是否偏离关键节点</div></div></div>
-    <div class="timeline" data-page-node-id="VeTyXxu6DAc1pdLArZ75JM">
-      <div class="days" id="days" data-page-node-id="354cGhsuZE02BFEk6bkaWg"></div>
-      <div class="milestone" data-page-node-id="svavZwuqfnOZ3AKE9qhSwp">
-        <div class="ms major" style="grid-column:1/3" data-page-node-id="Xwn5TY2HvQcr2SdNasS1Y3">Core Idea</div>
-        <div class="ms major" style="grid-column:3/5" data-page-node-id="svIJ85ieqOFO0DBryThjiU">Prototype</div>
-        <div class="ms major" style="grid-column:5/8" data-page-node-id="oCw8KrBZY3MC5ae8QpRXnv">Vertical Slice</div>
-        <div class="ms warn" style="grid-column:8/9" data-page-node-id="P3mInA1KHmmKW5EbNDgMdL">FREEZE</div>
-        <div class="ms" style="grid-column:9/12" data-page-node-id="6Qixw798M4kDsf38q3DhYM">Content</div>
-        <div class="ms" style="grid-column:12/14" data-page-node-id="37JFWxGK129yufiB6GdwtY">Polish</div>
-        <div class="ms major" style="grid-column:14/15" data-page-node-id="gz3EZUHWZ23IycFXzLm7Lw">FINAL</div>
+  <section class="section">
+    <div class="section-head"><div><h2>14-Day Milestones</h2><div class="section-sub">PM 用于判断项目是否偏离关键节点</div></div></div>
+    <div class="timeline">
+      <div class="days" id="days"></div>
+      <div class="milestone">
+        <div class="ms major" style="grid-column:1/3">Core Idea</div>
+        <div class="ms major" style="grid-column:3/5">Prototype</div>
+        <div class="ms major" style="grid-column:5/8">Vertical Slice</div>
+        <div class="ms warn" style="grid-column:8/9">FREEZE</div>
+        <div class="ms" style="grid-column:9/12">Content</div>
+        <div class="ms" style="grid-column:12/14">Polish</div>
+        <div class="ms major" style="grid-column:14/15">FINAL</div>
       </div>
     </div>
   </section>
 
-  <section class="section" data-page-node-id="X3vOKvwwRBhKuPdBkKD4dr">
-    <div class="section-head" data-page-node-id="0Uo431ePgBJdAhilLZBMVm"><div data-page-node-id="liSesq8WqGDLqcSFn6BP2b"><h2 data-page-node-id="8PEqQ6zghTa3mP65RcJzCj">Team Workload</h2><div class="section-sub" data-page-node-id="QBNenqeK23GGBBvg9mwqaO">WIP 太高时，PM 应该优先帮忙拆任务或解决阻塞</div></div></div>
-    <div class="team" id="team" data-page-node-id="FcGAH68P3FO9BT7gmzdbvB"></div>
+  <section class="section">
+    <div class="section-head"><div><h2>Team Workload</h2><div class="section-sub">WIP 太高时，PM 应该优先帮忙拆任务或解决阻塞</div></div></div>
+    <div class="team" id="team"></div>
   </section>
 </main>
 </div>
 
-<div class="overlay" id="modal" data-page-node-id="DZIfmgEIKZ61AKQk3PiYRN">
-  <div class="modal" data-page-node-id="75KNEuYlXcEmHUqhRzmj2u">
-    <h2 data-page-node-id="bk5c3Rp49wTyxxFlXr6yMe">创建任务</h2>
-    <div class="form" data-page-node-id="PmoGGxC3xZhBGm28brxF0X">
-      <label data-page-node-id="e1ZbeMlX0RxEXLFdDvARLh">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="XOI5aRf5TbCgm2EaD1SRB1"></label>
-      <label data-page-node-id="sjbSB5DzjECY159gXUuft2">负责人<select id="newOwner" data-page-node-id="gjhv8G95xfVaCh5ALLs4O7"></select></label>
-      <label data-page-node-id="yZGQFqSqx1z0E3rzgjA1KH">初始状态<select id="newStatus" data-page-node-id="m2iH6nBXpGwkrDam8JEcKs"></select></label>
-      <label data-page-node-id="1j1P5GXRzTxu7Cl3KaVnyi">优先级<select id="newPriority" data-page-node-id="Zl3kLsb8AU61uRExC6BuWo"><option data-page-node-id="GnN8kkoEbRQEmbjRI7NH2E">P0</option><option data-page-node-id="WLPwlEp0FifucTmEhTXc7D">P1</option><option data-page-node-id="gEIlPIflTVIkGlnNmFSTIO">P2</option></select></label>
-      <label data-page-node-id="tHPn0Tnx3Y88MjmTTK7LbA">类型<select id="newType" data-page-node-id="xddjoKx8dskcoE2GIoFmps"><option data-page-node-id="S5CHJzDkVuH77m5nyRHM0s">Programming</option><option data-page-node-id="Pv6A1S4TGVlqll4k0lVZ4o">Art</option><option data-page-node-id="yteMWdyFPpDmHqU2UaEDAE">Design</option><option data-page-node-id="XRRKmwUnjFuqoUUvrrVsNM">Production</option></select></label>
-      <label data-page-node-id="YB7RN0KfXGPd2HZqajhGX6">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+<div class="overlay" id="modal">
+  <div class="modal">
+    <h2>创建任务</h2>
+    <div class="form">
+      <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
+      <label>负责人<select id="newOwner"></select></label>
+      <label>初始状态<select id="newStatus"></select></label>
+      <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
+      <label>类型<select id="newType"><option>Programming</option><option>Art</option><option>Design</option><option>Production</option></select></label>
+      <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
-    <div class="modal-actions" data-page-node-id="39A39yON9vSF0eldqBfpXf"><button class="btn" onclick="closeModal()" data-page-node-id="0IfaZg7hfeBvGue8Rsrwv3">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="496G3ev4v117MOZGEqg5R7">创建</button></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
   </div>
 </div>
-<div class="toast" id="toast" data-page-node-id="ZffD3P5InbOhxVNLRCAnCT"></div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
@@ -296,6 +306,15 @@ function setSync(mode, text){
   el.textContent = text;
 }
 
+function showBanner(html){
+  document.getElementById("bannerMsg").innerHTML = html;
+  document.getElementById("banner").classList.add("show");
+}
+function hideBanner(){
+  document.getElementById("banner").classList.remove("show");
+}
+function retryConnect(){ location.reload(); }
+
 function startFirestore(){
   initializeApp(firebaseConfig);
   db = getFirestore();
@@ -318,6 +337,7 @@ function startFirestore(){
         };
       });
       setSync("live", "● 已同步");
+      hideBanner();
       document.getElementById("seedBtn").disabled = tasks.length > 0;
       render();
     },
@@ -332,10 +352,17 @@ function fallBack(msg, err){
   live = false;
   booting = false;
   tasks = DEMO_TASKS.map((t,i)=>({...t, id:"demo-"+i, seq:i}));
-  setSync("demo", "○ 离线演示");
+  setSync("demo", "○ 未连接");
   document.getElementById("seedBtn").disabled = true;
+  const code = err ? (err.code || err.message || "") : "";
+  showBanner(
+    `<b>未连接 Firestore</b> · 当前是离线演示模式，下面显示的是内置示例数据，` +
+    `<b>你的任何改动刷新后都会丢失</b>。` +
+    (code ? `原因：<code>${esc(code)}</code>。` : "") +
+    `去 Firebase 控制台 → Firestore Database → Rules 发布规则，然后点右侧「重试连接」。`
+  );
   render();
-  showToast(msg + (err ? "  · " + (err.code || err.message || "") : ""), true);
+  showToast(msg + (code ? "  · " + code : ""), true);
 }
 
 /* ============================================================
@@ -452,8 +479,8 @@ function renderTeam(){
    ============================================================ */
 async function moveTask(t, status){
   if(!live){
-    t.status = status; render();
-    showToast(`本地已移动（未连库）：${t.title}`);
+    showToast("离线演示模式：改动不会保存，请先发布 Firestore 规则", true);
+    render();
     return;
   }
   try{
@@ -466,8 +493,8 @@ async function moveTask(t, status){
 }
 
 async function removeTask(t){
+  if(!live){ showToast("离线演示模式：无法删除", true); return; }
   if(!confirm(`删除任务「${t.title}」？\n此操作不可撤销。`)) return;
-  if(!live){ showToast("离线演示模式下无法删除", true); return; }
   try{
     await deleteDoc(doc(db, COLLECTION, t.id));
     showToast("已删除：" + t.title);
@@ -485,6 +512,12 @@ function closeModal(){ document.getElementById("modal").style.display = "none"; 
 async function createTask(){
   const title = document.getElementById("newTitle").value.trim();
   if(!title){ showToast("任务名不能为空", true); return; }
+
+  if(!live){
+    showToast("离线演示模式：无法保存。请先在 Firebase 控制台发布 Firestore 规则，再点「重试连接」", true);
+    return;
+  }
+
   const payload = {
     title,
     owner:    document.getElementById("newOwner").value,
@@ -496,12 +529,7 @@ async function createTask(){
     updatedAt: serverTimestamp()
   };
   try{
-    if(live){
-      await addDoc(collection(db, COLLECTION), payload);
-    }else{
-      tasks.push({...payload, id:"local-"+Date.now(), seq:0});
-      render();
-    }
+    await addDoc(collection(db, COLLECTION), payload);
     document.getElementById("newTitle").value = "";
     document.getElementById("newDesc").value = "";
     closeModal();
@@ -541,6 +569,7 @@ window.openModal = openModal;
 window.closeModal = closeModal;
 window.createTask = createTask;
 window.seedDemo = seedDemo;
+window.retryConnect = retryConnect;
 window.render = render;
 
 /* ============================================================
