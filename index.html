@@ -1,286 +1,472 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN" data-page-node-id="DGw8lGxvXbckKNzfGEkGJW">
+<head data-page-node-id="d4tfjIZYaSSFGPIqeFwjgs">
+<meta charset="UTF-8" data-page-node-id="f7sHPgWuSlFVUruSfj7dBY">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="FKtGUpgBiMftF6afJAEkA4">
 <title>上一休六工作室 · Game Jam 看板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="2n4gFqF7GQkYbNg0CIlqKS">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="bbwyMEOo7AJKkSuAcp3aLm">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet" data-page-node-id="VSxx3xGE9JXBrlD1MvDX4C">
 <style>
 :root{
-  --bg:#0b0e13; --panel:#11161e; --panel2:#171d27; --line:#27303d;
-  --text:#edf2f7; --muted:#8e9aaa; --accent:#7c6cff; --green:#35c98b;
-  --yellow:#e8b94d; --red:#ef6675; --blue:#54a7ff;
+  /* ============ 视觉规范：取自 Personal_Website / src/index.css「霓虹赛博档案」 ============ */
+  --bg-dark:#030305;        /* 原站 --bg-dark */
+  --bg-light:#0d0d14;       /* 原站 --bg-light */
+  --neon-cyan:#00f3ff;      /* 原站 --neon-cyan */
+  --neon-pink:#ff007f;      /* 原站 --neon-pink */
+  --neon-purple:#9d00ff;    /* 原站 --neon-purple */
+  --neon-gold:#ffbe0b;      /* 原站 --neon-gold */
+  --neon-green:#00ff9d;     /* 补充：原站扫描线用的 60,255,110 系，用于「已完成」 */
+  --text-main:#e0e0e0;      /* 原站 --text-main */
+  --text-muted:#666677;     /* 原站 --text-muted */
+
+  /* 旧变量名保留：JS 里还有内联样式引用它们 */
+  --bg:#030305; --panel:#0d0d14; --panel2:#0d0d14;
+  --accent:var(--neon-cyan);
+  --line:rgba(0,243,255,.16); --text:var(--text-main); --muted:var(--text-muted);
+  --glass:rgba(3,3,5,.64);  /* 原站 .blog-section 的面板底 */
+
+  /* 排版：Orbitron 走「数字/英文/标题」，中文回退到思源黑，保证密排可读 */
+  --cyber:'Orbitron','Noto Sans SC','Noto Sans JP',system-ui,sans-serif;
+  --sans:'Noto Sans SC','Noto Sans JP',system-ui,-apple-system,'Segoe UI',sans-serif;
+
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{min-height:100vh}
-header{height:64px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:24px;background:#0d1117;position:sticky;top:0;z-index:10}
-.logo{font-weight:800;font-size:18px;letter-spacing:.3px;white-space:nowrap}
-.logo span{color:var(--accent)}
-.nav{display:flex;gap:5px}
-.nav button{background:none;border:0;color:var(--muted);padding:8px 12px;border-radius:7px}
-.nav button.active,.nav button:hover{background:#1a2030;color:white}
+body{margin:0;background:var(--bg-dark);color:var(--text-main);font:14px/1.5 var(--sans);overflow-x:hidden}
+
+/* ============ 场景层：霓虹网格 + 三段辉光 + VHS 扫描线（都在内容之下，玻璃面板会把它们糊开）============ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(880px 520px at 10% -8%, rgba(0,243,255,.10), transparent 62%),
+    radial-gradient(760px 460px at 94% 2%, rgba(255,0,127,.09), transparent 64%),
+    radial-gradient(1000px 620px at 50% 112%, rgba(157,0,255,.11), transparent 68%),
+    repeating-linear-gradient(to right, rgba(0,243,255,.055) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(to bottom, rgba(0,243,255,.04) 0 1px, transparent 1px 64px);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0,243,255,.05) 3px, transparent 4px);
+  animation:vhs-scanlines 8s linear infinite;
+}
+@keyframes vhs-scanlines{from{transform:translateY(0)}to{transform:translateY(64px)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes neon-flicker{0%,100%{opacity:1}48%{opacity:1}50%{opacity:.72}52%{opacity:1}}
+
+/* 霓虹滑动条（原站核心需求） */
+::-webkit-scrollbar{width:10px;height:10px;background:var(--bg-dark)}
+::-webkit-scrollbar-track{background:#020203;border-left:1px solid rgba(0,243,255,.1);box-shadow:inset 0 0 10px #000}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));border:2px solid #020203}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--neon-pink),var(--neon-cyan))}
+
+.app{position:relative;z-index:1;min-height:100vh}
+
+/* ============ 顶栏：原站 nav 的玻璃态 ============ */
+header{height:64px;display:flex;align-items:center;padding:0 24px;gap:24px;position:sticky;top:0;z-index:10;
+  background:linear-gradient(90deg,rgba(3,3,5,.72),rgba(13,13,20,.48));
+  border-bottom:1px solid rgba(0,243,255,.28);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07),0 2px 22px rgba(0,243,255,.14);
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
+
+.logo{position:relative;font-family:var(--cyber);font-weight:900;font-size:17px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--neon-cyan);text-shadow:0 0 8px var(--neon-cyan),0 0 20px rgba(0,243,255,.3);white-space:nowrap}
+.logo span{color:var(--neon-pink);text-shadow:0 0 8px var(--neon-pink)}
+.logo::after{content:'JAMBOARD';position:absolute;left:2px;top:0;color:var(--neon-pink);text-shadow:0 0 8px var(--neon-pink);
+  opacity:0;clip-path:inset(0 0 50% 0);animation:logo-glitch 4s infinite;pointer-events:none}
+@keyframes logo-glitch{
+  0%,92%,100%{opacity:0}
+  93%{opacity:.75;clip-path:inset(0 0 50% 0);transform:translateX(-3px)}
+  94%{opacity:0}
+  96%{opacity:.55;clip-path:inset(40% 0 0 0);transform:translateX(2px)}
+  97%{opacity:0}
+}
+
+/* 导航 = 原站 .category-btn */
+.nav{display:flex;gap:8px}
+.nav button{background:rgba(3,3,5,.58);border:1px solid rgba(0,243,255,.35);color:var(--neon-cyan);
+  font-family:var(--cyber);font-size:11px;letter-spacing:2px;padding:8px 15px;text-transform:uppercase;
+  text-shadow:0 0 8px rgba(0,243,255,.65);box-shadow:0 0 10px rgba(0,243,255,.12);transition:all .3s}
+.nav button:hover{background:rgba(0,243,255,.1);box-shadow:0 0 18px rgba(0,243,255,.32)}
+.nav button.active{background:var(--neon-cyan);color:#020203;text-shadow:none;box-shadow:0 0 20px rgba(0,243,255,.5)}
+
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.badge{padding:4px 9px;border-radius:999px;background:#192321;color:#6ee6ae;font-size:12px;border:1px solid #234637;white-space:nowrap}
-.badge.sync-live{background:#192321;color:#6ee6ae;border-color:#234637}
-.badge.sync-wait{background:#2a2718;color:#e8cf7a;border-color:#4a4326}
-.badge.sync-demo{background:#2b1e21;color:#ff9aa5;border-color:#4d2a31}
-.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#2a2449;color:#c9c1ff;font-weight:700}
+.badge{padding:5px 10px;background:rgba(3,3,5,.6);border:1px solid rgba(0,243,255,.35);color:var(--neon-cyan);
+  font-family:var(--cyber);font-size:10px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;
+  text-shadow:0 0 8px rgba(0,243,255,.6);box-shadow:0 0 10px rgba(0,243,255,.12)}
+.badge.sync-live{color:var(--neon-green);border-color:rgba(0,255,157,.42);text-shadow:0 0 8px rgba(0,255,157,.65);box-shadow:0 0 12px rgba(0,255,157,.18)}
+.badge.sync-live::first-letter{animation:blink 1s infinite}
+.badge.sync-wait{color:var(--neon-gold);border-color:rgba(255,190,11,.42);text-shadow:0 0 8px rgba(255,190,11,.65);box-shadow:0 0 12px rgba(255,190,11,.18)}
+.badge.sync-wait::first-letter{animation:blink 1s infinite}
+.badge.sync-demo{color:var(--neon-pink);border-color:rgba(255,0,127,.45);text-shadow:0 0 8px rgba(255,0,127,.65);box-shadow:0 0 14px rgba(255,0,127,.25)}
+
+.avatar{width:32px;height:32px;display:grid;place-items:center;background:rgba(157,0,255,.12);border:1px solid rgba(157,0,255,.5);
+  color:#d9c2ff;font-family:var(--cyber);font-weight:700;font-size:11px;letter-spacing:1px;box-shadow:0 0 14px rgba(157,0,255,.28)}
+
 main{padding:22px 24px 40px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:16px;flex-wrap:wrap}
-h1{margin:0 0 5px;font-size:25px}
-.subtitle{color:var(--muted)}
-.actions{display:flex;gap:8px}
-.btn{border:1px solid var(--line);background:#151b24;color:#dfe5ee;padding:9px 13px;border-radius:7px}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
-.btn:hover{filter:brightness(1.1)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px}
-.stat-label{font-size:12px;color:var(--muted);margin-bottom:7px}
-.stat-value{font-size:25px;font-weight:750}
-.stat-note{font-size:11px;color:var(--muted);margin-top:4px}
-.progress{height:5px;background:#242b36;border-radius:9px;margin-top:9px;overflow:hidden}
-.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
-.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.search{flex:1;min-width:220px;background:var(--panel);border:1px solid var(--line);color:white;padding:9px 12px;border-radius:7px;outline:none}
-select{background:var(--panel);color:#dfe5ee;border:1px solid var(--line);padding:9px 10px;border-radius:7px}
-.board-wrap{overflow-x:auto;padding-bottom:8px}
-.board{display:grid;grid-template-columns:repeat(4,minmax(250px,1fr));gap:10px;min-width:1060px}
-.column{background:#0f141b;border:1px solid var(--line);border-radius:10px;min-height:470px;transition:border-color .15s}
-.column.over{border-color:var(--accent);background:#12172a}
-.col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
-.col-title{font-weight:700;font-size:13px}
-.count{color:var(--muted);font-size:11px;background:#1b222d;border-radius:12px;padding:2px 7px}
-.cards{padding:9px;min-height:420px}
-.card{position:relative;background:var(--panel2);border:1px solid #293241;border-radius:8px;padding:11px;margin-bottom:8px;cursor:grab;transition:.15s}
-.card:hover{border-color:#465266;transform:translateY(-1px)}
-.card.dragging{opacity:.45}.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.priority{font-size:10px;font-weight:800;padding:3px 6px;border-radius:4px}
-.p0{background:#3a1d25;color:#ff8894}.p1{background:#3a321b;color:#f4cf67}.p2{background:#1d2d3c;color:#75baff}
-.type{font-size:10px;color:var(--muted);margin-left:auto}
-.card-desc.note{color:#f0cc72;background:#2a2418;border-radius:4px;padding:5px 7px;margin-bottom:9px}
-.card-desc.note b{color:#ffd98a;font-weight:600}
-.card h3{font-size:13px;margin:9px 0 7px}
-.card-desc{font-size:11px;color:#9ca7b6;margin-bottom:9px}
-.card-foot{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:10px;gap:6px}
-.owner{display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mini-avatar{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#30394a;color:#dbe3ef;font-size:9px;font-weight:700;flex:0 0 auto}
-.tag{padding:3px 6px;border-radius:4px;background:#202734;flex:0 0 auto}
-.btn.danger{background:#3a2026;border-color:#6b2f3a;color:#ff9aa5;margin-right:auto}
-.empty{padding:18px 10px;text-align:center;color:#4d5765;font-size:11px;border:1px dashed #232b36;border-radius:7px;opacity:0;transition:opacity .15s}
-.empty.on,body.dragging .empty{opacity:1}
-.sub{display:block;font-size:9.5px;color:#5d6875;font-weight:500;letter-spacing:.5px;margin-top:2px}
-i.en{font-style:normal;color:#5d6875;font-size:9px;letter-spacing:.3px;margin-left:4px}
-.section-sub{font-size:12px;color:var(--muted);margin-top:3px}
+h1{margin:0 0 5px;font-family:var(--cyber);font-size:24px;font-weight:700;letter-spacing:3px;color:#fff;
+  text-shadow:0 0 14px rgba(0,243,255,.45),0 0 34px rgba(0,243,255,.16)}
+.subtitle{color:var(--text-muted)}
+.section-sub{font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.7}
 
-/* ============ 视图切换（三个 tab 是三个视图，不是三个独立页面）============ */
+/* 按钮 = 原站 .btn-glitch（描边 + 从左扫入的填充） */
+.actions{display:flex;gap:8px}
+.btn{border:1px solid rgba(0,243,255,.45);color:var(--neon-cyan);padding:10px 16px;
+  font-family:var(--cyber);font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  background-color:rgba(3,3,5,.6);
+  background-image:linear-gradient(var(--neon-cyan),var(--neon-cyan));
+  background-repeat:no-repeat;background-position:left center;background-size:0% 100%;
+  text-shadow:0 0 8px rgba(0,243,255,.55);
+  transition:background-size .3s,color .3s,box-shadow .3s,border-color .3s,text-shadow .3s}
+.btn:hover{color:#020203;background-size:100% 100%;text-shadow:none;box-shadow:0 0 22px rgba(0,243,255,.5)}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn:disabled:hover{color:var(--neon-cyan);background-size:0% 100%;box-shadow:none;text-shadow:0 0 8px rgba(0,243,255,.55)}
+.btn.primary{border-color:rgba(255,0,127,.6);color:var(--neon-pink);background-color:rgba(255,0,127,.1);
+  background-image:linear-gradient(var(--neon-pink),var(--neon-pink));text-shadow:0 0 8px rgba(255,0,127,.6)}
+.btn.primary:hover{color:#020203;box-shadow:0 0 22px rgba(255,0,127,.5)}
+.btn.danger{border-color:rgba(255,0,127,.5);color:var(--neon-pink);background-color:rgba(255,0,127,.08);
+  background-image:linear-gradient(var(--neon-pink),var(--neon-pink));text-shadow:0 0 8px rgba(255,0,127,.6);margin-right:auto}
+
+/* 指标卡 = 原站 .card（玻璃 + 悬停发光 + 切角装饰线） */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{position:relative;overflow:hidden;background:var(--glass);border:1px solid rgba(255,255,255,.06);padding:16px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  transition:transform .4s cubic-bezier(.175,.885,.32,1.275),border-color .35s,box-shadow .35s}
+.stat::after{content:'';position:absolute;left:0;top:0;width:36px;height:1px;background:var(--neon-cyan);box-shadow:0 0 10px var(--neon-cyan)}
+.stat:hover{transform:translateY(-4px);border-color:rgba(0,243,255,.35);box-shadow:0 0 24px rgba(0,243,255,.16)}
+.stat-label{font-family:var(--cyber);font-size:11px;letter-spacing:2px;color:#fff;margin-bottom:8px;text-transform:uppercase}
+.stat-value{font-family:var(--cyber);font-size:26px;font-weight:700;color:#fff;line-height:1.1;
+  text-shadow:0 0 14px rgba(0,243,255,.45)}
+.stat-note{font-family:var(--sans);font-size:11px;color:var(--text-muted);margin-top:6px;letter-spacing:.3px}
+.progress{height:4px;background:rgba(255,255,255,.07);margin-top:11px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));
+  box-shadow:0 0 10px rgba(0,243,255,.6);transition:width .3s}
+
+/* 输入控件 */
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.search,.form input,.form select,.form textarea,select{
+  background:rgba(3,3,5,.7);border:1px solid rgba(0,243,255,.22);color:var(--text-main);
+  padding:10px 12px;outline:none;font-family:var(--sans);transition:border-color .3s,box-shadow .3s}
+.search{flex:1;min-width:220px}
+.search::placeholder{color:#5a5a6b;letter-spacing:.4px}
+.search:focus,select:focus,.form input:focus,.form textarea:focus{border-color:var(--neon-cyan);box-shadow:0 0 16px rgba(0,243,255,.25)}
+select{cursor:pointer}
+
+/* ============ 看板 ============ */
+.board-wrap{overflow-x:auto;padding-bottom:8px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(250px,1fr));gap:12px;min-width:1060px}
+.column{position:relative;min-height:470px;background:var(--glass);border:1px solid rgba(0,243,255,.3);
+  box-shadow:0 0 15px rgba(0,243,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:border-color .2s,box-shadow .2s,background .2s}
+/* 每列一根状态色霓虹条，一眼分得清推进到哪一步 */
+.column:nth-child(1){--st:#8b93a7}
+.column:nth-child(2){--st:var(--neon-cyan)}
+.column:nth-child(3){--st:var(--neon-gold)}
+.column:nth-child(4){--st:var(--neon-green)}
+.column.over{border-color:var(--neon-pink);background:rgba(255,0,127,.07);box-shadow:0 0 28px rgba(255,0,127,.38)}
+.col-head{position:relative;display:flex;align-items:center;justify-content:space-between;padding:14px 13px 12px;
+  border-bottom:1px solid rgba(0,243,255,.22);background:linear-gradient(90deg,rgba(0,243,255,.07),transparent)}
+.col-head::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:var(--st);box-shadow:0 0 12px var(--st);opacity:.9}
+.col-title{font-family:var(--cyber);font-weight:700;font-size:12px;letter-spacing:3px;color:var(--st);text-transform:uppercase;
+  text-shadow:0 0 10px var(--st)}
+.count{font-family:var(--cyber);font-size:11px;color:var(--neon-cyan);border:1px solid rgba(0,243,255,.35);
+  background:rgba(0,243,255,.08);padding:2px 8px;text-shadow:0 0 8px rgba(0,243,255,.5)}
+.cards{padding:10px;min-height:420px}
+
+/* 任务卡 = 原站 .card：玻璃 + 跟随鼠标的霓虹光斑 + 悬停浮起 */
+.card{position:relative;overflow:hidden;background:rgba(13,13,20,.82);border:1px solid rgba(255,255,255,.07);
+  border-left:2px solid var(--st,rgba(0,243,255,.4));padding:12px;margin-bottom:9px;cursor:grab;
+  transition:transform .25s cubic-bezier(.175,.885,.32,1.275),border-color .25s,box-shadow .25s}
+.card::before{content:'';position:absolute;top:var(--y,50%);left:var(--x,50%);transform:translate(-50%,-50%);
+  width:260px;height:260px;background:radial-gradient(circle,rgba(0,243,255,.16) 0%,transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{transform:translateY(-3px);border-color:rgba(0,243,255,.45);box-shadow:0 0 22px rgba(0,243,255,.2)}
+.card:hover::before{opacity:1}
+.card.dragging{opacity:.45}
+body.dragging .empty{opacity:1;border-color:rgba(0,243,255,.45);color:rgba(0,243,255,.7);box-shadow:inset 0 0 24px rgba(0,243,255,.1)}
+.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.priority{font-family:var(--cyber);font-size:9.5px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border:1px solid currentColor}
+.p0{color:var(--neon-pink);background:rgba(255,0,127,.1);text-shadow:0 0 8px rgba(255,0,127,.6);box-shadow:0 0 10px rgba(255,0,127,.2)}
+.p1{color:var(--neon-gold);background:rgba(255,190,11,.1);text-shadow:0 0 8px rgba(255,190,11,.6);box-shadow:0 0 10px rgba(255,190,11,.2)}
+.p2{color:var(--neon-cyan);background:rgba(0,243,255,.08);text-shadow:0 0 8px rgba(0,243,255,.6);box-shadow:0 0 10px rgba(0,243,255,.16)}
+.type{font-size:10px;color:var(--text-muted);margin-left:auto}
+.card h3{font-family:var(--sans);font-size:13px;font-weight:600;margin:10px 0 7px;color:#f2f4f8;letter-spacing:.2px}
+.card-desc{font-size:11px;color:#8b93a7;margin-bottom:9px;line-height:1.6}
+.card-desc.note{color:var(--neon-gold);background:rgba(255,190,11,.07);border-left:2px solid var(--neon-gold);padding:5px 8px}
+.card-desc.note b{color:var(--neon-gold);font-weight:600}
+.card-foot{display:flex;align-items:center;justify-content:space-between;color:var(--text-muted);font-size:10px;gap:6px}
+.owner{display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-avatar{width:20px;height:20px;display:grid;place-items:center;background:rgba(157,0,255,.14);border:1px solid rgba(157,0,255,.42);
+  color:#d9c2ff;font-family:var(--cyber);font-size:8px;font-weight:700;flex:0 0 auto}
+.tag{padding:2px 7px;background:rgba(157,0,255,.06);border:1px solid rgba(157,0,255,.3);color:var(--neon-purple);
+  font-size:9.5px;letter-spacing:1px;flex:0 0 auto}
+.empty{padding:20px 10px;text-align:center;color:#4a4a5c;font-family:var(--cyber);font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;border:1px dashed rgba(0,243,255,.2);opacity:0;transition:opacity .2s,box-shadow .2s,border-color .2s}
+.empty.on{opacity:1}
+
+/* 中英双行副标题（原站 .font-cyber 的排版） */
+.sub{display:block;font-family:var(--cyber);font-size:8.5px;font-weight:400;letter-spacing:2px;margin-top:4px;
+  text-transform:uppercase;color:rgba(0,243,255,.55);text-shadow:none}
+i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(0,243,255,.5);margin-left:5px}
+
+/* 视图切换 */
 .view{display:none}
 .view.active{display:block}
 
 /* ============ 甘特图 ============ */
-.gantt-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11.5px;color:var(--muted)}
+.gantt-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;color:var(--text-muted);align-items:center}
 .gantt-legend span{display:flex;align-items:center;gap:6px}
-.gantt-legend i{width:11px;height:11px;border-radius:3px;display:block}
-.gantt{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px 16px;overflow-x:auto}
-.g-inner{min-width:940px}
+.gantt-legend i{width:11px;height:11px;display:block}
+.gantt{background:var(--glass);border:1px solid rgba(0,243,255,.3);box-shadow:0 0 15px rgba(0,243,255,.1);
+  padding:16px;overflow-x:auto;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.g-inner{min-width:1266px}
 .g-head{display:flex;align-items:flex-end;margin-bottom:4px}
-.g-name{width:216px;flex:0 0 216px;font-size:11px;color:var(--muted);padding-left:2px}
-.g-days{flex:1;display:grid;grid-template-columns:repeat(14,1fr)}
-.g-days div{font-size:10px;color:#5b6674;text-align:center;padding-bottom:5px;border-left:1px solid #1c232d}
-.g-days div.today{color:var(--accent);font-weight:700}
-.g-row{display:flex;align-items:center;height:32px;border-top:1px solid #1a212a}
-.g-row:hover{background:#141a24}
+.g-name{width:216px;flex:0 0 216px;font-family:var(--cyber);font-size:10px;letter-spacing:2px;color:var(--text-muted);
+  padding-left:2px;text-transform:uppercase}
+.g-days{flex:1;display:grid;grid-template-columns:repeat(var(--days,21),1fr)}
+.g-days div{font-family:var(--cyber);font-size:9px;letter-spacing:.5px;color:#5a6472;text-align:center;padding-bottom:6px;
+  border-left:1px solid rgba(0,243,255,.12)}
+.g-days div.today{color:var(--neon-cyan);font-weight:700;text-shadow:0 0 10px rgba(0,243,255,.7)}
+.g-row{display:flex;align-items:center;height:32px;border-top:1px solid rgba(0,243,255,.1)}
+.g-row:hover{background:rgba(0,243,255,.05)}
 .g-label{width:216px;flex:0 0 216px;display:flex;align-items:center;gap:7px;padding-right:12px;overflow:hidden}
-.g-label .gt{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.g-label .gt:hover{color:var(--accent);text-decoration:underline}
+.g-label .gt{font-size:12px;color:#c9cfda;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.g-label .gt:hover{color:var(--neon-cyan);text-shadow:0 0 8px rgba(0,243,255,.7)}
 .g-track{flex:1;position:relative;height:32px;
-  background-image:repeating-linear-gradient(to right,#1c232d 0,#1c232d 1px,transparent 1px,transparent 7.142857%)}
-.g-seg{position:absolute;top:7px;height:18px;border-radius:4px;min-width:2px}
-.g-seg.todo{background:#3a4354}
-.g-seg.doing{background:#5b5bd6}
-.g-seg.review{background:#c9a227}
-.g-seg.done{background:#2f9e6b}
-.g-seg:hover{filter:brightness(1.3);z-index:3}
-.g-now{position:absolute;top:3px;bottom:3px;width:2px;background:#7c6cff;opacity:.65;pointer-events:none;z-index:2}
-.g-empty{padding:26px;text-align:center;color:#5b6674;font-size:12px}
-.g-note{margin-top:12px;font-size:11.5px;color:#5b6674}
+  background-image:repeating-linear-gradient(to right,rgba(0,243,255,.14) 0,rgba(0,243,255,.14) 1px,transparent 1px,transparent var(--dayw,4.761905%))}
+.g-seg{position:absolute;top:7px;height:18px;min-width:2px}
+.g-seg.todo{background:#5b6472;box-shadow:0 0 10px rgba(140,150,175,.45)}
+.g-seg.doing{background:var(--neon-cyan);box-shadow:0 0 12px rgba(0,243,255,.65)}
+.g-seg.review{background:var(--neon-gold);box-shadow:0 0 12px rgba(255,190,11,.65)}
+.g-seg.done{background:var(--neon-green);box-shadow:0 0 12px rgba(0,255,157,.65)}
+.g-seg:hover{filter:brightness(1.35);z-index:3}
+.g-now{position:absolute;top:3px;bottom:3px;width:2px;background:var(--neon-pink);box-shadow:0 0 10px var(--neon-pink);
+  opacity:.9;pointer-events:none;z-index:2}
+.g-empty{padding:28px;text-align:center;color:#5a6472;font-size:12px}
+.g-note{margin-top:12px;font-size:11px;color:#5a6472;line-height:1.75}
+.g-note b{color:var(--neon-cyan);font-weight:600;text-shadow:0 0 8px rgba(0,243,255,.5)}
 
 /* ============ 团队 ============ */
 .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
-.member{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
-.member-top{display:flex;align-items:center;gap:9px;margin-bottom:11px}
-.big-avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#292f40;font-weight:800;flex:0 0 auto}
-.member-name{font-weight:700}.role{font-size:11px;color:var(--muted)}
+.member{position:relative;background:var(--glass);border:1px solid rgba(0,243,255,.24);padding:15px;
+  box-shadow:0 0 15px rgba(0,243,255,.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:border-color .3s,box-shadow .3s,transform .3s}
+.member:hover{border-color:rgba(0,243,255,.5);box-shadow:0 0 26px rgba(0,243,255,.2);transform:translateY(-3px)}
+.member-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.big-avatar{width:38px;height:38px;display:grid;place-items:center;background:rgba(157,0,255,.12);border:1px solid rgba(157,0,255,.45);
+  color:#d9c2ff;font-family:var(--cyber);font-weight:700;font-size:12px;flex:0 0 auto;box-shadow:0 0 14px rgba(157,0,255,.28)}
+.member-name{font-weight:700;font-size:14px;letter-spacing:.5px;color:#fff}
+.role{font-size:11px;color:var(--text-muted);letter-spacing:.5px}
 .member-counts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
-.mc{font-size:10px;padding:2px 7px;border-radius:4px;background:#202734;color:#c7cfdb}
-.mc.doing{background:#25255a;color:#b9b6ff}
-.mc.review{background:#3a321b;color:#f4cf67}
-.mc.done{background:#1e3229;color:#6ee6ae}
-.member-tasks{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
-.mtask{display:flex;align-items:center;gap:8px;padding:6px 5px;border-radius:5px;cursor:pointer}
-.mtask:hover{background:#151b25}
+.mc{font-family:var(--cyber);font-size:9px;letter-spacing:1px;padding:3px 8px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);color:#a8b0bd}
+.mc.doing{background:rgba(0,243,255,.1);border-color:rgba(0,243,255,.4);color:var(--neon-cyan)}
+.mc.review{background:rgba(255,190,11,.1);border-color:rgba(255,190,11,.4);color:var(--neon-gold)}
+.mc.done{background:rgba(0,255,157,.1);border-color:rgba(0,255,157,.4);color:var(--neon-green)}
+.member-tasks{border-top:1px solid rgba(0,243,255,.16);margin-top:11px;padding-top:9px}
+.mtask{display:flex;align-items:center;gap:9px;padding:6px;cursor:pointer;transition:background .2s}
+.mtask:hover{background:rgba(0,243,255,.06)}
 .mtask .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
-.dot.todo{background:#3a4354}.dot.doing{background:#5b5bd6}.dot.review{background:#c9a227}.dot.done{background:#2f9e6b}
-.mtask .mt{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mtask .mp{font-size:9.5px;font-weight:800;padding:2px 5px;border-radius:3px}
+.dot.todo{background:#5b6472;box-shadow:0 0 8px rgba(140,150,175,.7)}
+.dot.doing{background:var(--neon-cyan);box-shadow:0 0 8px var(--neon-cyan)}
+.dot.review{background:var(--neon-gold);box-shadow:0 0 8px var(--neon-gold)}
+.dot.done{background:var(--neon-green);box-shadow:0 0 8px var(--neon-green)}
+.mtask .mt{font-size:12px;color:#c9cfda;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtask .mp{font-family:var(--cyber);font-size:8.5px;font-weight:700;padding:2px 5px;border:1px solid currentColor}
 .mempty{font-size:11.5px;color:#5d6875;padding:8px 5px}
-.banner{display:none;margin:0 0 16px;padding:12px 14px;border-radius:9px;background:#3a2026;border:1px solid #6b2f3a;color:#ffd9df;font-size:12.5px;line-height:1.6;align-items:center;gap:12px;flex-wrap:wrap}
+
+/* 离线横幅 */
+.banner{display:none;margin:0 0 16px;padding:13px 15px;background:rgba(255,0,127,.08);border:1px solid rgba(255,0,127,.5);
+  color:#ffd0e0;font-size:12.5px;line-height:1.65;align-items:center;gap:12px;flex-wrap:wrap;
+  box-shadow:0 0 24px rgba(255,0,127,.2)}
 .banner.show{display:flex}
-.banner b{color:#ff9aa5}
-.banner code{background:#2a161b;padding:1px 6px;border-radius:4px;color:#ffc9d1;font-size:11.5px}
-.banner .btn{padding:6px 11px;font-size:12px;margin-left:auto;flex:0 0 auto}
-.banner .btn.go{background:#7c6cff;border-color:#7c6cff;color:#fff}
-.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center}.modal{width:min(520px,92vw);background:#131922;border:1px solid #303a49;border-radius:12px;padding:20px;box-shadow:0 20px 80px #000;max-height:90vh;overflow:auto}
-.modal h2{margin:0 0 15px}.form{display:grid;gap:10px}.form label{font-size:11px;color:var(--muted);display:block}
-.form input,.form select,.form textarea{width:100%;margin-top:5px;background:#0e131a;border:1px solid var(--line);color:white;padding:9px;border-radius:6px;outline:none;font-family:inherit}
-.form textarea{resize:vertical;min-height:52px}
+.banner b{color:var(--neon-pink);text-shadow:0 0 8px rgba(255,0,127,.6)}
+.banner code{background:rgba(255,0,127,.12);border:1px solid rgba(255,0,127,.3);padding:1px 6px;color:#ffc2d8;font-size:11.5px}
+.banner .btn{padding:7px 13px;font-size:10px;margin-left:auto;flex:0 0 auto}
+.banner .btn.go{border-color:rgba(0,243,255,.5);color:var(--neon-cyan);background-color:rgba(0,243,255,.1);
+  background-image:linear-gradient(var(--neon-cyan),var(--neon-cyan));text-shadow:0 0 8px rgba(0,243,255,.6)}
+
+/* ============ 弹窗（原站玻璃面板 + 对角霓虹装饰）============ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(2,2,3,.82);z-index:20;align-items:center;justify-content:center;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal{position:relative;width:min(520px,92vw);max-height:90vh;overflow:auto;padding:22px;
+  background:rgba(3,3,5,.93);border:1px solid rgba(0,243,255,.4);
+  box-shadow:0 0 40px rgba(0,243,255,.2),0 30px 90px #000;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:22px;height:22px;pointer-events:none;
+  border-top:2px solid var(--neon-cyan);border-left:2px solid var(--neon-cyan);box-shadow:0 0 12px rgba(0,243,255,.6)}
+.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:22px;height:22px;pointer-events:none;
+  border-bottom:2px solid var(--neon-pink);border-right:2px solid var(--neon-pink);box-shadow:0 0 12px rgba(255,0,127,.6)}
+.modal h2{margin:0 0 18px;font-family:var(--cyber);font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#fff;
+  text-shadow:0 0 12px rgba(0,243,255,.5)}
+.form{display:grid;gap:12px}
+.form label{font-size:11px;color:var(--text-muted);display:block;letter-spacing:.5px}
+.form input,.form select,.form textarea{width:100%;margin-top:6px}
+.form textarea{resize:vertical;min-height:54px}
 .form.two{grid-template-columns:1fr 1fr}
 .form .span2{grid-column:1/-1}
-.hist{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
-.hist-title{font-size:11px;color:var(--muted);margin-bottom:8px}
-.hrow{display:flex;gap:9px;align-items:baseline;font-size:11.5px;color:#aeb8c6;padding:4px 0}
+.hist{margin-top:18px;border-top:1px solid rgba(0,243,255,.16);padding-top:13px}
+.hist-title{font-family:var(--cyber);font-size:10px;letter-spacing:2px;color:var(--text-muted);margin-bottom:9px;text-transform:uppercase}
+.hrow{display:flex;gap:9px;align-items:baseline;font-size:11.5px;color:#a8b0bd;padding:4px 0}
 .hrow .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto;position:relative;top:-1px}
-.hrow .ht{color:#6f7a88;flex:0 0 auto;font-variant-numeric:tabular-nums}
-.hrow .hn{color:#f0cc72}
-.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
-.toast{position:fixed;right:20px;bottom:20px;background:#e9edf2;color:#111;padding:10px 14px;border-radius:8px;display:none;z-index:30;max-width:min(420px,86vw);align-items:center;gap:12px}
+.hrow .ht{color:var(--text-muted);flex:0 0 auto;font-family:var(--cyber);font-size:10px;letter-spacing:.5px}
+.hrow .hn{color:var(--neon-gold);text-shadow:0 0 8px rgba(255,190,11,.45)}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+
+/* ============ Toast ============ */
+.toast{position:fixed;right:20px;bottom:20px;display:none;z-index:80;max-width:min(420px,86vw);align-items:center;gap:12px;
+  padding:12px 15px;font-size:12.5px;background:rgba(3,3,5,.94);color:var(--text-main);
+  border:1px solid rgba(0,243,255,.5);box-shadow:0 0 28px rgba(0,243,255,.3);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .toast.show{display:flex}
-.toast .undo{display:none;background:#111;color:#fff;border:0;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;flex:0 0 auto}
+.toast .undo{display:none;background:var(--neon-cyan);color:#020203;border:0;padding:5px 11px;cursor:pointer;flex:0 0 auto;
+  font-family:var(--cyber);font-size:10px;letter-spacing:1.5px;font-weight:700}
 .toast.undoable .undo{display:inline-block}
-.toast.err{background:#7c2733;color:#ffe9ec}
-.toast.err .undo{background:#ffe9ec;color:#7c2733}
-@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr 1fr}header{padding:0 12px}.nav{display:none}main{padding:16px 12px}}
+.toast.err{background:rgba(30,2,10,.95);border-color:var(--neon-pink);color:#ffd0e0;box-shadow:0 0 28px rgba(255,0,127,.35)}
+.toast.err .undo{background:var(--neon-pink);color:#020203}
+
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:800px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .team{grid-template-columns:1fr 1fr}
+  header{padding:0 12px}
+  .nav{display:none}
+  main{padding:16px 12px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
-<body>
-<div class="app">
-<header>
-  <div class="logo">JAM<span>BOARD</span></div>
-  <div class="nav">
-    <button class="active" data-view="board"    onclick="setView('board')">看板</button>
-    <button               data-view="timeline" onclick="setView('timeline')">时间轴</button>
-    <button               data-view="team"     onclick="setView('team')">团队</button>
+<body data-page-node-id="3aYqGTV7ToAWG3plvsvy03">
+<div class="app" data-page-node-id="EFz8ARuAPSaAsqH8JOA9UC">
+<header data-page-node-id="UvQSPAIQCfcqeJGCej212Z">
+  <div class="logo" data-page-node-id="H6eNtOOSxz2nG6Q6xJb9m2">JAM<span data-page-node-id="aUz7iw9uDYRzdLvDbu6V0a">BOARD</span></div>
+  <div class="nav" data-page-node-id="BSfNLZwyaFbMgBM3NA73da">
+    <button class="active" data-view="board"    onclick="setView('board')" data-page-node-id="acMosz2SeApQiRGOkqCDBG">看板</button>
+    <button               data-view="timeline" onclick="setView('timeline')" data-page-node-id="n9AODVgDowbfaQB0Ii5mhv">时间轴</button>
+    <button               data-view="team"     onclick="setView('team')" data-page-node-id="zFtbxFIfPQa7MIxpXCnrhf">团队</button>
   </div>
-  <div class="header-right">
-    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
-    <span class="badge">第 <span id="dayNum">–</span> / 14 天</span>
-    <div class="avatar">PM</div>
+  <div class="header-right" data-page-node-id="DAhATYnFsFFYHzloqfwanU">
+    <span class="badge sync-wait" id="syncBadge" data-page-node-id="WaQ35SYgxm8wjahnNU8VxM">● 连接中…</span>
+    <span class="badge" id="dayBadge">–</span>
+    <div class="avatar" data-page-node-id="uxmXLVYfPTOJpLrR4vp0qw">PM</div>
   </div>
 </header>
 
-<main>
-  <div class="banner" id="banner">
-    <span id="bannerMsg"></span>
-    <button class="btn go" onclick="retryConnect()">重试连接</button>
+<main data-page-node-id="OhgTd9YrPLFxcb2EPX9xYD">
+  <div class="banner" id="banner" data-page-node-id="K3QE9Ys6Q1iaFydv2UBOVV">
+    <span id="bannerMsg" data-page-node-id="GONdEHQOB0vQRDt78GATTO"></span>
+    <button class="btn go" onclick="retryConnect()" data-page-node-id="d6sZzGnIp6RdHdo5nIJnJy">重试连接</button>
   </div>
 
   <!-- ========== 看板 ========== -->
-  <section class="view active" id="view-board">
-    <div class="top">
-      <div><h1>上一休六工作室</h1></div>
-      <div class="actions">
-        <button class="btn primary" onclick="openCreate()">＋ 新建任务</button>
+  <section class="view active" id="view-board" data-page-node-id="0D3k4gVnvqdoeX1R53XbNQ">
+    <div class="top" data-page-node-id="Z3CNAcSH4DYZBN0uNgB5sK">
+      <div data-page-node-id="pAiWMTsXw1qNmRbW04PzYi"><h1 data-page-node-id="5YsxXnEGymLuDUvjP5lPcH">上一休六工作室</h1></div>
+      <div class="actions" data-page-node-id="t03nMcCFafmmLCcBpJAyuX">
+        <button class="btn primary" onclick="openCreate()" data-page-node-id="KueB3SqLfS4iezwxfCAftN">＋ 新建任务</button>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
-      <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
-      <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
-      <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
-      <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px">第 7 天</div><div class="stat-note">功能冻结</div></div>
+    <div class="stats" data-page-node-id="xWdtY51ONVGYXpXKjJ2wMf">
+      <div class="stat" data-page-node-id="phtmRk1ZdFfFXGSlZTqDl2"><div class="stat-label" data-page-node-id="sJZseI11tyzif1xoSYFRat">任务总数<span class="sub" data-page-node-id="iPVVMGa0yLebqj6XysTWEN">TOTAL TASKS</span></div><div class="stat-value" id="total" data-page-node-id="pj5B4jDDrGxbo2JEqCngpP">0</div><div class="stat-note" id="priBreak" data-page-node-id="XZvcrDFtTYFtbb2cVErYQm">P0 0 · P1 0 · P2 0</div></div>
+      <div class="stat" data-page-node-id="07KV9rba40wc35nt7J3IMB"><div class="stat-label" data-page-node-id="7TuxhJbxEDihAh9yLpjF71">完成度<span class="sub" data-page-node-id="wZOhVUKfA92NyLpXbZsGqI">COMPLETION</span></div><div class="stat-value" id="completion" data-page-node-id="E2CsLIPB40AihAMTPFeMrB">0%</div><div class="progress" data-page-node-id="63q5BDCBAWDNMRHIir2guB"><i id="progress" style="width:0%" data-page-node-id="FxcyCAegOiIe3whf5J6a55"></i></div></div>
+      <div class="stat" data-page-node-id="bcmKQKfcFPsfyIHiHrRaaU"><div class="stat-label" data-page-node-id="SEx8aHF7VitZQWy3VpwtAK">进行中<span class="sub" data-page-node-id="dpASbq4Vm03VnwUROwjjRD">IN PROGRESS</span></div><div class="stat-value" id="doing" data-page-node-id="LQWTPFbZgxJlXifGHGbpxw">0</div><div class="stat-note" data-page-node-id="A6L74Bz1k1qkmPZuYNwJh2">WIP 上限 5</div></div>
+      <div class="stat" data-page-node-id="nUCW4LCUzrN9V7z6EJMFh8"><div class="stat-label" data-page-node-id="ZFfzfpgHy9wctkLizBTG9t">待验收<span class="sub" data-page-node-id="rS0uuHedHL6B6XVzH7pNgP">REVIEW</span></div><div class="stat-value" id="reviewCnt" data-page-node-id="QCDWdseEm6hszyPvK4tLDN">0</div><div class="stat-note" data-page-node-id="SDJqiGKQY05H2P8PKHnOQI">等 PM 确认</div></div>
+      <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px" id="nextMs">–</div><div class="stat-note" id="nextMsNote">功能冻结</div></div>
     </div>
 
-    <div class="toolbar">
-      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()">
-      <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
-      <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
+    <div class="toolbar" data-page-node-id="Ea0y3o7CLFoBC0M6khjnMX">
+      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()" data-page-node-id="Q9qhvQJfaJkLINbBmOmr8q">
+      <select id="priorityFilter" onchange="render()" data-page-node-id="qauK4KKqIxey9Q5FAkd6qM"><option value="all" data-page-node-id="t1ook2YEBVWuRmlX5P4GbL">全部优先级</option><option data-page-node-id="iq2WYvbWeQfvOsByQvUXaM">P0</option><option data-page-node-id="JFn2mHqPmiQh2xspChcvfY">P1</option><option data-page-node-id="o0XaOV0OKGLCpV5TPXmjvV">P2</option></select>
+      <select id="ownerFilter" onchange="render()" data-page-node-id="K5wyHukvujxhFBNpSzAVPS"><option value="all" data-page-node-id="nOI5ZjowI9rSzoEXR9SAy3">全部成员</option></select>
     </div>
 
-    <div class="board-wrap"><div class="board" id="board"></div></div>
+    <div class="board-wrap" data-page-node-id="rzcZ9zyFbaaB1LB5oQXA0l"><div class="board" id="board" data-page-node-id="6VgVH2vilglJNTQsDpvnXW"></div></div>
   </section>
 
   <!-- ========== 时间轴（甘特图）========== -->
-  <section class="view" id="view-timeline">
-    <div class="top">
-      <div>
-        <h1>时间轴<span class="sub">TIMELINE</span></h1>
-        <div class="section-sub">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
+  <section class="view" id="view-timeline" data-page-node-id="TgHTapDj3S6j7PA9YFoiw0">
+    <div class="top" data-page-node-id="TN9YyUMrRz2EPc8MxUG7RN">
+      <div data-page-node-id="19z5O2uUAD9GLOPlh3zncO">
+        <h1 data-page-node-id="ZEM6iDPBkDOwU5HDWPfB9N">时间轴<span class="sub" data-page-node-id="P6cdgMPrQnO0HiKqitC95Y">TIMELINE</span></h1>
+        <div class="section-sub" data-page-node-id="6a9vk2dHFc9QTDMxgoomB7">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
       </div>
-      <div class="actions"><button class="btn" onclick="renderGantt()">刷新</button></div>
+      <div class="actions" data-page-node-id="cDtAIwBD9jBjrLi68PYvdr"><button class="btn" onclick="renderGantt()" data-page-node-id="BvBUawAEfHXGFT4a7bOwsp">刷新</button></div>
     </div>
-    <div class="gantt-legend" id="ganttLegend"></div>
-    <div class="gantt" id="gantt"></div>
+    <div class="gantt-legend" id="ganttLegend" data-page-node-id="JbLyHIF8gabfDEiUXTfvIF"></div>
+    <div class="gantt" id="gantt" data-page-node-id="5EiCLJqXCIFFSvAGAhaE7B"></div>
   </section>
 
   <!-- ========== 团队 ========== -->
-  <section class="view" id="view-team">
-    <div class="top">
-      <div>
-        <h1>团队<span class="sub">TEAM</span></h1>
-        <div class="section-sub">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
+  <section class="view" id="view-team" data-page-node-id="VdRPdyTj9IvmHEyjyGERUW">
+    <div class="top" data-page-node-id="xFbS80SMAdbp5FtD6O4x9W">
+      <div data-page-node-id="h3xUm5bmtlqt6JogNYYYfP">
+        <h1 data-page-node-id="jjxBx5SuniiCXrkNGz3eHA">团队<span class="sub" data-page-node-id="Sy44nblrzscCdGTkFomhgZ">TEAM</span></h1>
+        <div class="section-sub" data-page-node-id="n8EU5xmWdxHY6syyOTLPm8">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
       </div>
     </div>
-    <div class="team" id="team"></div>
+    <div class="team" id="team" data-page-node-id="GHcaJ1L94IlGxtEICVNeFa"></div>
   </section>
 </main>
 </div>
 
-<div class="overlay" id="modal">
-  <div class="modal">
-    <h2>新建任务</h2>
-    <div class="form">
-      <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
-      <label>负责人<select id="newOwner"></select></label>
-      <label>初始状态<select id="newStatus"></select></label>
-      <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="newType"></select></label>
-      <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+<div class="overlay" id="modal" data-page-node-id="sxNKG2u80ESFvyBUcv9OuP">
+  <div class="modal" data-page-node-id="2WkED5ualhe2jUzWPMaFpY">
+    <h2 data-page-node-id="meTgvOrgyGRsHB8TpWnNRJ">新建任务</h2>
+    <div class="form" data-page-node-id="AIBrLzemCu9PPfI2fhcb5i">
+      <label data-page-node-id="gHfxcxh2fo8KRoygHKotEN">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="fiR4ZcX4n4pFMPbAgj6Sis"></label>
+      <label data-page-node-id="WLMQxT4J885xsAIkFIrAxp">负责人<select id="newOwner" data-page-node-id="eKt7rh12MDxBfJspFqqFEY"></select></label>
+      <label data-page-node-id="oDzXZyfkBj2QG3kPJJuarv">初始状态<select id="newStatus" data-page-node-id="cCOZL6WX3Q7EqyAhfzaagd"></select></label>
+      <label data-page-node-id="gC2qy0zi5IcdnBfYQNjILS">优先级<select id="newPriority" data-page-node-id="DzClpwiYIYyuIKArnFzaNM"><option data-page-node-id="iiipa7D4Y7FCRNjKfH5UUV">P0</option><option data-page-node-id="BOCajuBJYlMbNvhVI50Ayn">P1</option><option data-page-node-id="plgzwbCXkrwIr3T5iPylYy">P2</option></select></label>
+      <label data-page-node-id="OeuSl7fVdJqUL5c3vEz4uE">类型<select id="newType" data-page-node-id="VpkA1iuKsWfgg57ooQh19m"></select></label>
+      <label data-page-node-id="A3WbqA2rsFptln3MbNi99x">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
+    <div class="modal-actions" data-page-node-id="RQakaYnd755Y3H1gdssoBR"><button class="btn" onclick="closeModal()" data-page-node-id="ZECHqRlKCM7ErXvCYqtlpO">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="x9fgjXcelN0Xq4feRAIPKA">创建</button></div>
   </div>
 </div>
-<div class="overlay" id="rejectModal">
-  <div class="modal">
-    <h2>验收不合格 · 打回</h2>
-    <div class="form">
-      <label>哪里不行？（会记在卡片上，返工的人一眼看到）
+<div class="overlay" id="rejectModal" data-page-node-id="q7pWqao1ar2GCo6zKrJLWI">
+  <div class="modal" data-page-node-id="3xQ65JlshcKbLESMFSU4ln">
+    <h2 data-page-node-id="9dwOa5ieNVx8490l35Guyg">验收不合格 · 打回</h2>
+    <div class="form" data-page-node-id="cHej9F54uNfg9tblvifxgC">
+      <label data-page-node-id="h0QgHeL0vTwtqOkQgC7GjC">哪里不行？（会记在卡片上，返工的人一眼看到）
         <textarea id="rejectNote" placeholder="例如：受击没有硬直，打击感很软；跳跃落地没有缓冲"></textarea>
       </label>
     </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeReject()">取消</button>
-      <button class="btn primary" onclick="confirmReject()">打回</button>
+    <div class="modal-actions" data-page-node-id="TA8dtFi0YcYHqA5o3yNHWA">
+      <button class="btn" onclick="closeReject()" data-page-node-id="gKIXte0gDgPWKi0xBIA7JZ">取消</button>
+      <button class="btn primary" onclick="confirmReject()" data-page-node-id="7w4IwRvk4K3bU2gIbJKlkH">打回</button>
     </div>
   </div>
 </div>
-<div class="overlay" id="detailModal">
-  <div class="modal">
-    <h2>任务详情</h2>
-    <div class="form two">
-      <label class="span2">任务名称<input id="dTitle"></label>
-      <label>负责人<select id="dOwner"></select></label>
-      <label>状态<select id="dStatus"></select></label>
-      <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="dType"></select></label>
-      <label class="span2">描述（验收标准）<textarea id="dDesc"></textarea></label>
+<div class="overlay" id="detailModal" data-page-node-id="eqD4Y6dsABGWj6ztuupGIu">
+  <div class="modal" data-page-node-id="kXcnawp4ZIKwpigxMNWJAN">
+    <h2 data-page-node-id="JUg4afBDMUxpy6QCZaWdpE">任务详情</h2>
+    <div class="form two" data-page-node-id="dOTQqQoefazSaNjlU8AaOb">
+      <label class="span2" data-page-node-id="dqynXqkOno1M7gFJRxLQPt">任务名称<input id="dTitle" data-page-node-id="oiwaYgLaeMy4nhE24ELzYf"></label>
+      <label data-page-node-id="7gdA26V0TlbOFYepo6jEs9">负责人<select id="dOwner" data-page-node-id="2LlkluOufFRlCYyxpNUnUl"></select></label>
+      <label data-page-node-id="aMz5ifFI5IlGGbcVGqf0aE">状态<select id="dStatus" data-page-node-id="YFyPtWM4aHed8OOF1kg28v"></select></label>
+      <label data-page-node-id="7DKHl4OkznXARcEjtHKw1H">优先级<select id="dPriority" data-page-node-id="lKIDR6InYNQBRts63oQUm8"><option data-page-node-id="hY6mSq3GDGSxKwa5PVfzHy">P0</option><option data-page-node-id="BetoZD8KNHPKtYU5DCfdlX">P1</option><option data-page-node-id="HNoTbG03aKOgBwog3nz6cs">P2</option></select></label>
+      <label data-page-node-id="LHrNl75SilU9Fd790TfVe1">类型<select id="dType" data-page-node-id="G5tCGUkEnNeBijw2nvxX9F"></select></label>
+      <label class="span2" data-page-node-id="GofSVBayPOvG8564u3DFm7">描述（验收标准）<textarea id="dDesc"></textarea></label>
     </div>
-    <div class="hist">
-      <div class="hist-title">阶段记录<span class="sub">STATUS HISTORY</span></div>
-      <div id="dHist"></div>
+    <div class="hist" data-page-node-id="UriStPbGbBB8GB7IK0bOVu">
+      <div class="hist-title" data-page-node-id="2pHQrPkVxEm4CKJoly1tt8">阶段记录<span class="sub" data-page-node-id="DYHyHIBkrBRSkysEBZbfvI">STATUS HISTORY</span></div>
+      <div id="dHist" data-page-node-id="l1ypyIgEaqIXIsKsE48wl5"></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn danger" onclick="deleteDetail()">删除任务</button>
-      <button class="btn" onclick="closeDetail()">取消</button>
-      <button class="btn primary" onclick="saveDetail()">保存</button>
+    <div class="modal-actions" data-page-node-id="DNtDILpkN59UkzejT5kW3V">
+      <button class="btn danger" onclick="deleteDetail()" data-page-node-id="o994XZNJeLIf7H743hBi0u">删除任务</button>
+      <button class="btn" onclick="closeDetail()" data-page-node-id="DQwjIl4r6CGoajqyJDc9XR">取消</button>
+      <button class="btn primary" onclick="saveDetail()" data-page-node-id="INosVwCJWCLGiOM5TdEIxE">保存</button>
     </div>
   </div>
 </div>
-<div class="toast" id="toast">
-  <span id="toastMsg"></span>
-  <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
+<div class="toast" id="toast" data-page-node-id="SmmaENvQE61rlJCQl81Lmx">
+  <span id="toastMsg" data-page-node-id="8nuAExEL6lv1gIAu4xKA4I"></span>
+  <button class="undo" id="undoBtn" onclick="undoMove()" data-page-node-id="dhjioHwvCZwcOzTSYJWUos">撤销</button>
 </div>
 
 <script type="module">
@@ -303,8 +489,10 @@ const firebaseConfig = {
 };
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
-const JAM_START  = "2026-09-16"; // ← 开赛日期（用来算 DAY n），不想算就留空 ""
-const MEMBERS    = ["程序 A","程序 B","美术","PM A","PM B"]; // 新任务下拉里的候选人
+const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
+const JAM_DAYS   = 21;           // ← 赛程总天数：10/1 – 10/21
+const FREEZE_DAY = 14;           // ← 第几天功能冻结（21 天里留 7 天做内容+打磨+提交）
+const MEMBERS    = ["策划_三明治","策划_鹿鹿","美术_梦深云","程序_良秀","程序_小草"]; // 新任务下拉里的候选人
 
 /* ============================================================
    2) 状态列 & 类型 & 别名映射（兼容中英文 / 大小写）
@@ -372,30 +560,30 @@ let db = null;
 const PRI_RANK = {P0:0,P1:1,P2:2};
 
 const DEMO_TASKS = [
-  {title:"确定核心玩法循环",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"玩家目标、输入、反馈、胜负条件"},
-  {title:"Player Controller",owner:"程序 A",priority:"P0",type:"Programming",status:"done",desc:"移动、跳跃、基础碰撞"},
-  {title:"玩家攻击系统",owner:"程序 A",priority:"P0",type:"Programming",status:"doing",desc:"攻击判定与伤害流程"},
-  {title:"玩家攻击动画",owner:"美术",priority:"P0",type:"Art",status:"review",desc:"Idle / Attack / Hit"},
-  {title:"Enemy 基础 AI",owner:"程序 B",priority:"P0",type:"Programming",status:"doing",desc:"Idle → Chase → Attack"},
-  {title:"Enemy Sprite",owner:"美术",priority:"P0",type:"Art",status:"doing",desc:"基础敌人视觉资源"},
-  {title:"敌人攻击规则",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"攻击距离、前摇、CD、伤害"},
-  {title:"伤害 / 死亡系统",owner:"程序 A",priority:"P0",type:"Programming",status:"todo",desc:"HP、受伤、死亡、无敌帧"},
-  {title:"Vertical Slice 关卡",owner:"程序 B",priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
-  {title:"场景背景",owner:"美术",priority:"P1",type:"Art",status:"todo",desc:"第一版场景视觉"},
-  {title:"HUD",owner:"程序 A",priority:"P1",type:"Programming",status:"review",desc:"HP、技能、提示"},
-  {title:"HUD 素材",owner:"美术",priority:"P1",type:"Art",status:"doing",desc:"等待 UI 规范"},
-  {title:"游戏流程管理",owner:"程序 B",priority:"P0",type:"Programming",status:"todo",desc:"Start / Win / Lose / Restart"},
-  {title:"数值第一版",owner:"PM A",priority:"P0",type:"Design",status:"done",desc:"玩家、敌人、伤害、CD"},
-  {title:"镜头反馈",owner:"程序 A",priority:"P1",type:"Programming",status:"todo",desc:"Screen Shake / Hit Stop"},
-  {title:"敌人受击特效",owner:"美术",priority:"P1",type:"Art",status:"todo",desc:"Hit / Death VFX"},
-  {title:"音效清单",owner:"PM B",priority:"P1",type:"Production",status:"doing",desc:"整理攻击、受击、UI 音效需求"},
-  {title:"Audio Manager",owner:"程序 B",priority:"P1",type:"Programming",status:"doing",desc:"等待音频资源格式确认"},
-  {title:"Boss 设计",owner:"PM A",priority:"P1",type:"Design",status:"todo",desc:"攻击模式与阶段"},
-  {title:"Boss 实现",owner:"程序 B",priority:"P1",type:"Programming",status:"todo",desc:"Feature Freeze 后再做"},
-  {title:"Tutorial",owner:"PM B",priority:"P2",type:"Design",status:"todo",desc:"新手提示"},
-  {title:"菜单 UI",owner:"美术",priority:"P1",type:"Art",status:"review",desc:"开始、设置、退出"},
-  {title:"Build Pipeline",owner:"程序 B",priority:"P0",type:"Programming",status:"done",desc:"Windows 导出验证"},
-  {title:"最终试玩验收",owner:"PM B",priority:"P0",type:"Production",status:"todo",desc:"Day 13-14 全流程测试"}
+  {title:"确定核心玩法循环",owner:"策划_三明治",priority:"P0",type:"Design",status:"done",desc:"玩家目标、输入、反馈、胜负条件"},
+  {title:"Player Controller",owner:"程序_良秀",priority:"P0",type:"Programming",status:"done",desc:"移动、跳跃、基础碰撞"},
+  {title:"玩家攻击系统",owner:"程序_良秀",priority:"P0",type:"Programming",status:"doing",desc:"攻击判定与伤害流程"},
+  {title:"玩家攻击动画",owner:"美术_梦深云",priority:"P0",type:"Art",status:"review",desc:"Idle / Attack / Hit"},
+  {title:"Enemy 基础 AI",owner:"程序_小草",priority:"P0",type:"Programming",status:"doing",desc:"Idle → Chase → Attack"},
+  {title:"Enemy Sprite",owner:"美术_梦深云",priority:"P0",type:"Art",status:"doing",desc:"基础敌人视觉资源"},
+  {title:"敌人攻击规则",owner:"策划_三明治",priority:"P0",type:"Design",status:"done",desc:"攻击距离、前摇、CD、伤害"},
+  {title:"伤害 / 死亡系统",owner:"程序_良秀",priority:"P0",type:"Programming",status:"todo",desc:"HP、受伤、死亡、无敌帧"},
+  {title:"Vertical Slice 关卡",owner:"程序_小草",priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
+  {title:"场景背景",owner:"美术_梦深云",priority:"P1",type:"Art",status:"todo",desc:"第一版场景视觉"},
+  {title:"HUD",owner:"程序_良秀",priority:"P1",type:"Programming",status:"review",desc:"HP、技能、提示"},
+  {title:"HUD 素材",owner:"美术_梦深云",priority:"P1",type:"Art",status:"doing",desc:"等待 UI 规范"},
+  {title:"游戏流程管理",owner:"程序_小草",priority:"P0",type:"Programming",status:"todo",desc:"Start / Win / Lose / Restart"},
+  {title:"数值第一版",owner:"策划_三明治",priority:"P0",type:"Design",status:"done",desc:"玩家、敌人、伤害、CD"},
+  {title:"镜头反馈",owner:"程序_良秀",priority:"P1",type:"Programming",status:"todo",desc:"Screen Shake / Hit Stop"},
+  {title:"敌人受击特效",owner:"美术_梦深云",priority:"P1",type:"Art",status:"todo",desc:"Hit / Death VFX"},
+  {title:"音效清单",owner:"策划_鹿鹿",priority:"P1",type:"Production",status:"doing",desc:"整理攻击、受击、UI 音效需求"},
+  {title:"Audio Manager",owner:"程序_小草",priority:"P1",type:"Programming",status:"doing",desc:"等待音频资源格式确认"},
+  {title:"Boss 设计",owner:"策划_三明治",priority:"P1",type:"Design",status:"todo",desc:"攻击模式与阶段"},
+  {title:"Boss 实现",owner:"程序_小草",priority:"P1",type:"Programming",status:"todo",desc:"Feature Freeze 后再做"},
+  {title:"Tutorial",owner:"策划_鹿鹿",priority:"P2",type:"Design",status:"todo",desc:"新手提示"},
+  {title:"菜单 UI",owner:"美术_梦深云",priority:"P1",type:"Art",status:"review",desc:"开始、设置、退出"},
+  {title:"Build Pipeline",owner:"程序_小草",priority:"P0",type:"Programming",status:"done",desc:"Windows 导出验证"},
+  {title:"最终试玩验收",owner:"策划_鹿鹿",priority:"P0",type:"Production",status:"todo",desc:"Day 13-14 全流程测试"}
 ];
 
 /* ============================================================
@@ -404,21 +592,56 @@ const DEMO_TASKS = [
 const esc = s => String(s==null?"":s).replace(/[&<>"']/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
+/* 头像缩写：支持「角色_名字」格式（策划_三明治 → 三），也兼容旧的 程序 A / PM A / 美术 */
 function avatar(owner){
   const s = String(owner||"?").trim();
   let m;
+  if(s.includes("_")){
+    const name = s.split("_").pop().trim();
+    if(name){
+      const cjk = name.match(/[\u4e00-\u9fa5]/);
+      return cjk ? cjk[0] : name.slice(0,2).toUpperCase();
+    }
+  }
   if(/^美术/.test(s)) return "美";
   if((m = s.match(/^程序(员)?\s*([A-Za-z0-9]+)$/))) return "P"+m[2].toUpperCase();
   if((m = s.match(/^(PM|项目经理)\s*([A-Za-z0-9]+)$/i))) return "M"+m[2].toUpperCase();
   return s.slice(0,2) || "?";
 }
+
+/* 角色：优先从名字前缀取（策划_三明治 → 策划），旧格式再按字面判断 */
+function roleOf(owner){
+  const s = String(owner||"").trim();
+  if(s.includes("_")) return s.split("_")[0].trim();
+  const m = s.match(/^(程序|美术|策划|音效|PM|项目经理|制作)/);
+  return m ? (m[1] === "项目经理" ? "PM" : m[1]) : "";
+}
+
+function jamStarted(){ return Date.now() >= jamStartMs(); }
+
+/* 顶部徽标：没开赛显示倒计时，开赛后显示第 N / 总天数 */
+function jamBadge(){
+  if(!JAM_START) return "–";
+  if(!jamStarted()){
+    const left = Math.ceil((jamStartMs() - Date.now()) / DAY_MS);
+    return `距开赛 ${left} 天`;
+  }
+  return `第 ${Math.min(jamDayNum(), JAM_DAYS)} / ${JAM_DAYS} 天`;
+}
+function jamDayNum(){
+  return Math.floor((Date.now() - jamStartMs()) / DAY_MS) + 1;
+}
 function jamDay(){
   if(!JAM_START) return "–";
-  const d = Math.floor((Date.now() - new Date(JAM_START+"T00:00:00+08:00").getTime())/86400000)+1;
-  return d >= 1 ? d : "–";
+  return jamStarted() ? jamDayNum() : "–";
 }
+
+/* 卡片右下角的截止提示：P0 必须赶在功能冻结前，P1/P2 依次往后 */
 function deadlineTag(t){
-  return "第 " + (t.priority==="P0" ? 5 : 8) + " 天";
+  const d = t.priority === "P0" ? FREEZE_DAY
+          : t.priority === "P1" ? Math.min(FREEZE_DAY + 3, JAM_DAYS)
+          : JAM_DAYS;
+  return `第 ${d} 天`;
 }
 
 /* ============================================================
@@ -440,10 +663,10 @@ function hideBanner(){
 function retryConnect(){ location.reload(); }
 
 function jamStartMs(){ return new Date(JAM_START + "T00:00:00+08:00").getTime(); }
-function jamEndMs(){ return jamStartMs() + 14 * DAY_MS; }
+function jamEndMs(){ return jamStartMs() + JAM_DAYS * DAY_MS; }
 function dayOf(ms){ return Math.floor((ms - jamStartMs()) / DAY_MS) + 1; }   // 第几天，1 起
-function pctOf(ms){                                                          // 在 14 天里的位置%
-  return Math.min(100, Math.max(0, (ms - jamStartMs()) / (14 * DAY_MS) * 100));
+function pctOf(ms){                                                          // 在整段赛程里的位置%
+  return Math.min(100, Math.max(0, (ms - jamStartMs()) / (JAM_DAYS * DAY_MS) * 100));
 }
 
 /* Firestore Timestamp / Date / 数字 / 字符串 统一转毫秒 */
@@ -685,6 +908,18 @@ function updateStats(){
   document.getElementById("progress").style.width = pct + "%";
   document.getElementById("doing").textContent = doing;
   document.getElementById("reviewCnt").textContent = rev;
+
+  // 下一个节点：到功能冻结还有几天（没开赛就显示距开赛）
+  const msEl = document.getElementById("nextMs"), noteEl = document.getElementById("nextMsNote");
+  msEl.textContent = `第 ${FREEZE_DAY} 天`;
+  if(!jamStarted()){
+    noteEl.textContent = `功能冻结 · 距开赛 ${Math.ceil((jamStartMs()-Date.now())/DAY_MS)} 天`;
+  }else{
+    const left = FREEZE_DAY - jamDayNum();
+    noteEl.textContent = left > 0 ? `功能冻结 · 还剩 ${left} 天`
+                       : left === 0 ? "功能冻结 · 就是今天"
+                       : `功能冻结 · 已过 ${-left} 天`;
+  }
 }
 
 /* ============================================================
@@ -706,7 +941,10 @@ function renderTeam(){
   }).sort((a,b) => (b.doing + b.review) - (a.doing + a.review) || b.mine.length - a.mine.length);
 
   box.innerHTML = rows.map(r => {
-    const role = r.mine.length ? [...new Set(r.mine.map(t => typeZh(t.type)))].join(" / ") : "暂无任务";
+    // 角色优先从名字前缀取（策划_三明治 → 策划）；旧格式或没任务时退回按任务类型推
+    const fromName = roleOf(r.name);
+    const fromType = r.mine.length ? [...new Set(r.mine.map(t => typeZh(t.type)))].join(" / ") : "";
+    const role = fromName ? (fromType ? `${fromName} · ${fromType}` : fromName) : (fromType || "暂无任务");
     const counts =
       `<span class="mc doing">进行中 ${r.doing}</span>` +
       `<span class="mc review">待验收 ${r.review}</span>` +
@@ -912,8 +1150,8 @@ function openDetail(t){
       `<span>进入「${statusDef(h.to).zh}」</span>` +
       `<span class="hn">${live ? "已停留 " + shortDur(nowMs - h.at) : dur}</span>` +
     `</div>`;
-  }).join("") + `<div class="hrow" style="color:#5d6875">` +
-      `<span class="dot" style="background:#3a4354"></span>` +
+  }).join("") + `<div class="hrow" style="color:#5a6472">` +
+      `<span class="dot" style="background:#5b6472"></span>` +
       `<span class="ht">${fmtDT(t.createdAt)}</span><span>创建任务</span></div>`;
 
   document.getElementById("detailModal").style.display = "flex";
@@ -964,7 +1202,8 @@ async function deleteDetail(){
 }
 
 /* ============================================================
-   甘特图：横轴 14 天，一行一个任务，色段 = 在某个状态里待了多久
+   甘特图：横轴 = 整个赛程（JAM_DAYS 天），一行一个任务，
+   色段 = 在某个状态里待了多久
    ============================================================ */
 function renderGantt(){
   const box = document.getElementById("gantt");
@@ -973,20 +1212,22 @@ function renderGantt(){
   // 图例
   document.getElementById("ganttLegend").innerHTML =
     STATUS_DEFS.map(s => `<span><i class="g-seg ${s.id}" style="position:static;top:auto;height:11px"></i>${s.zh}</span>`).join("") +
-    `<span style="margin-left:auto">紫色竖线 = 现在</span>`;
+    `<span style="margin-left:auto;color:#ff007f;letter-spacing:1px;text-shadow:0 0 10px rgba(255,0,127,.6)">粉色竖线 = 现在</span>`;
 
   if(!tasks.length){
     box.innerHTML = `<div class="g-empty">还没有任务。去「看板」新建一个，拖动它就能在这里看到时间轴。</div>`;
     return;
   }
 
-  const now   = Date.now();
-  const today = dayOf(now);
+  const now    = Date.now();
+  const today  = dayOf(now);
+  const started = jamStarted();
 
-  const head = `<div class="g-head"><div class="g-name">任务 / 负责人</div><div class="g-days">` +
-    Array.from({length:14}, (_,i) => {
+  const head = `<div class="g-head"><div class="g-name">任务 / 负责人</div>` +
+    `<div class="g-days" style="grid-template-columns:repeat(${JAM_DAYS},1fr)">` +
+    Array.from({length:JAM_DAYS}, (_,i) => {
       const dd = new Date(jamStartMs() + i * DAY_MS);
-      return `<div class="${i+1 === today ? "today" : ""}">第${i+1}天<br><span style="font-size:9px">${fmtDay(dd.getTime())}</span></div>`;
+      return `<div class="${started && i+1 === today ? "today" : ""}">第${i+1}天<br><span style="font-size:9px">${fmtDay(dd.getTime())}</span></div>`;
     }).join("") + `</div></div>`;
 
   // 按负责人分组，组内按状态/优先级
@@ -1000,10 +1241,10 @@ function renderGantt(){
       (PRI_RANK[a.priority] - PRI_RANK[b.priority]) ||
       String(a.title).localeCompare(String(b.title), "zh"));
 
-    const head2 = `<div class="g-row" style="border-top:1px solid #232b36;background:#12171f">` +
+    const head2 = `<div class="g-row" style="border-top:1px solid rgba(0,243,255,.3);background:rgba(0,243,255,.05)">` +
       `<div class="g-label"><span class="mini-avatar">${esc(avatar(owner))}</span>` +
-      `<span style="font-size:12px;font-weight:700">${esc(owner)}</span>` +
-      `<span style="font-size:10px;color:#5d6875">${mine.length} 个任务</span></div>` +
+      `<span style="font-size:12px;font-weight:700;color:#fff">${esc(owner)}</span>` +
+      `<span style="font-size:10px;color:#5a6472">${mine.length} 个任务</span></div>` +
       `<div class="g-track"></div></div>`;
 
     const body = mine.map(t => {
@@ -1025,9 +1266,11 @@ function renderGantt(){
     return head2 + body;
   }).join("");
 
-  box.innerHTML = `<div class="g-inner">${head}${rows}</div>` +
+  box.innerHTML = `<div class="g-inner" style="--dayw:${(100/JAM_DAYS).toFixed(6)}%;--days:${JAM_DAYS}">${head}${rows}</div>` +
     `<div class="g-note">色段数据来自看板上的拖动记录。<b>误拖了？</b>回到看板点提示里的「撤销」即可，` +
-    `不会在时间轴上留下痕迹。</div>`;
+    `不会在时间轴上留下痕迹。` +
+    (started ? `` : ` <b style="color:#ffbe0b">距开赛还有 ${Math.ceil((jamStartMs()-now)/DAY_MS)} 天</b>，` +
+                    `开赛前的活动都会挤在横轴最左边。`) + `</div>`;
 
   box.querySelectorAll(".gt").forEach(el => {
     el.onclick = () => {
@@ -1067,11 +1310,21 @@ window.deleteDetail = deleteDetail;
 window.renderGantt  = renderGantt;
 window.render       = render;
 
+/* 卡片跟随鼠标的霓虹光斑（视觉规范里 .card::before 的那层径向光）
+   用事件委托只挂一个监听，卡片频繁重画也不用重新绑定 */
+document.addEventListener("mousemove", e => {
+  const c = e.target.closest && e.target.closest(".card");
+  if(!c) return;
+  const r = c.getBoundingClientRect();
+  c.style.setProperty("--x", (e.clientX - r.left) + "px");
+  c.style.setProperty("--y", (e.clientY - r.top) + "px");
+});
+
 /* ============================================================
    8) 启动
    ============================================================ */
 (function boot(){
-  document.getElementById("dayNum").textContent = jamDay();
+  document.getElementById("dayBadge").textContent = jamBadge();
 
   // 弹窗下拉
   const ownerOpts = MEMBERS.map(m => `<option>${esc(m)}</option>`).join("");
