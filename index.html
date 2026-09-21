@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-page-node-id="DGw8lGxvXbckKNzfGEkGJW">
-<head data-page-node-id="d4tfjIZYaSSFGPIqeFwjgs">
-<meta charset="UTF-8" data-page-node-id="f7sHPgWuSlFVUruSfj7dBY">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="FKtGUpgBiMftF6afJAEkA4">
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>上一休六工作室 · Game Jam 看板</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="2n4gFqF7GQkYbNg0CIlqKS">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="bbwyMEOo7AJKkSuAcp3aLm">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet" data-page-node-id="VSxx3xGE9JXBrlD1MvDX4C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet">
 <style>
 :root{
   /* ============ 视觉规范：取自 Personal_Website / src/index.css「霓虹赛博档案」 ============ */
@@ -340,133 +340,133 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 }
 </style>
 </head>
-<body data-page-node-id="3aYqGTV7ToAWG3plvsvy03">
-<div class="app" data-page-node-id="EFz8ARuAPSaAsqH8JOA9UC">
-<header data-page-node-id="UvQSPAIQCfcqeJGCej212Z">
-  <div class="logo" data-page-node-id="H6eNtOOSxz2nG6Q6xJb9m2">JAM<span data-page-node-id="aUz7iw9uDYRzdLvDbu6V0a">BOARD</span></div>
-  <div class="nav" data-page-node-id="BSfNLZwyaFbMgBM3NA73da">
-    <button class="active" data-view="board"    onclick="setView('board')" data-page-node-id="acMosz2SeApQiRGOkqCDBG">看板</button>
-    <button               data-view="timeline" onclick="setView('timeline')" data-page-node-id="n9AODVgDowbfaQB0Ii5mhv">时间轴</button>
-    <button               data-view="team"     onclick="setView('team')" data-page-node-id="zFtbxFIfPQa7MIxpXCnrhf">团队</button>
+<body>
+<div class="app">
+<header>
+  <div class="logo">JAM<span>BOARD</span></div>
+  <div class="nav">
+    <button class="active" data-view="board"    onclick="setView('board')">看板</button>
+    <button               data-view="timeline" onclick="setView('timeline')">时间轴</button>
+    <button               data-view="team"     onclick="setView('team')">团队</button>
   </div>
-  <div class="header-right" data-page-node-id="DAhATYnFsFFYHzloqfwanU">
-    <span class="badge sync-wait" id="syncBadge" data-page-node-id="WaQ35SYgxm8wjahnNU8VxM">● 连接中…</span>
+  <div class="header-right">
+    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
     <span class="badge" id="dayBadge">–</span>
-    <div class="avatar" data-page-node-id="uxmXLVYfPTOJpLrR4vp0qw">PM</div>
+    <div class="avatar">PM</div>
   </div>
 </header>
 
-<main data-page-node-id="OhgTd9YrPLFxcb2EPX9xYD">
-  <div class="banner" id="banner" data-page-node-id="K3QE9Ys6Q1iaFydv2UBOVV">
-    <span id="bannerMsg" data-page-node-id="GONdEHQOB0vQRDt78GATTO"></span>
-    <button class="btn go" onclick="retryConnect()" data-page-node-id="d6sZzGnIp6RdHdo5nIJnJy">重试连接</button>
+<main>
+  <div class="banner" id="banner">
+    <span id="bannerMsg"></span>
+    <button class="btn go" onclick="retryConnect()">重试连接</button>
   </div>
 
   <!-- ========== 看板 ========== -->
-  <section class="view active" id="view-board" data-page-node-id="0D3k4gVnvqdoeX1R53XbNQ">
-    <div class="top" data-page-node-id="Z3CNAcSH4DYZBN0uNgB5sK">
-      <div data-page-node-id="pAiWMTsXw1qNmRbW04PzYi"><h1 data-page-node-id="5YsxXnEGymLuDUvjP5lPcH">上一休六工作室</h1></div>
-      <div class="actions" data-page-node-id="t03nMcCFafmmLCcBpJAyuX">
-        <button class="btn primary" onclick="openCreate()" data-page-node-id="KueB3SqLfS4iezwxfCAftN">＋ 新建任务</button>
+  <section class="view active" id="view-board">
+    <div class="top">
+      <div><h1>上一休六工作室</h1></div>
+      <div class="actions">
+        <button class="btn primary" onclick="openCreate()">＋ 新建任务</button>
       </div>
     </div>
 
-    <div class="stats" data-page-node-id="xWdtY51ONVGYXpXKjJ2wMf">
-      <div class="stat" data-page-node-id="phtmRk1ZdFfFXGSlZTqDl2"><div class="stat-label" data-page-node-id="sJZseI11tyzif1xoSYFRat">任务总数<span class="sub" data-page-node-id="iPVVMGa0yLebqj6XysTWEN">TOTAL TASKS</span></div><div class="stat-value" id="total" data-page-node-id="pj5B4jDDrGxbo2JEqCngpP">0</div><div class="stat-note" id="priBreak" data-page-node-id="XZvcrDFtTYFtbb2cVErYQm">P0 0 · P1 0 · P2 0</div></div>
-      <div class="stat" data-page-node-id="07KV9rba40wc35nt7J3IMB"><div class="stat-label" data-page-node-id="7TuxhJbxEDihAh9yLpjF71">完成度<span class="sub" data-page-node-id="wZOhVUKfA92NyLpXbZsGqI">COMPLETION</span></div><div class="stat-value" id="completion" data-page-node-id="E2CsLIPB40AihAMTPFeMrB">0%</div><div class="progress" data-page-node-id="63q5BDCBAWDNMRHIir2guB"><i id="progress" style="width:0%" data-page-node-id="FxcyCAegOiIe3whf5J6a55"></i></div></div>
-      <div class="stat" data-page-node-id="bcmKQKfcFPsfyIHiHrRaaU"><div class="stat-label" data-page-node-id="SEx8aHF7VitZQWy3VpwtAK">进行中<span class="sub" data-page-node-id="dpASbq4Vm03VnwUROwjjRD">IN PROGRESS</span></div><div class="stat-value" id="doing" data-page-node-id="LQWTPFbZgxJlXifGHGbpxw">0</div><div class="stat-note" data-page-node-id="A6L74Bz1k1qkmPZuYNwJh2">WIP 上限 5</div></div>
-      <div class="stat" data-page-node-id="nUCW4LCUzrN9V7z6EJMFh8"><div class="stat-label" data-page-node-id="ZFfzfpgHy9wctkLizBTG9t">待验收<span class="sub" data-page-node-id="rS0uuHedHL6B6XVzH7pNgP">REVIEW</span></div><div class="stat-value" id="reviewCnt" data-page-node-id="QCDWdseEm6hszyPvK4tLDN">0</div><div class="stat-note" data-page-node-id="SDJqiGKQY05H2P8PKHnOQI">等 PM 确认</div></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
+      <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
+      <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
+      <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
       <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px" id="nextMs">–</div><div class="stat-note" id="nextMsNote">功能冻结</div></div>
     </div>
 
-    <div class="toolbar" data-page-node-id="Ea0y3o7CLFoBC0M6khjnMX">
-      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()" data-page-node-id="Q9qhvQJfaJkLINbBmOmr8q">
-      <select id="priorityFilter" onchange="render()" data-page-node-id="qauK4KKqIxey9Q5FAkd6qM"><option value="all" data-page-node-id="t1ook2YEBVWuRmlX5P4GbL">全部优先级</option><option data-page-node-id="iq2WYvbWeQfvOsByQvUXaM">P0</option><option data-page-node-id="JFn2mHqPmiQh2xspChcvfY">P1</option><option data-page-node-id="o0XaOV0OKGLCpV5TPXmjvV">P2</option></select>
-      <select id="ownerFilter" onchange="render()" data-page-node-id="K5wyHukvujxhFBNpSzAVPS"><option value="all" data-page-node-id="nOI5ZjowI9rSzoEXR9SAy3">全部成员</option></select>
+    <div class="toolbar">
+      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()">
+      <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
+      <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
     </div>
 
-    <div class="board-wrap" data-page-node-id="rzcZ9zyFbaaB1LB5oQXA0l"><div class="board" id="board" data-page-node-id="6VgVH2vilglJNTQsDpvnXW"></div></div>
+    <div class="board-wrap"><div class="board" id="board"></div></div>
   </section>
 
   <!-- ========== 时间轴（甘特图）========== -->
-  <section class="view" id="view-timeline" data-page-node-id="TgHTapDj3S6j7PA9YFoiw0">
-    <div class="top" data-page-node-id="TN9YyUMrRz2EPc8MxUG7RN">
-      <div data-page-node-id="19z5O2uUAD9GLOPlh3zncO">
-        <h1 data-page-node-id="ZEM6iDPBkDOwU5HDWPfB9N">时间轴<span class="sub" data-page-node-id="P6cdgMPrQnO0HiKqitC95Y">TIMELINE</span></h1>
-        <div class="section-sub" data-page-node-id="6a9vk2dHFc9QTDMxgoomB7">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
+  <section class="view" id="view-timeline">
+    <div class="top">
+      <div>
+        <h1>时间轴<span class="sub">TIMELINE</span></h1>
+        <div class="section-sub">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
       </div>
-      <div class="actions" data-page-node-id="cDtAIwBD9jBjrLi68PYvdr"><button class="btn" onclick="renderGantt()" data-page-node-id="BvBUawAEfHXGFT4a7bOwsp">刷新</button></div>
+      <div class="actions"><button class="btn" onclick="renderGantt()">刷新</button></div>
     </div>
-    <div class="gantt-legend" id="ganttLegend" data-page-node-id="JbLyHIF8gabfDEiUXTfvIF"></div>
-    <div class="gantt" id="gantt" data-page-node-id="5EiCLJqXCIFFSvAGAhaE7B"></div>
+    <div class="gantt-legend" id="ganttLegend"></div>
+    <div class="gantt" id="gantt"></div>
   </section>
 
   <!-- ========== 团队 ========== -->
-  <section class="view" id="view-team" data-page-node-id="VdRPdyTj9IvmHEyjyGERUW">
-    <div class="top" data-page-node-id="xFbS80SMAdbp5FtD6O4x9W">
-      <div data-page-node-id="h3xUm5bmtlqt6JogNYYYfP">
-        <h1 data-page-node-id="jjxBx5SuniiCXrkNGz3eHA">团队<span class="sub" data-page-node-id="Sy44nblrzscCdGTkFomhgZ">TEAM</span></h1>
-        <div class="section-sub" data-page-node-id="n8EU5xmWdxHY6syyOTLPm8">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
+  <section class="view" id="view-team">
+    <div class="top">
+      <div>
+        <h1>团队<span class="sub">TEAM</span></h1>
+        <div class="section-sub">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
       </div>
     </div>
-    <div class="team" id="team" data-page-node-id="GHcaJ1L94IlGxtEICVNeFa"></div>
+    <div class="team" id="team"></div>
   </section>
 </main>
 </div>
 
-<div class="overlay" id="modal" data-page-node-id="sxNKG2u80ESFvyBUcv9OuP">
-  <div class="modal" data-page-node-id="2WkED5ualhe2jUzWPMaFpY">
-    <h2 data-page-node-id="meTgvOrgyGRsHB8TpWnNRJ">新建任务</h2>
-    <div class="form" data-page-node-id="AIBrLzemCu9PPfI2fhcb5i">
-      <label data-page-node-id="gHfxcxh2fo8KRoygHKotEN">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="fiR4ZcX4n4pFMPbAgj6Sis"></label>
-      <label data-page-node-id="WLMQxT4J885xsAIkFIrAxp">负责人<select id="newOwner" data-page-node-id="eKt7rh12MDxBfJspFqqFEY"></select></label>
-      <label data-page-node-id="oDzXZyfkBj2QG3kPJJuarv">初始状态<select id="newStatus" data-page-node-id="cCOZL6WX3Q7EqyAhfzaagd"></select></label>
-      <label data-page-node-id="gC2qy0zi5IcdnBfYQNjILS">优先级<select id="newPriority" data-page-node-id="DzClpwiYIYyuIKArnFzaNM"><option data-page-node-id="iiipa7D4Y7FCRNjKfH5UUV">P0</option><option data-page-node-id="BOCajuBJYlMbNvhVI50Ayn">P1</option><option data-page-node-id="plgzwbCXkrwIr3T5iPylYy">P2</option></select></label>
-      <label data-page-node-id="OeuSl7fVdJqUL5c3vEz4uE">类型<select id="newType" data-page-node-id="VpkA1iuKsWfgg57ooQh19m"></select></label>
-      <label data-page-node-id="A3WbqA2rsFptln3MbNi99x">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+<div class="overlay" id="modal">
+  <div class="modal">
+    <h2>新建任务</h2>
+    <div class="form">
+      <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
+      <label>负责人<select id="newOwner"></select></label>
+      <label>初始状态<select id="newStatus"></select></label>
+      <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
+      <label>类型<select id="newType"></select></label>
+      <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
-    <div class="modal-actions" data-page-node-id="RQakaYnd755Y3H1gdssoBR"><button class="btn" onclick="closeModal()" data-page-node-id="ZECHqRlKCM7ErXvCYqtlpO">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="x9fgjXcelN0Xq4feRAIPKA">创建</button></div>
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
   </div>
 </div>
-<div class="overlay" id="rejectModal" data-page-node-id="q7pWqao1ar2GCo6zKrJLWI">
-  <div class="modal" data-page-node-id="3xQ65JlshcKbLESMFSU4ln">
-    <h2 data-page-node-id="9dwOa5ieNVx8490l35Guyg">验收不合格 · 打回</h2>
-    <div class="form" data-page-node-id="cHej9F54uNfg9tblvifxgC">
-      <label data-page-node-id="h0QgHeL0vTwtqOkQgC7GjC">哪里不行？（会记在卡片上，返工的人一眼看到）
+<div class="overlay" id="rejectModal">
+  <div class="modal">
+    <h2>验收不合格 · 打回</h2>
+    <div class="form">
+      <label>哪里不行？（会记在卡片上，返工的人一眼看到）
         <textarea id="rejectNote" placeholder="例如：受击没有硬直，打击感很软；跳跃落地没有缓冲"></textarea>
       </label>
     </div>
-    <div class="modal-actions" data-page-node-id="TA8dtFi0YcYHqA5o3yNHWA">
-      <button class="btn" onclick="closeReject()" data-page-node-id="gKIXte0gDgPWKi0xBIA7JZ">取消</button>
-      <button class="btn primary" onclick="confirmReject()" data-page-node-id="7w4IwRvk4K3bU2gIbJKlkH">打回</button>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeReject()">取消</button>
+      <button class="btn primary" onclick="confirmReject()">打回</button>
     </div>
   </div>
 </div>
-<div class="overlay" id="detailModal" data-page-node-id="eqD4Y6dsABGWj6ztuupGIu">
-  <div class="modal" data-page-node-id="kXcnawp4ZIKwpigxMNWJAN">
-    <h2 data-page-node-id="JUg4afBDMUxpy6QCZaWdpE">任务详情</h2>
-    <div class="form two" data-page-node-id="dOTQqQoefazSaNjlU8AaOb">
-      <label class="span2" data-page-node-id="dqynXqkOno1M7gFJRxLQPt">任务名称<input id="dTitle" data-page-node-id="oiwaYgLaeMy4nhE24ELzYf"></label>
-      <label data-page-node-id="7gdA26V0TlbOFYepo6jEs9">负责人<select id="dOwner" data-page-node-id="2LlkluOufFRlCYyxpNUnUl"></select></label>
-      <label data-page-node-id="aMz5ifFI5IlGGbcVGqf0aE">状态<select id="dStatus" data-page-node-id="YFyPtWM4aHed8OOF1kg28v"></select></label>
-      <label data-page-node-id="7DKHl4OkznXARcEjtHKw1H">优先级<select id="dPriority" data-page-node-id="lKIDR6InYNQBRts63oQUm8"><option data-page-node-id="hY6mSq3GDGSxKwa5PVfzHy">P0</option><option data-page-node-id="BetoZD8KNHPKtYU5DCfdlX">P1</option><option data-page-node-id="HNoTbG03aKOgBwog3nz6cs">P2</option></select></label>
-      <label data-page-node-id="LHrNl75SilU9Fd790TfVe1">类型<select id="dType" data-page-node-id="G5tCGUkEnNeBijw2nvxX9F"></select></label>
-      <label class="span2" data-page-node-id="GofSVBayPOvG8564u3DFm7">描述（验收标准）<textarea id="dDesc"></textarea></label>
+<div class="overlay" id="detailModal">
+  <div class="modal">
+    <h2>任务详情</h2>
+    <div class="form two">
+      <label class="span2">任务名称<input id="dTitle"></label>
+      <label>负责人<select id="dOwner"></select></label>
+      <label>状态<select id="dStatus"></select></label>
+      <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
+      <label>类型<select id="dType"></select></label>
+      <label class="span2">描述（验收标准）<textarea id="dDesc"></textarea></label>
     </div>
-    <div class="hist" data-page-node-id="UriStPbGbBB8GB7IK0bOVu">
-      <div class="hist-title" data-page-node-id="2pHQrPkVxEm4CKJoly1tt8">阶段记录<span class="sub" data-page-node-id="DYHyHIBkrBRSkysEBZbfvI">STATUS HISTORY</span></div>
-      <div id="dHist" data-page-node-id="l1ypyIgEaqIXIsKsE48wl5"></div>
+    <div class="hist">
+      <div class="hist-title">阶段记录<span class="sub">STATUS HISTORY</span></div>
+      <div id="dHist"></div>
     </div>
-    <div class="modal-actions" data-page-node-id="DNtDILpkN59UkzejT5kW3V">
-      <button class="btn danger" onclick="deleteDetail()" data-page-node-id="o994XZNJeLIf7H743hBi0u">删除任务</button>
-      <button class="btn" onclick="closeDetail()" data-page-node-id="DQwjIl4r6CGoajqyJDc9XR">取消</button>
-      <button class="btn primary" onclick="saveDetail()" data-page-node-id="INosVwCJWCLGiOM5TdEIxE">保存</button>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="deleteDetail()">删除任务</button>
+      <button class="btn" onclick="closeDetail()">取消</button>
+      <button class="btn primary" onclick="saveDetail()">保存</button>
     </div>
   </div>
 </div>
-<div class="toast" id="toast" data-page-node-id="SmmaENvQE61rlJCQl81Lmx">
-  <span id="toastMsg" data-page-node-id="8nuAExEL6lv1gIAu4xKA4I"></span>
-  <button class="undo" id="undoBtn" onclick="undoMove()" data-page-node-id="dhjioHwvCZwcOzTSYJWUos">撤销</button>
+<div class="toast" id="toast">
+  <span id="toastMsg"></span>
+  <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
 </div>
 
 <script type="module">
