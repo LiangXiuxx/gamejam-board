@@ -60,12 +60,19 @@ body::after{
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));border:2px solid #020203}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--neon-pink),var(--neon-cyan))}
 ::-webkit-scrollbar-corner{background:#020203}
-/* 面板内部（看板 / 弹窗）的滚动条收细降噪：
-   满饱和的霓虹渐变条放在窄容器里很吵，这里只留一根低透明度的青线 */
-.board-wrap::-webkit-scrollbar,.modal::-webkit-scrollbar{width:7px;height:7px}
-.board-wrap::-webkit-scrollbar-track,.modal::-webkit-scrollbar-track{background:rgba(0,243,255,.04);border:0;box-shadow:none}
-.board-wrap::-webkit-scrollbar-thumb,.modal::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border:0}
-.board-wrap::-webkit-scrollbar-thumb:hover,.modal::-webkit-scrollbar-thumb:hover{background:rgba(0,243,255,.6)}
+/* 弹窗（任务详情 / 新建 / 打回）右侧的滚动条：和页面右侧那条用**同一套霓虹渐变**，
+   用户明确要求对齐。宽度收窄到 9px，免得在 520px 宽的弹窗里抢视觉。 */
+.modal::-webkit-scrollbar{width:9px;height:9px;background:var(--bg-dark)}
+.modal::-webkit-scrollbar-track{background:#020203;border-left:1px solid rgba(0,243,255,.1);box-shadow:inset 0 0 10px #000}
+.modal::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));border:2px solid #020203}
+.modal::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--neon-pink),var(--neon-cyan))}
+
+/* 看板自己的横向滚动条仍然收细降噪：
+   它是嵌在页面里的第二条长条，跟页面级那条一起发光会很吵（用户没提，保持原样） */
+.board-wrap::-webkit-scrollbar{width:7px;height:7px}
+.board-wrap::-webkit-scrollbar-track{background:rgba(0,243,255,.04);border:0;box-shadow:none}
+.board-wrap::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border:0}
+.board-wrap::-webkit-scrollbar-thumb:hover{background:rgba(0,243,255,.6)}
 
 .app{position:relative;z-index:1;min-height:100vh}
 
@@ -716,7 +723,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-28.5";
+const BUILD      = "2026-09-28.6";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
