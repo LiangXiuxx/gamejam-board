@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN" data-page-node-id="TXcQlwS4p1Fe240m0Ugvug">
+<head data-page-node-id="L4OlxE7KzjNVK6MFER03Bn">
+<meta charset="UTF-8" data-page-node-id="s5ceZuRGM4LIO7xSw5qdoY">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="VYSg7uXRKGvWIFRHRITJXU">
 <title>上一休六工作室 · Game Jam 看板</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="DUwu5zUvs88S6Nk8BVVyPO">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="ji2t1MOzkutGsRWwNFjcbN">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet" data-page-node-id="l63Gdminxp9nOZMdCr3DEb">
 <style>
 :root{
   /* ============ 视觉规范：取自 Personal_Website / src/index.css「霓虹赛博档案」 ============ */
@@ -262,19 +262,8 @@ body.dragging .empty{opacity:1;border-color:rgba(0,243,255,.45);color:rgba(0,243
 .tag.over{color:var(--neon-pink);border-color:rgba(255,0,127,.5);background:rgba(255,0,127,.1);
   text-shadow:0 0 8px rgba(255,0,127,.55);animation:neon-flicker 2.4s infinite}
 
-/* 截止日期输入 + 赛程节点快捷键 */
-input[type=date]{color-scheme:dark}
-input[type=date]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.7;
-  filter:invert(1) sepia(1) saturate(6) hue-rotate(140deg)}
-.due-quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
-.form .due-quick{grid-column:1/-1;margin-top:-4px}
-.qbtn{background:rgba(3,3,5,.6);border:1px solid rgba(0,243,255,.28);color:rgba(0,243,255,.85);
-  padding:6px 10px;font-family:var(--cyber);font-size:10px;letter-spacing:1px;cursor:pointer;
-  transition:background .25s,border-color .25s,box-shadow .25s,color .25s}
-.qbtn:hover{border-color:var(--neon-cyan);background:rgba(0,243,255,.1);box-shadow:0 0 12px rgba(0,243,255,.3)}
-.qbtn.on{background:var(--neon-cyan);border-color:var(--neon-cyan);color:#020203;box-shadow:0 0 14px rgba(0,243,255,.5)}
-.qbtn.clr{color:rgba(255,0,127,.85);border-color:rgba(255,0,127,.35)}
-.qbtn.clr:hover{border-color:var(--neon-pink);background:rgba(255,0,127,.12);box-shadow:0 0 12px rgba(255,0,127,.3)}
+/* 提交按钮的处理中状态（写入要等 Firestore，没反馈用户会以为点了没反应） */
+.btn:disabled{opacity:.6;cursor:progress}
 .empty{padding:20px 10px;text-align:center;color:#4a4a5c;font-family:var(--cyber);font-size:10px;letter-spacing:2px;
   text-transform:uppercase;border:1px dashed rgba(0,243,255,.2);opacity:0;transition:opacity .2s,box-shadow .2s,border-color .2s}
 .empty.on{opacity:1}
@@ -419,141 +408,287 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 }
 /* 窄屏下给列一个可用的最小宽度，这时才让 .board-wrap 出横向滚动条 */
 @media(max-width:760px){.board{grid-template-columns:repeat(4,minmax(215px,1fr))}}
+/* ============ 开屏动画：Glitch 解码揭示（本会话首次访问播放） ============ */
+#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden}
+.intro-curtain{position:absolute;left:0;width:100%;height:50.5%;z-index:1;background:#020203;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(0,243,255,.05) 3px,transparent 4px);
+  transition:transform .6s cubic-bezier(.76,0,.24,1)}
+.intro-curtain.top{top:0}
+.intro-curtain.bottom{bottom:0}
+.intro-curtain i{position:absolute;left:0;width:100%;height:2px;background:#eafcff;
+  box-shadow:0 0 12px var(--neon-cyan),0 0 44px rgba(0,243,255,.85);opacity:0;transition:opacity .18s}
+.intro-curtain.top i{bottom:0}
+.intro-curtain.bottom i{top:0}
+.intro-line{position:absolute;left:10%;right:10%;top:50%;height:2px;z-index:3;background:#fff;
+  box-shadow:0 0 14px var(--neon-cyan),0 0 50px rgba(0,243,255,.9);
+  transform:scaleX(0);opacity:0;animation:intro-line .55s .06s cubic-bezier(.16,1,.3,1) both}
+@keyframes intro-line{
+  0%{transform:scaleX(0);opacity:0}
+  15%{opacity:1}
+  55%{transform:scaleX(1);opacity:1}
+  100%{transform:scaleX(1);opacity:0}
+}
+.intro-flash{position:absolute;inset:0;z-index:6;background:#fff;opacity:0;pointer-events:none}
+#intro.locked .intro-flash{animation:intro-flash .3s ease-out forwards}
+@keyframes intro-flash{0%{opacity:0}15%{opacity:.9}100%{opacity:0}}
+
+.intro-center{position:relative;z-index:4;text-align:center;padding:0 18px;
+  transition:opacity .2s ease,transform .2s ease}
+#intro.out{pointer-events:none}
+#intro.out .intro-curtain.top{transform:translateY(-101%)}
+#intro.out .intro-curtain.bottom{transform:translateY(101%)}
+#intro.out .intro-curtain i{opacity:1}
+#intro.out .intro-center{opacity:0;transform:scale(1.08)}
+
+.intro-logo{position:relative;display:inline-block;font-family:var(--cyber);font-weight:900;
+  font-size:clamp(30px,9vw,64px);line-height:1;letter-spacing:.18em;text-indent:.18em;text-transform:uppercase}
+.lg{display:block;white-space:nowrap}
+.lg b{font-weight:900;color:var(--neon-cyan)}
+.lg i{font-style:normal;font-weight:900;color:var(--neon-pink)}
+.lg-main{position:relative;z-index:2;text-shadow:0 0 18px rgba(0,243,255,.5);
+  animation:lg-jump 1.1s steps(1) infinite}
+.lg-r,.lg-c{position:absolute;inset:0;z-index:1;opacity:.55}
+.lg-r{animation:rgb-r .9s steps(1) infinite}
+.lg-c{animation:rgb-c .9s steps(1) infinite}
+.lg-slice{position:absolute;inset:0;z-index:3;opacity:0;
+  animation:lg-slice 1.1s steps(1) infinite}
+.lg-slice b,.lg-slice i{color:#fff;text-shadow:0 0 10px var(--neon-cyan)}
+@keyframes lg-jump{
+  0%,100%{transform:none}
+  12%{transform:translate(-4px,0)}
+  13%{transform:none}
+  37%{transform:translate(5px,-2px)}
+  38%{transform:none}
+  62%{transform:translate(-3px,2px)}
+  63%{transform:none}
+}
+@keyframes rgb-r{
+  0%,100%{transform:translate(0)}
+  10%{transform:translate(-5px,1px)}
+  26%{transform:translate(4px,-2px)}
+  41%{transform:translate(-2px,0)}
+  56%{transform:translate(6px,2px)}
+  71%{transform:translate(-4px,-1px)}
+  86%{transform:translate(3px,1px)}
+}
+@keyframes rgb-c{
+  0%,100%{transform:translate(0)}
+  10%{transform:translate(5px,-1px)}
+  26%{transform:translate(-4px,2px)}
+  41%{transform:translate(3px,0)}
+  56%{transform:translate(-6px,-2px)}
+  71%{transform:translate(4px,1px)}
+  86%{transform:translate(-3px,-1px)}
+}
+@keyframes lg-slice{
+  0%,100%{opacity:0;clip-path:inset(0 0 100% 0);transform:none}
+  20%{opacity:.9;clip-path:inset(16% 0 58% 0);transform:translateX(8px)}
+  23%{opacity:0}
+  45%{opacity:.8;clip-path:inset(62% 0 12% 0);transform:translateX(-9px)}
+  48%{opacity:0}
+  70%{opacity:.7;clip-path:inset(40% 0 42% 0);transform:translateX(5px)}
+  73%{opacity:0}
+}
+#intro.locked .lg-main{animation:none;transform:none;
+  text-shadow:0 0 26px rgba(0,243,255,.75),0 0 64px rgba(0,243,255,.35)}
+#intro.locked .lg-r,#intro.locked .lg-c,#intro.locked .lg-slice{animation:none;opacity:0;transform:none}
+
+.intro-sub{margin-top:18px;font-family:var(--cyber);font-size:10px;letter-spacing:.32em;
+  text-indent:.32em;color:var(--text-muted);text-transform:uppercase}
+.intro-bar{width:min(260px,54vw);height:2px;margin:14px auto 0;background:rgba(0,243,255,.14);overflow:hidden}
+.intro-bar i{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--neon-cyan),var(--neon-pink));
+  box-shadow:0 0 10px var(--neon-cyan);transition:width .78s cubic-bezier(.4,0,.2,1)}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  #intro{display:none!important}
 }
 </style>
+<noscript data-page-node-id="MG6tt6FFIAQqIYu5Gc9yf8"><style>#intro{display:none}</style></noscript>
 </head>
-<body>
-<div class="app">
-<header>
-  <div class="logo">JAM<span>BOARD</span></div>
-  <div class="nav">
-    <button class="active" data-view="board"    onclick="setView('board')">看板</button>
-    <button               data-view="timeline" onclick="setView('timeline')">时间轴</button>
-    <button               data-view="team"     onclick="setView('team')">团队</button>
+<body data-page-node-id="zv1BHw53FmxvK2oggFmb2l">
+<div id="intro" aria-hidden="true" data-page-node-id="5z6Y8c8YdwjYVwPSGkkWho">
+  <div class="intro-curtain top" data-page-node-id="XUFC0BR5rKogLaAQLFZNAr"><i data-page-node-id="ADJCEG2hLVwVw8EBTaAOvC"></i></div>
+  <div class="intro-curtain bottom" data-page-node-id="B09yyCxvkQMUQ2Fka51Lv2"><i data-page-node-id="rWg0ySDJBLx01f683HeMab"></i></div>
+  <div class="intro-line" data-page-node-id="dhqm3MXtVCFVENie3RywM0"></div>
+  <div class="intro-center" data-page-node-id="EsSag4kkDaELnxSPOHKoPW">
+    <div class="intro-logo" data-page-node-id="vvkbNpbrXuD7FBkyOTvyIb">
+      <span class="lg lg-main" data-page-node-id="IAFRU7qetOe5g0gfonWvBR"><b data-page-node-id="FlHgwsJdnjCEMVuPYHb9Gc">JAM</b><i data-page-node-id="gavuoQ5hp3PWNmS8k5imBv">BOARD</i></span>
+      <span class="lg lg-r" data-page-node-id="z744y3OD1bDrd6F6gLG8vH"><b data-page-node-id="FurD2H50dhkc2jMMFuD913">JAM</b><i data-page-node-id="jA9aNtFE00veA5nJkHSSdi">BOARD</i></span>
+      <span class="lg lg-c" data-page-node-id="lwCrjoK52cNI0aaAC8ltCv"><b data-page-node-id="z6xz0pCSWjGd3JjpT936B7">JAM</b><i data-page-node-id="O0S1KLtZ5jk0iPfmbITKTA">BOARD</i></span>
+      <span class="lg lg-slice" data-page-node-id="G5dXRohiMAR3zBpUA9NNQS"><b data-page-node-id="TH2Z2r785555XpSVNthBVS">JAM</b><i data-page-node-id="JA4zoAK3vhD1q2froGbCH9">BOARD</i></span>
+    </div>
+    <div class="intro-sub" data-page-node-id="hbKrer5Wp9kCUJE4pQGj9g">BOOT // 上一休六工作室 · GAME JAM BOARD</div>
+    <div class="intro-bar" data-page-node-id="JS3ZdjoYqbTGQmNNkvEx4Q"><i data-page-node-id="HgmyHkm06vIUnzbfVASLp5"></i></div>
   </div>
-  <div class="header-right">
-    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
-    <span class="badge" id="dayBadge">–</span>
-    <div class="avatar">PM</div>
+  <div class="intro-flash" data-page-node-id="4uLxhltAmtWS7R2iHbDaRa"></div>
+</div>
+<script>
+(function(){
+  var intro=document.getElementById('intro'); if(!intro)return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var seen=false; try{seen=sessionStorage.getItem('jamboard-intro')==='1';}catch(e){}
+  function kill(){ if(intro&&intro.parentNode){intro.parentNode.removeChild(intro);} document.documentElement.style.overflow=''; }
+  if(reduce||seen){kill();return;}
+  try{sessionStorage.setItem('jamboard-intro','1');}catch(e){}
+  var CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&*/<>';
+  var cells=[];
+  [].slice.call(intro.querySelectorAll('.lg')).forEach(function(l){
+    cells.push({b:l.querySelector('b'),i:l.querySelector('i')});
+  });
+  var sub=intro.querySelector('.intro-sub'), bar=intro.querySelector('.intro-bar i');
+  var TJ='JAM', TB='BOARD', DUR=820, t0=null, done=false;
+  function rnd(){return CH.charAt(Math.floor(Math.random()*CH.length));}
+  function dec(target,p){
+    var n=target.length, rev=Math.floor(p*n), s='', k;
+    for(k=0;k<n;k++){ s += k<rev ? target.charAt(k) : rnd(); }
+    return s;
+  }
+  function paint(j,b){ cells.forEach(function(c){c.b.textContent=j;c.i.textContent=b;}); }
+  document.documentElement.style.overflow='hidden';
+  requestAnimationFrame(function(ts){ t0=ts; requestAnimationFrame(step); });
+  function step(ts){
+    if(done)return;
+    var p=Math.min(1,(ts-t0)/DUR);
+    paint(dec(TJ,p),dec(TB,p));
+    if(p<1){requestAnimationFrame(step); return;}
+    done=true; paint(TJ,TB); intro.classList.add('locked');
+    if(sub)sub.textContent='SYSTEM READY // 欢迎回来';
+  }
+  setTimeout(function(){ if(bar)bar.style.width='100%'; },120);
+  setTimeout(function(){ intro.classList.add('out'); document.documentElement.style.overflow=''; },DUR+420);
+  setTimeout(kill,DUR+1150);
+  setTimeout(kill,5000);
+})();
+</script>
+<div class="app" data-page-node-id="OmDaTzTwBaY1F61VmnVKZD">
+<header data-page-node-id="SpkAttkHNlULAUEZrbp9Wl">
+  <div class="logo" data-page-node-id="x57ndMcrGos4x7V7pHkBeS">JAM<span data-page-node-id="7DmqRUEralXo4E3PiGiLwa">BOARD</span></div>
+  <div class="nav" data-page-node-id="AQpglEF5YtOsFtjUiczArs">
+    <button class="active" data-view="board"    onclick="setView('board')" data-page-node-id="Zn1BqVMi5WTd75bw3nlfrC">看板</button>
+    <button               data-view="timeline" onclick="setView('timeline')" data-page-node-id="DuM9Cyd3BQeh2ZdyDLVuuT">时间轴</button>
+    <button               data-view="team"     onclick="setView('team')" data-page-node-id="DPs43mZF9d8Uvcsgp7ueYH">团队</button>
+  </div>
+  <div class="header-right" data-page-node-id="dTiZJaJSGorAnDatHOjszf">
+    <span class="badge sync-wait" id="syncBadge" data-page-node-id="64cpDQeeiqjXbC3sLXraeu">● 连接中…</span>
+    <span class="badge" id="dayBadge" data-page-node-id="3cknnglCN6DWaSNstJSzGH">–</span>
+    <div class="avatar" data-page-node-id="pT07z8jsS5QuJwXab3XP8F">PM</div>
   </div>
 </header>
 
-<main>
-  <div class="banner" id="banner">
-    <span id="bannerMsg"></span>
-    <button class="btn go" onclick="retryConnect()">重试连接</button>
+<main data-page-node-id="lBVvA2APZrm79A5jaDdoqQ">
+  <div class="banner" id="banner" data-page-node-id="DItZx4AevYcNF5gPH0o9Sg">
+    <span id="bannerMsg" data-page-node-id="Gzs80sc8QMAs7hezlGVhMv"></span>
+    <button class="btn go" onclick="retryConnect()" data-page-node-id="qvtWzOplrf1iXk1ZNp3tdA">重试连接</button>
   </div>
 
   <!-- ========== 看板 ========== -->
-  <section class="view active" id="view-board">
-    <div class="top">
-      <div><h1>上一休六工作室</h1></div>
-      <div class="actions">
-        <button class="btn primary" onclick="openCreate()">＋ 新建任务</button>
+  <section class="view active" id="view-board" data-page-node-id="wDZhfozgTVFplEnFSZepPx">
+    <div class="top" data-page-node-id="mwWBedzEwwtO4hvu4AwOO6">
+      <div data-page-node-id="1aepmFiX2fEOUFdJ6uGULd"><h1 data-page-node-id="AUNRWCRuvV5D6oPzstA7UT">上一休六工作室</h1></div>
+      <div class="actions" data-page-node-id="YomFzhpF1D9abUr3GAflyM">
+        <button class="btn primary" onclick="openCreate()" data-page-node-id="uLDS9tFRlmRTeJGTBznc2S">＋ 新建任务</button>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
-      <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
-      <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
-      <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
+    <div class="stats" data-page-node-id="kYVtvZeG4uoZxjDyQdnJi8">
+      <div class="stat" data-page-node-id="xwjf36pL6b3mXvfrLHzIID"><div class="stat-label" data-page-node-id="6vPZHxF5SSUM8Gr9RAlMlJ">任务总数<span class="sub" data-page-node-id="pX2tsT7jxJCcgccjtkI6lk">TOTAL TASKS</span></div><div class="stat-value" id="total" data-page-node-id="T7loSWPDAYycnW3ZqqqG4H">0</div><div class="stat-note" id="priBreak" data-page-node-id="opoetNZx7eTkF5POoeaUmK">P0 0 · P1 0 · P2 0</div></div>
+      <div class="stat" data-page-node-id="oQlpFC560PoE18IJRl873o"><div class="stat-label" data-page-node-id="GxHyvnWMst329PULw4BulW">完成度<span class="sub" data-page-node-id="U1MsELrQTavjxnDBNv7OzG">COMPLETION</span></div><div class="stat-value" id="completion" data-page-node-id="0G2hJsDcAgMwVsTgPB5JMs">0%</div><div class="progress" data-page-node-id="C4CmDe6jo8hlPrwbPmNcQ6"><i id="progress" style="width:0%" data-page-node-id="hwMkHAei09iiTAn8aOZusJ"></i></div></div>
+      <div class="stat" data-page-node-id="FTG7cIs0eI5k7S6Qvkqart"><div class="stat-label" data-page-node-id="DIsoR4dZxmSdI0qyx9HT0z">进行中<span class="sub" data-page-node-id="Hv5qRdLeQcNUI6otATTXgj">IN PROGRESS</span></div><div class="stat-value" id="doing" data-page-node-id="yl1TkfuxnH0mofDjCuDl8j">0</div><div class="stat-note" data-page-node-id="HOpIl03u0GDwKpEMAweiLU">WIP 上限 5</div></div>
+      <div class="stat" data-page-node-id="2E2LiyH3PvOBPjy9eBFSCD"><div class="stat-label" data-page-node-id="gc808YT5C9w946EAKnqkO8">待验收<span class="sub" data-page-node-id="qCS2FWRqLyQTkLTjon7tcz">REVIEW</span></div><div class="stat-value" id="reviewCnt" data-page-node-id="hKn3wshpfBeIT2fqfBK31f">0</div><div class="stat-note" data-page-node-id="3bwL5kQdldGrIGa1DzjSkm">等 PM 确认</div></div>
     </div>
 
-    <div class="toolbar">
-      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()">
-      <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
-      <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
+    <div class="toolbar" data-page-node-id="2QIHThYM8NbB5dssBoTnmr">
+      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()" data-page-node-id="g8ilAg2NZ1x8ndtxOeYXBB">
+      <select id="priorityFilter" onchange="render()" data-page-node-id="pqyVyhUyxIRTNXPCd4yr4O"><option value="all" data-page-node-id="TfEgq7XPF780E5XQ3zFaUY">全部优先级</option><option data-page-node-id="AGMwcdciuNZ4zwIMdem2xc">P0</option><option data-page-node-id="gfU3d1eY7hG1oDMHGjbhV8">P1</option><option data-page-node-id="EnEJLTakW8GGdsjpLakBRz">P2</option></select>
+      <select id="ownerFilter" onchange="render()" data-page-node-id="kIhGACAQtkeCwdodM4c7qD"><option value="all" data-page-node-id="ZenCxgUDybMAWkaGA2rzZi">全部成员</option></select>
     </div>
 
-    <div class="board-wrap"><div class="board" id="board"></div></div>
+    <div class="board-wrap" data-page-node-id="aZjCKxlnSs0F9M4yU0Ncdl"><div class="board" id="board" data-page-node-id="IOLWRFNBu2oHGufJc6Lddh"></div></div>
   </section>
 
   <!-- ========== 时间轴（甘特图）========== -->
-  <section class="view" id="view-timeline">
-    <div class="top">
-      <div>
-        <h1>时间轴<span class="sub">TIMELINE</span></h1>
-        <div class="section-sub">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
+  <section class="view" id="view-timeline" data-page-node-id="v54lNxAdqcejldmEJya4VG">
+    <div class="top" data-page-node-id="mamleHDwksGMzNFG1KBnGQ">
+      <div data-page-node-id="iq8n0M4TPCwYVthOiCtNnP">
+        <h1 data-page-node-id="wwjjpv7DKGEjYqkhTyCdr4">时间轴<span class="sub" data-page-node-id="wUndmAyCd44AHdSVpXwFR5">TIMELINE</span></h1>
+        <div class="section-sub" data-page-node-id="d57d1DhvP5dWimEtdeAc3V">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
       </div>
-      <div class="actions"><button class="btn" onclick="renderGantt()">刷新</button></div>
+      <div class="actions" data-page-node-id="0ttMBo7EM6bjEaR4LvaWGF"><button class="btn" onclick="renderGantt()" data-page-node-id="c8nBmrA50dYJM0FpoHZ3eD">刷新</button></div>
     </div>
-    <div class="gantt-legend" id="ganttLegend"></div>
-    <div class="gantt" id="gantt"></div>
+    <div class="gantt-legend" id="ganttLegend" data-page-node-id="phpoVcLWHYFFbZAaSL2hbd"></div>
+    <div class="gantt" id="gantt" data-page-node-id="tu9Z0g0SuDBnRQCAlCtR9p"></div>
   </section>
 
   <!-- ========== 团队 ========== -->
-  <section class="view" id="view-team">
-    <div class="top">
-      <div>
-        <h1>团队<span class="sub">TEAM</span></h1>
-        <div class="section-sub">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
+  <section class="view" id="view-team" data-page-node-id="RjOFsg7kygRSS1zqBhkioR">
+    <div class="top" data-page-node-id="0TGoaglUmBqwHsiDx3A0Rl">
+      <div data-page-node-id="eWazcH1M20AuDX6FNK0LLa">
+        <h1 data-page-node-id="0CswX4CTKiS2yXBqeNHYUU">团队<span class="sub" data-page-node-id="62GAE6WXHFFGO56RJPjFis">TEAM</span></h1>
+        <div class="section-sub" data-page-node-id="dqr3JOzL4eKIMs3ZlYVibW">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
       </div>
     </div>
-    <div class="team" id="team"></div>
+    <div class="team" id="team" data-page-node-id="PYzwCanFst8MaXs5PRzmyh"></div>
   </section>
 </main>
 </div>
 
-<div class="overlay" id="modal">
-  <div class="modal">
-    <h2>新建任务</h2>
-    <div class="form">
-      <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
-      <label>负责人（可多选）<select id="newOwner" multiple></select></label>
-      <label>初始状态<select id="newStatus"></select></label>
-      <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="newType"></select></label>
-      <label>截止日期（可留空）<input type="date" id="newDue"></label>
-      <div class="due-quick" data-target="newDue"></div>
-      <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+<div class="overlay" id="modal" data-page-node-id="oq0PJLEqy9x3Dx8O5nWYD3">
+  <div class="modal" data-page-node-id="E0xAQjfDuUlypF7lC8RtvP">
+    <h2 data-page-node-id="lbogGhVWXp17LUqk9Y3V75">新建任务</h2>
+    <div class="form" data-page-node-id="COFOuHISkrHtWvWv5Vtwft">
+      <label data-page-node-id="ugJOG5AVAuhFTQIjIwTwFq">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="4pyuqgID8bLVkxRMIrU8g5"></label>
+      <label data-page-node-id="C8wCSLNDp341yOQvcxOXjY">负责人（可多选）<select id="newOwner" multiple data-page-node-id="hgTtBREHPDe9p303GHRqCw"></select></label>
+      <label data-page-node-id="lnEJ5DUAtmH4C9HhLR4Zsr">初始状态<select id="newStatus" data-page-node-id="bFuknQVeiCA57g8NwEw0jx"></select></label>
+      <label data-page-node-id="y7YR6Ld0eT3DCuXY57I9ym">优先级<select id="newPriority" data-page-node-id="jrXyTEQc6cgtNVsqfnYugv"><option data-page-node-id="gAWcnDD6wIpd0KPCplFB9W">P0</option><option data-page-node-id="vhHd8Fq6r4ueHuNt01zrw1">P1</option><option data-page-node-id="mVZEhFHKM3xAfzry8VLJQI">P2</option></select></label>
+      <label data-page-node-id="7RDezNNyJhjClz7ZTG9QeO">类型<select id="newType" data-page-node-id="yU3x7C4GRtu1L2oqVppdzn"></select></label>
+      <label data-page-node-id="KxjPu1xi0Hctmz4JntdVkD">截止（第几天）<select id="newDue" data-page-node-id="BBzkukVF5ubNuGqehhIgn0"></select></label>
+      <label data-page-node-id="UZd8PEVPvDmS4piMdSS60h">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
+    <div class="modal-actions" data-page-node-id="9sW4EXJsmnchg8OaOyNyve"><button class="btn" onclick="closeModal()" data-page-node-id="2fHeSEKrLfy5zYpKufHGvk">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="atd90DuxTDwntb17sBnx4Z">创建</button></div>
   </div>
 </div>
-<div class="overlay" id="rejectModal">
-  <div class="modal">
-    <h2>验收不合格 · 打回</h2>
-    <div class="form">
-      <label>哪里不行？（会记在卡片上，返工的人一眼看到）
+<div class="overlay" id="rejectModal" data-page-node-id="BHGfWasQ0H2icEZrVZFnog">
+  <div class="modal" data-page-node-id="LZa6Tyeyu1kzVFTbSK20VH">
+    <h2 data-page-node-id="i53fhA6xwS7KwImLNvwiel">验收不合格 · 打回</h2>
+    <div class="form" data-page-node-id="AX1XkbMfYl2ybmqiHesUaF">
+      <label data-page-node-id="bGquMwCTuXFrGglyLgpFfR">哪里不行？（会记在卡片上，返工的人一眼看到）
         <textarea id="rejectNote" placeholder="例如：受击没有硬直，打击感很软；跳跃落地没有缓冲"></textarea>
       </label>
     </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeReject()">取消</button>
-      <button class="btn primary" onclick="confirmReject()">打回</button>
+    <div class="modal-actions" data-page-node-id="zAmWGvUBJLI4H1TB3g8TPv">
+      <button class="btn" onclick="closeReject()" data-page-node-id="SO3EHpA9QJskLb3ZVe8Id9">取消</button>
+      <button class="btn primary" onclick="confirmReject()" data-page-node-id="u05YaH9s04rvU3h79BvJ0R">打回</button>
     </div>
   </div>
 </div>
-<div class="overlay" id="detailModal">
-  <div class="modal">
-    <h2>任务详情</h2>
-    <div class="form two">
-      <label class="span2">任务名称<input id="dTitle"></label>
-      <label>负责人（可多选）<select id="dOwner" multiple></select></label>
-      <label>状态<select id="dStatus"></select></label>
-      <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="dType"></select></label>
-      <label class="span2">截止日期（可留空）<input type="date" id="dDue"></label>
-      <div class="due-quick" data-target="dDue"></div>
-      <label class="span2">描述（验收标准）<textarea id="dDesc"></textarea></label>
+<div class="overlay" id="detailModal" data-page-node-id="YVtTrubEKyYiRjVtUsjoGC">
+  <div class="modal" data-page-node-id="UatAOaH65VToeAztX52ly9">
+    <h2 data-page-node-id="LbZzJuiDgO8vf8qOSo4v1X">任务详情</h2>
+    <div class="form two" data-page-node-id="BzMwt4BofhrFgjopkguLSM">
+      <label class="span2" data-page-node-id="2NGkYYLK1Pb6oasPuaB5bp">任务名称<input id="dTitle" data-page-node-id="vaJFzY9cVADNflIHFWB9Pp"></label>
+      <label data-page-node-id="pscBriyEMvvtOgvxqHXtMS">负责人（可多选）<select id="dOwner" multiple data-page-node-id="Bcv6qRmqddFszvD5piNbrX"></select></label>
+      <label data-page-node-id="5l82JvcOJCeAELoQHfh1kA">状态<select id="dStatus" data-page-node-id="LjYLzuX767pZmXDtwLGIiQ"></select></label>
+      <label data-page-node-id="UEUalqET52Nb6HkCl3fpDa">优先级<select id="dPriority" data-page-node-id="wDRCcDYXfdKxraNMB1KaS9"><option data-page-node-id="hlDlJqv7l8Dp4DR98yAJMI">P0</option><option data-page-node-id="34ErtlQNHJFzPZ15PO8xSz">P1</option><option data-page-node-id="xPdTAI2nCkhGK9QEdqTCmb">P2</option></select></label>
+      <label data-page-node-id="Nh0jLD9tK5VhGNmef29G8c">类型<select id="dType" data-page-node-id="ZBDuVvXQLvZsxM5NOGf79O"></select></label>
+      <label class="span2" data-page-node-id="Yxk2ThQ6oe9HDq2IcHcg2d">截止（第几天）<select id="dDue" data-page-node-id="JaE8CuV20xdwz7tGBowbM8"></select></label>
+      <label class="span2" data-page-node-id="7Yz7iQK2CSlpzteMEt5cPn">描述（验收标准）<textarea id="dDesc"></textarea></label>
     </div>
-    <div class="hist">
-      <div class="hist-title">阶段记录<span class="sub">STATUS HISTORY</span></div>
-      <div id="dHist"></div>
+    <div class="hist" data-page-node-id="VEsYAQ2DNYHCKzSeiM3QKM">
+      <div class="hist-title" data-page-node-id="zDrpZMQIZQJLZ1KpAvUra4">阶段记录<span class="sub" data-page-node-id="WpyAajcgSVZ2ASSYqW8vDo">STATUS HISTORY</span></div>
+      <div id="dHist" data-page-node-id="hoVM7znc1hcMiyY2RL7rcv"></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn danger" onclick="deleteDetail()">删除任务</button>
-      <button class="btn" onclick="closeDetail()">取消</button>
-      <button class="btn primary" onclick="saveDetail()">保存</button>
+    <div class="modal-actions" data-page-node-id="Q6dOF59Ctd1JCcbjP7SQkh">
+      <button class="btn danger" onclick="deleteDetail()" data-page-node-id="uYNLc99oC8NMKdSZET8C56">删除任务</button>
+      <button class="btn" onclick="closeDetail()" data-page-node-id="65BPMBBAujWsPweE23Zea8">取消</button>
+      <button class="btn primary" onclick="saveDetail()" data-page-node-id="cr1HaD8b7YrbVpkDmFU3eW">保存</button>
     </div>
   </div>
 </div>
-<div class="toast" id="toast">
-  <span id="toastMsg"></span>
-  <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
+<div class="toast" id="toast" data-page-node-id="WqMAJTferHRRVqiK7CtguD">
+  <span id="toastMsg" data-page-node-id="gGB23iVWqEuQERnHK6eBQD"></span>
+  <button class="undo" id="undoBtn" onclick="undoMove()" data-page-node-id="BEZPcGowG2w64b0nUTRuDG">撤销</button>
 </div>
 
 <script type="module">
@@ -574,6 +709,10 @@ const firebaseConfig = {
   messagingSenderId: "614099694809",
   appId: "1:614099694809:web:2d086e028d773fc9d6fac8"
 };
+
+// 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
+// （悬停右上角 PM 头像能看到，控制台也会打印）
+const BUILD      = "2026-09-28.4";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -644,19 +783,6 @@ function normalizeOwners(arr, single){
 /* 从负责人下拉里取勾选的人。单选和多选（multiple）都能用，没选返回空数组 */
 function pickedOwners(sel){
   return [...sel.selectedOptions].map(o => o.value).filter(Boolean);
-}
-/* 截止日期统一成 "YYYY-MM-DD" 字符串；空/非法值一律当没填。
-   （兼容一下万一被写成 Firestore Timestamp 的情况） */
-function normalizeDue(v){
-  if(v == null || v === "") return "";
-  if(typeof v === "string"){
-    const m = v.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
-    return m ? `${m[1]}-${m[2]}-${m[3]}` : "";
-  }
-  const ms = toMs(v);
-  if(ms == null) return "";
-  const d = new Date(ms + 8 * 3600 * 1000);
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
 }
 function typeZh(raw){
   const v = String(raw==null?"":raw).trim();
@@ -756,62 +882,54 @@ function jamDay(){
 }
 
 /* ============================================================
-   截止日期
+   截止（赛程第几天）
    ------------------------------------------------------------
-   早先的版本是"按优先级推"：P0→第14天、P1→第17天、P2→第21天。
-   但绝大多数任务都是 P0，算出来全是同一个日期，每张卡贴一遍等于没信息。
-   现在改成**每条任务自己填**一个截止日期（`due`，存 "YYYY-MM-DD" 字符串——
-   日期用字符串存，读写两端都不会踩时区的坑，在 Firebase 控制台里也一眼能看懂）。
-   没填就不显示任何标签。
+   这里前后改过三版，记一下免得再绕回去：
+   1) 按优先级推（P0→第14天 / P1→第17天 / P2→第21天）
+      —— 绝大多数任务都是 P0，每张卡同一个值，等于没信息
+   2) 填具体年月日 —— jam 一共就 21 天，让用户挑日历太重，
+      还容易填出赛程之外的日期
+   3) 【现在】一个「第 1 ~ 21 天」的下拉，直接对应赛程的第几天
+   存 `dueDay`（数字 1..JAM_DAYS；0 / 缺省 = 没设置）
    ============================================================ */
-const DUE_WARN_DAYS = 3;    // 距截止几天内算"快到期"
+const DUE_WARN_DAYS = 3;    // 距离截止几天内算"快到期"
 
-/* 第 n 天对应的日期（n 从 1 起，以北京时间为准） */
+function normalizeDueDay(v){
+  const n = Number(v);
+  return Number.isFinite(n) && n >= 1 && n <= JAM_DAYS ? Math.round(n) : 0;
+}
+/* 第 n 天对应的真实日期，只用在 tooltip 里 */
 function jamDayDate(n){
   const ms = jamStartMs() + (n - 1) * DAY_MS + 8 * 3600 * 1000;   // 挪到北京墙上时间再取 UTC 字段
   const d = new Date(ms);
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
+  return `${d.getUTCMonth()+1}/${d.getUTCDate()}`;
 }
-/* 今天（北京时间）的 YYYY-MM-DD */
-function todayBJ(){
-  const d = new Date(Date.now() + 8 * 3600 * 1000);
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
+/* 距离截止还有几天（按赛程天数算，不受客户端时区影响）；没设置返回 null */
+function dueLeft(t){
+  return t.dueDay ? t.dueDay - jamDayNum() : null;
 }
-/* 距离截止还有几天；负数 = 已逾期。没填返回 null */
-function daysUntil(due){
-  if(!due) return null;
-  const a = Date.parse(todayBJ() + "T00:00:00Z");
-  const b = Date.parse(due      + "T00:00:00Z");
-  if(isNaN(a) || isNaN(b)) return null;
-  return Math.round((b - a) / DAY_MS);
-}
-function fmtDue(due){                    // "2026-10-14" -> "10/14"
-  if(!due) return "";
-  const p = due.split("-");
-  return p.length === 3 ? `${Number(p[1])}/${Number(p[2])}` : due;
-}
-/* 卡片右下角：没填不显示；快到期/逾期显示剩余天数；其余显示具体日期 */
+/* 卡片右下角。没设置就不显示；做完的也不显示 */
 function dueTag(t){
-  const left = daysUntil(t.due);
+  const left = dueLeft(t);
   if(left === null) return "";
-  if(t.status === "done") return "";     // 做完的不用再催
+  if(t.status === "done") return "";
   if(left < 0)   return `逾期 ${-left} 天`;
   if(left === 0) return "今天截止";
   if(left <= DUE_WARN_DAYS) return `剩 ${left} 天`;
-  return fmtDue(t.due);
+  return `第 ${t.dueDay} 天`;
 }
 function dueClass(t){
-  const left = daysUntil(t.due);
+  const left = dueLeft(t);
   if(left === null || t.status === "done") return "";
   if(left < 0) return "over";
   if(left <= DUE_WARN_DAYS) return "warn";
   return "";                             // 平时就中性色
 }
 function dueHint(t){
-  const left = daysUntil(t.due);
-  if(left === null) return "这条任务没设置截止日期";
+  const left = dueLeft(t);
+  if(left === null) return "这条任务没设置截止";
   const when = left < 0 ? `已逾期 ${-left} 天` : left === 0 ? "今天截止" : `还剩 ${left} 天`;
-  return `截止 ${t.due}（${when}）`;
+  return `截止第 ${t.dueDay} 天（${jamDayDate(t.dueDay)}）· ${when}`;
 }
 
 /* ============================================================
@@ -929,7 +1047,7 @@ function startFirestore(){
           priority: normalizePriority(v.priority),
           type: v.type || "Programming",
           status,
-          due: normalizeDue(v.due),
+          dueDay: normalizeDueDay(v.dueDay),
           desc: v.desc || v.description || "",
           rework: Number(v.rework) || 0,
           reviewNote: v.reviewNote || "",
@@ -960,11 +1078,11 @@ function fallBack(msg, err){
     const upto  = order.indexOf(t.status);
     const hist  = [{ to:"todo", at }];
     for(let k=1;k<=upto;k++) hist.push({ to: order[k], at: at + k * 3600000 * 20 });
-    // 示例数据的截止日期：按优先级给出赛程里的第 14 / 17 / 21 天，这样演示时每条日期都不一样
+    // 示例数据也带截止：按优先级落在第 14 / 17 / 21 天，演示时能看出每条不一样
     const dday = t.priority === "P0" ? FREEZE_DAY
                : t.priority === "P1" ? Math.min(FREEZE_DAY + 3, JAM_DAYS)
                : JAM_DAYS;
-    return { ...t, id:"demo-"+i, owners:normalizeOwners(t.owners, t.owner), due:jamDayDate(dday),
+    return { ...t, id:"demo-"+i, owners:normalizeOwners(t.owners, t.owner), dueDay:dday,
              seq:i, createdAt:at, rework:0, reviewNote:"", history:hist };
   });
   setSync("demo", "○ 未连接");
@@ -1280,52 +1398,84 @@ function closeModal(){
 function resetCreateForm(){
   document.getElementById("newTitle").value = "";
   document.getElementById("newDesc").value  = "";
-  document.getElementById("newDue").value   = "";
   const owner  = document.getElementById("newOwner");
   const status = document.getElementById("newStatus");
   const pri    = document.getElementById("newPriority");
   const type   = document.getElementById("newType");
+  const due    = document.getElementById("newDue");
   [...owner.options].forEach(o => o.selected = false);   // 一个都不勾
   status.selectedIndex = 0;
   pri.selectedIndex    = 0;
   type.selectedIndex   = 0;
+  due.selectedIndex    = 0;    // 「不设置」
   syncSelects();              // 自绘下拉是直接改 selected 的，得手动同步
 }
 
-async function createTask(){
-  const title = document.getElementById("newTitle").value.trim();
-  if(!title){ showToast("任务名不能为空", true); return; }
+/* 提交按钮的"处理中"状态：写入可能要等几秒，没有反馈的话用户会以为点了没反应 */
+function setBusy(btn, busy, text){
+  if(!btn) return;
+  btn.disabled = !!busy;
+  if(busy){ btn.dataset.label = btn.textContent; btn.textContent = text || "处理中…"; }
+  else if(btn.dataset.label){ btn.textContent = btn.dataset.label; delete btn.dataset.label; }
+}
 
-  if(!live){
-    showToast("离线演示模式：无法保存。请先在 Firebase 控制台发布 Firestore 规则，再点「重试连接」", true);
+async function createTask(){
+  const btn = document.querySelector("#modal .modal-actions .btn.primary");
+  let title = "";
+  try{
+    /* ---- 整个函数体都在 try 里：任何一步出错都要变成看得见的提示，
+           绝不允许"点了没反应、也不报错"这种静默失败 ---- */
+    title = document.getElementById("newTitle").value.trim();
+    if(!title){ showToast("任务名不能为空", true); return; }
+
+    if(!live){
+      showToast("离线演示模式：无法保存。请先在 Firebase 控制台发布 Firestore 规则，再点「重试连接」", true);
+      return;
+    }
+
+    const now = new Date();
+    const status = document.getElementById("newStatus").value;
+    const owners = pickedOwners(document.getElementById("newOwner"));
+    const payload = {
+      title,
+      owners,                                    // 多人协作
+      owner: owners[0] || "",                    // 老字段一起写，别的读法不会炸
+      status,
+      priority: document.getElementById("newPriority").value,
+      type:     document.getElementById("newType").value,
+      dueDay:   normalizeDueDay(document.getElementById("newDue").value),   // 0 = 没设置
+      desc:     document.getElementById("newDesc").value.trim(),
+      history:  [{ to: status, at: now }],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    setBusy(btn, true, "创建中…");
+    // 写入如果卡住，也要让用户看见，不能干等
+    const slow = setTimeout(() => showToast("写入较慢，还在等 Firestore 响应…检查一下网络", true), 8000);
+    try{
+      await addDoc(collection(db, COLLECTION), payload);
+    }finally{
+      clearTimeout(slow);
+      setBusy(btn, false);
+    }
+  }catch(e){
+    console.error("[createTask]", e);
+    setBusy(btn, false);
+    showToast("创建失败：" + ((e && (e.code || e.message)) || e), true);
     return;
   }
 
-  const now = new Date();
-  const status = document.getElementById("newStatus").value;
-  const owners = pickedOwners(document.getElementById("newOwner"));
-  const payload = {
-    title,
-    owners,                       // 多人协作
-    owner: owners[0] || "",       // 老字段一起写，别的读法不会炸
-    status,
-    priority: document.getElementById("newPriority").value,
-    type:     document.getElementById("newType").value,
-    due:      normalizeDue(document.getElementById("newDue").value),   // "YYYY-MM-DD" 或空
-    desc:     document.getElementById("newDesc").value.trim(),
-    history:  [{ to: status, at: now }],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  };
+  /* 能走到这里说明确实写进数据库了。后面这些是纯界面动作，
+     再出错也不该影响"已创建"这个事实，所以单独包一层。 */
   try{
-    await addDoc(collection(db, COLLECTION), payload);
     resetCreateForm();
     closeModal();                 // 建完自动关弹窗
     setView("board");             // 并回到看板首页（当时可能在时间轴/团队 tab 上）
     showToast("已创建任务：" + title);
   }catch(e){
-    console.error(e);
-    showToast("创建失败：" + (e.code || e.message), true);
+    console.error("[createTask:ui]", e);
+    showToast("已创建「" + title + "」，但界面刷新出错：" + e.message, true);
   }
 }
 
@@ -1365,7 +1515,9 @@ function openDetail(t){
   document.getElementById("dStatus").value   = t.status;
   document.getElementById("dPriority").value = t.priority;
   document.getElementById("dType").value     = t.type;
-  document.getElementById("dDue").value      = t.due || "";
+  // 截止下拉：把 dueDay 挪到对应的选项上（没设置就是「不设置」那一项）
+  const dd = document.getElementById("dDue");
+  dd.value = t.dueDay ? String(t.dueDay) : "";
   document.getElementById("dDesc").value     = t.desc || "";
 
   // 阶段记录：每条显示 状态 + 时间 + 停留时长
@@ -1398,33 +1550,54 @@ function closeDetail(){
   detailId = null;
 }
 async function saveDetail(){
+  const btn = document.querySelector("#detailModal .modal-actions .btn.primary");
   const t = tasks.find(x => x.id === detailId);
   if(!t) return;
-  const title = document.getElementById("dTitle").value.trim();
-  if(!title){ showToast("任务名不能为空", true); return; }
+  let title = "";
 
-  const owners = pickedOwners(document.getElementById("dOwner"));
-  const next = {
-    owners,
-    owner:    owners[0] || "",    // 老字段一起写
-    status:   document.getElementById("dStatus").value,
-    priority: document.getElementById("dPriority").value,
-    type:     document.getElementById("dType").value,
-    due:      normalizeDue(document.getElementById("dDue").value),
-    desc:     document.getElementById("dDesc").value.trim()
-  };
-  const patch = { ...next, updatedAt: serverTimestamp() };
-  if(next.status !== t.status){
-    patch.history = pushHistory(t, next.status).map(h => ({ to: h.to, at: new Date(h.at) }));
-    if(next.status === "done") patch.reviewNote = "";
-  }
   try{
-    await updateDoc(doc(db, COLLECTION, t.id), patch);
+    /* 和 createTask 一样：整个函数体都在 try 里，杜绝静默失败 */
+    title = document.getElementById("dTitle").value.trim();
+    if(!title){ showToast("任务名不能为空", true); return; }
+
+    const owners = pickedOwners(document.getElementById("dOwner"));
+    const next = {
+      owners,
+      owner:    owners[0] || "",    // 老字段一起写
+      status:   document.getElementById("dStatus").value,
+      priority: document.getElementById("dPriority").value,
+      type:     document.getElementById("dType").value,
+      dueDay:   normalizeDueDay(document.getElementById("dDue").value),   // 0 = 没设置
+      desc:     document.getElementById("dDesc").value.trim()
+    };
+    const patch = { ...next, updatedAt: serverTimestamp() };
+    if(next.status !== t.status){
+      patch.history = pushHistory(t, next.status).map(h => ({ to: h.to, at: new Date(h.at) }));
+      if(next.status === "done") patch.reviewNote = "";
+    }
+
+    setBusy(btn, true, "保存中…");
+    const slow = setTimeout(() => showToast("写入较慢，还在等 Firestore 响应…检查一下网络", true), 8000);
+    try{
+      await updateDoc(doc(db, COLLECTION, t.id), patch);
+    }finally{
+      clearTimeout(slow);
+      setBusy(btn, false);
+    }
+  }catch(e){
+    console.error("[saveDetail]", e);
+    setBusy(btn, false);
+    showToast("保存失败：" + ((e && (e.code || e.message)) || e), true);
+    return;
+  }
+
+  try{
     closeDetail();                // 存完自动关弹窗
     setView("board");             // 并回到看板首页
     showToast("已保存：" + title);
   }catch(e){
-    showToast("保存失败：" + (e.code || e.message), true);
+    console.error("[saveDetail:ui]", e);
+    showToast("已保存「" + title + "」，但界面刷新出错：" + e.message, true);
   }
 }
 async function deleteDetail(){
@@ -1689,23 +1862,28 @@ function closeCyberMenus(){
 
 document.addEventListener("click", closeCyberMenus);
 
-/* 截止日期的一键设置：第14天(功能冻结) / 第17天 / 第21天(收尾) / 清空。
-   赛程里真正有意义的就是这几个节点，手点日历反而慢。 */
-document.addEventListener("click", e => {
-  const b = e.target.closest && e.target.closest(".qbtn");
-  if(!b) return;
-  e.preventDefault();                       // 别触发它外层 label 的默认行为
-  const box = b.closest(".due-quick");
-  const el  = box && document.getElementById(box.dataset.target);
-  if(!el) return;
-  el.value = b.dataset.day ? jamDayDate(Number(b.dataset.day)) : "";
-  box.querySelectorAll(".qbtn").forEach(x => x.classList.toggle("on", x === b && !!b.dataset.day));
+/* ============================================================
+   兜底：任何没被捕获的错误都要弹出来，不许出现"点了没反应也不报错"
+   （这个看板是小队每天在用的工具，静默失败比报错难查得多）
+   ============================================================ */
+window.addEventListener("error", e => {
+  console.error("[window.error]", e.message, e.filename, e.lineno);
+  if(typeof showToast === "function") showToast("页面出错：" + e.message, true);
+});
+window.addEventListener("unhandledrejection", e => {
+  const r = e.reason || {};
+  console.error("[unhandledrejection]", r);
+  if(typeof showToast === "function") showToast("操作失败：" + (r.code || r.message || r), true);
 });
 
 /* ============================================================
    8) 启动
    ============================================================ */
 (function boot(){
+  const av = document.querySelector("header .avatar");
+  if(av) av.title = "build " + BUILD;
+  console.log("[JAMBOARD] build " + BUILD);
+
   document.getElementById("dayBadge").textContent = jamBadge();
 
   // 弹窗下拉
@@ -1716,15 +1894,12 @@ document.addEventListener("click", e => {
   ["newStatus","dStatus"].forEach(id => document.getElementById(id).innerHTML = statusOpts);
   ["newType","dType"].forEach(id => document.getElementById(id).innerHTML = typeOpts);
 
-  enhanceSelects();  // 选项填好之后再套自绘外壳（原生 select 留在里面当数据源）
+  // 截止：赛程第 1 ~ JAM_DAYS 天，外加「不设置」。跟着 JAM_DAYS 走，改赛程会自动变
+  const dueOpts = `<option value="">不设置</option>` +
+    Array.from({length:JAM_DAYS}, (_, i) => `<option value="${i+1}">第 ${i+1} 天</option>`).join("");
+  ["newDue","dDue"].forEach(id => document.getElementById(id).innerHTML = dueOpts);
 
-  // 截止日期的快捷节点：按赛程算出来，改 JAM_START / FREEZE_DAY 这里会跟着变
-  const mid = Math.min(FREEZE_DAY + 3, JAM_DAYS);
-  const qHtml = `<button type="button" class="qbtn" data-day="${FREEZE_DAY}">冻结 · 第${FREEZE_DAY}天</button>` +
-                `<button type="button" class="qbtn" data-day="${mid}">第${mid}天</button>` +
-                `<button type="button" class="qbtn" data-day="${JAM_DAYS}">收尾 · 第${JAM_DAYS}天</button>` +
-                `<button type="button" class="qbtn clr" data-day="">清空</button>`;
-  document.querySelectorAll(".due-quick").forEach(box => box.innerHTML = qHtml);
+  enhanceSelects();  // 选项填好之后再套自绘外壳（原生 select 留在里面当数据源）
 
   render();  // 先画出骨架，别让首屏空着
 
