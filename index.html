@@ -136,7 +136,7 @@ h1{margin:0 0 5px;font-family:var(--cyber);font-size:24px;font-weight:700;letter
   background-image:linear-gradient(var(--neon-pink),var(--neon-pink));text-shadow:0 0 8px rgba(255,0,127,.6);margin-right:auto}
 
 /* 指标卡 = 原站 .card（玻璃 + 悬停发光 + 切角装饰线） */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat{position:relative;overflow:hidden;background:var(--glass);border:1px solid rgba(255,255,255,.06);padding:16px;
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   transition:transform .4s cubic-bezier(.175,.885,.32,1.275),border-color .35s,box-shadow .35s}
@@ -186,11 +186,19 @@ select{cursor:pointer}
 .cs-menu::-webkit-scrollbar{width:6px}
 .cs-menu::-webkit-scrollbar-track{background:transparent}
 .cs-menu::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border:0}
-.cs-opt{padding:9px 12px;font-size:13px;color:#c9cfda;cursor:pointer;border-left:2px solid transparent;
-  transition:background .15s,color .15s,border-color .15s}
+.cs-opt{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:13px;color:#c9cfda;cursor:pointer;
+  border-left:2px solid transparent;transition:background .15s,color .15s,border-color .15s}
+.cs-txt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cs-opt:hover{background:rgba(0,243,255,.1);color:var(--neon-cyan);border-left-color:var(--neon-cyan)}
 .cs-opt.on{color:var(--neon-cyan);border-left-color:var(--neon-cyan);background:rgba(0,243,255,.07)}
-.cs-opt.on::after{content:'●';float:right;font-size:7px;line-height:1.9;text-shadow:0 0 8px var(--neon-cyan)}
+.cs-opt.cur{background:rgba(0,243,255,.07);box-shadow:inset 0 0 0 1px rgba(0,243,255,.25)}
+/* 单选末尾一个圆点标当前项；多选有方框了，不再重复 */
+.cyber-select:not(.multi) .cs-opt.on::after{content:'●';margin-left:auto;font-size:7px;text-shadow:0 0 8px var(--neon-cyan)}
+/* 多选的勾选框 */
+.cs-box{width:11px;height:11px;flex:0 0 auto;position:relative;border:1px solid rgba(0,243,255,.45);background:rgba(0,243,255,.05)}
+.cs-opt.on .cs-box{background:var(--neon-cyan);border-color:var(--neon-cyan);box-shadow:0 0 10px rgba(0,243,255,.7)}
+.cs-opt.on .cs-box::after{content:'';position:absolute;left:3px;top:0;width:3px;height:6px;
+  border-right:2px solid #020203;border-bottom:2px solid #020203;transform:rotate(42deg)}
 
 /* ============ 看板 ============ */
 .board-wrap{overflow-x:auto;overflow-y:hidden;padding-bottom:8px}
@@ -232,13 +240,20 @@ body.dragging .empty{opacity:1;border-color:rgba(0,243,255,.45);color:rgba(0,243
 .p2{color:var(--neon-cyan);background:rgba(0,243,255,.08);text-shadow:0 0 8px rgba(0,243,255,.6);box-shadow:0 0 10px rgba(0,243,255,.16)}
 .type{font-size:10px;color:var(--text-muted);margin-left:auto}
 .card h3{font-family:var(--sans);font-size:13px;font-weight:600;margin:10px 0 7px;color:#f2f4f8;letter-spacing:.2px}
-.card-desc{font-size:11px;color:#8b93a7;margin-bottom:9px;line-height:1.6}
-.card-desc.note{color:var(--neon-gold);background:rgba(255,190,11,.07);border-left:2px solid var(--neon-gold);padding:5px 8px}
+/* 描述在看板上最多露两行，多的用省略号挡住；完整内容点开任务详情看 */
+.card-desc{font-size:11px;color:#8b93a7;margin-bottom:9px;line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+/* 驳回原因 / 返工说明不截断——返工的人要能一眼看全 */
+.card-desc.note{color:var(--neon-gold);background:rgba(255,190,11,.07);border-left:2px solid var(--neon-gold);padding:5px 8px;
+  display:block;-webkit-line-clamp:unset;overflow:visible}
 .card-desc.note b{color:var(--neon-gold);font-weight:600}
 .card-foot{display:flex;align-items:center;justify-content:space-between;color:var(--text-muted);font-size:10px;gap:6px}
-.owner{display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.owner{display:flex;align-items:center;gap:4px;min-width:0;overflow:hidden}
+.owner-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .mini-avatar{width:20px;height:20px;display:grid;place-items:center;background:rgba(157,0,255,.14);border:1px solid rgba(157,0,255,.42);
   color:#d9c2ff;font-family:var(--cyber);font-size:8px;font-weight:700;flex:0 0 auto}
+/* 多人任务超过 3 个时，多出来的收成一个 +N */
+.mini-avatar.more{background:rgba(0,243,255,.1);border-color:rgba(0,243,255,.45);color:var(--neon-cyan);font-size:7px}
 .tag{padding:2px 7px;background:rgba(157,0,255,.06);border:1px solid rgba(157,0,255,.3);color:var(--neon-purple);
   font-size:9.5px;letter-spacing:1px;flex:0 0 auto}
 .empty{padding:20px 10px;text-align:center;color:#4a4a5c;font-family:var(--cyber);font-size:10px;letter-spacing:2px;
@@ -314,6 +329,8 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 .dot.review{background:var(--neon-gold);box-shadow:0 0 8px var(--neon-gold)}
 .dot.done{background:var(--neon-green);box-shadow:0 0 8px var(--neon-green)}
 .mtask .mt{font-size:12px;color:#c9cfda;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 团队视图里标一下"这活儿还有别人一起做" */
+.mtask .co{font-style:normal;font-size:9px;color:var(--neon-cyan);margin-left:5px;opacity:.85}
 .mtask .mp{font-family:var(--cyber);font-size:8.5px;font-weight:700;padding:2px 5px;border:1px solid currentColor}
 .mempty{font-size:11.5px;color:#5d6875;padding:8px 5px}
 
@@ -368,8 +385,12 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 .toast.undoable .undo{display:inline-block}
 .toast.err{background:rgba(30,2,10,.95);border-color:var(--neon-pink);color:#ffd0e0;box-shadow:0 0 28px rgba(255,0,127,.35)}
 .toast.err .undo{background:var(--neon-pink);color:#020203}
+/* 成功提示：绿描边，和报错（粉）一眼分得开 */
+.toast.ok{border-color:var(--neon-green);box-shadow:0 0 28px rgba(0,255,157,.32)}
+.toast.ok::before{content:'';width:6px;height:6px;flex:0 0 auto;border-radius:50%;background:var(--neon-green);
+  box-shadow:0 0 10px var(--neon-green);animation:blink 1s infinite}
 
-@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .team{grid-template-columns:1fr 1fr}
@@ -420,7 +441,6 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
       <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
       <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
       <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
-      <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px" id="nextMs">–</div><div class="stat-note" id="nextMsNote">功能冻结</div></div>
     </div>
 
     <div class="toolbar">
@@ -463,7 +483,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
     <h2>新建任务</h2>
     <div class="form">
       <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
-      <label>负责人<select id="newOwner"></select></label>
+      <label>负责人（可多选）<select id="newOwner" multiple></select></label>
       <label>初始状态<select id="newStatus"></select></label>
       <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
       <label>类型<select id="newType"></select></label>
@@ -491,7 +511,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
     <h2>任务详情</h2>
     <div class="form two">
       <label class="span2">任务名称<input id="dTitle"></label>
-      <label>负责人<select id="dOwner"></select></label>
+      <label>负责人（可多选）<select id="dOwner" multiple></select></label>
       <label>状态<select id="dStatus"></select></label>
       <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
       <label>类型<select id="dType"></select></label>
@@ -589,6 +609,19 @@ function normalizePriority(raw){
   const s = String(raw==null?"":raw).trim().toUpperCase();
   return ["P0","P1","P2"].includes(s) ? s : "P2";
 }
+/* 负责人支持协作，一个任务可以有多人。
+   库里新数据存 owners: [...]; 老数据只有单个 owner 字符串（甚至中文值），这里统一成数组。
+   写入时两个字段都写（owner = owners[0]），这样万一有别的脚本在读 owner 也不会炸。 */
+function normalizeOwners(arr, single){
+  let list = Array.isArray(arr) ? arr : [];
+  list = list.map(s => String(s==null?"":s).trim()).filter(Boolean);
+  if(!list.length && single) list = [String(single).trim()].filter(Boolean);
+  return [...new Set(list)];
+}
+/* 从负责人下拉里取勾选的人。单选和多选（multiple）都能用，没选返回空数组 */
+function pickedOwners(sel){
+  return [...sel.selectedOptions].map(o => o.value).filter(Boolean);
+}
 function typeZh(raw){
   const v = String(raw==null?"":raw).trim();
   const hit = ALL_TYPES.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
@@ -618,7 +651,7 @@ const DEMO_TASKS = [
   {title:"Enemy Sprite",owner:"美术_梦深云",priority:"P0",type:"Art",status:"doing",desc:"基础敌人视觉资源"},
   {title:"敌人攻击规则",owner:"策划_三明治",priority:"P0",type:"Design",status:"done",desc:"攻击距离、前摇、CD、伤害"},
   {title:"伤害 / 死亡系统",owner:"程序_良秀",priority:"P0",type:"Programming",status:"todo",desc:"HP、受伤、死亡、无敌帧"},
-  {title:"Vertical Slice 关卡",owner:"程序_小草",priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
+  {title:"Vertical Slice 关卡",owner:"程序_小草",owners:["程序_小草","策划_三明治"],priority:"P0",type:"Programming",status:"doing",desc:"完整跑通一局游戏"},
   {title:"场景背景",owner:"美术_梦深云",priority:"P1",type:"Art",status:"todo",desc:"第一版场景视觉"},
   {title:"HUD",owner:"程序_良秀",priority:"P1",type:"Programming",status:"review",desc:"HP、技能、提示"},
   {title:"HUD 素材",owner:"美术_梦深云",priority:"P1",type:"Art",status:"doing",desc:"等待 UI 规范"},
@@ -628,7 +661,7 @@ const DEMO_TASKS = [
   {title:"敌人受击特效",owner:"美术_梦深云",priority:"P1",type:"Art",status:"todo",desc:"Hit / Death VFX"},
   {title:"音效清单",owner:"策划_鹿鹿",priority:"P1",type:"Production",status:"doing",desc:"整理攻击、受击、UI 音效需求"},
   {title:"Audio Manager",owner:"程序_小草",priority:"P1",type:"Programming",status:"doing",desc:"等待音频资源格式确认"},
-  {title:"Boss 设计",owner:"策划_三明治",priority:"P1",type:"Design",status:"todo",desc:"攻击模式与阶段"},
+  {title:"Boss 设计",owner:"策划_三明治",owners:["策划_三明治","程序_良秀"],priority:"P1",type:"Design",status:"todo",desc:"攻击模式与阶段"},
   {title:"Boss 实现",owner:"程序_小草",priority:"P1",type:"Programming",status:"todo",desc:"Feature Freeze 后再做"},
   {title:"Tutorial",owner:"策划_鹿鹿",priority:"P2",type:"Design",status:"todo",desc:"新手提示"},
   {title:"菜单 UI",owner:"美术_梦深云",priority:"P1",type:"Art",status:"review",desc:"开始、设置、退出"},
@@ -800,10 +833,12 @@ function startFirestore(){
         const v = d.data() || {};
         const status = normalizeStatus(v.status);
         const created = toMs(v.createdAt) || toMs(v.updatedAt) || Date.now();
+        const owners = normalizeOwners(v.owners, v.owner);
         return {
           id: d.id,
           title: v.title || "(未命名任务)",
-          owner: v.owner || "未分配",
+          owners,
+          owner: owners[0] || "未分配",   // 兼容老读法，显示一律走 owners
           priority: normalizePriority(v.priority),
           type: v.type || "Programming",
           status,
@@ -837,7 +872,8 @@ function fallBack(msg, err){
     const upto  = order.indexOf(t.status);
     const hist  = [{ to:"todo", at }];
     for(let k=1;k<=upto;k++) hist.push({ to: order[k], at: at + k * 3600000 * 20 });
-    return { ...t, id:"demo-"+i, seq:i, createdAt:at, rework:0, reviewNote:"", history:hist };
+    return { ...t, id:"demo-"+i, owners:normalizeOwners(t.owners, t.owner),
+             seq:i, createdAt:at, rework:0, reviewNote:"", history:hist };
   });
   setSync("demo", "○ 未连接");
   const code = err ? (err.code || err.message || "") : "";
@@ -867,8 +903,8 @@ function renderBoard(){
   const pf = document.getElementById("priorityFilter").value;
   const of_ = document.getElementById("ownerFilter").value;
 
-  // 负责人下拉：用真实数据重建（保留当前选择）
-  const owners = [...new Set(tasks.map(t=>t.owner))].sort();
+  // 负责人下拉：用真实数据重建（保留当前选择）。多负责人时同一个人会在多个任务里出现，去重即可
+  const owners = [...new Set(tasks.flatMap(t => t.owners))].sort();
   const osel = document.getElementById("ownerFilter");
   const keep = owners.includes(of_) ? of_ : "all";
   osel.innerHTML = '<option value="all">全部成员</option>' +
@@ -880,8 +916,9 @@ function renderBoard(){
   STATUS_DEFS.forEach(def => {
     let list = tasks.filter(t => t.status === def.id);
     if(pf !== "all") list = list.filter(t => t.priority === pf);
-    if(keep !== "all") list = list.filter(t => t.owner === keep);
-    if(q) list = list.filter(t => [t.title,t.owner,t.type,t.desc].join(" ").toLowerCase().includes(q));
+    // 多个负责人时，这条任务在每个人的筛选结果里都要出现
+    if(keep !== "all") list = list.filter(t => t.owners.includes(keep));
+    if(q) list = list.filter(t => [t.title,t.owners.join(" "),t.type,t.desc].join(" ").toLowerCase().includes(q));
     list.sort((a,b)=> (PRI_RANK[a.priority]-PRI_RANK[b.priority]) || String(a.title).localeCompare(String(b.title),"zh"));
 
     const col = document.createElement("div");
@@ -901,6 +938,15 @@ function renderBoard(){
       c.className = "card";
       c.draggable = true;
       c.dataset.id = t.id;
+
+      // 多人协作：最多露 3 个头像，多出来的收成 +N；名字用、分隔
+      const ovs   = t.owners.length ? t.owners : ["未分配"];
+      const avs   = ovs.slice(0, 3).map(o => `<span class="mini-avatar" title="${esc(o)}">${esc(avatar(o))}</span>`).join("") +
+                    (ovs.length > 3
+                      ? `<span class="mini-avatar more" title="${esc(ovs.slice(3).join("、"))}">+${ovs.length - 3}</span>`
+                      : "");
+      const ovTxt = ovs.join("、");
+
       c.innerHTML =
         `<div class="card-top"><span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
         `<span class="type">${esc(typeZh(t.type))}<i class="en">${esc(typeEn(t.type))}</i></span></div>` +
@@ -908,7 +954,7 @@ function renderBoard(){
         (t.desc ? `<div class="card-desc">${esc(t.desc)}</div>` : "") +
         (t.reviewNote ? `<div class="card-desc note"><b>驳回：</b>${esc(t.reviewNote)}</div>` : "") +
         (t.rework > 0 ? `<div class="card-desc note">返工 ×${t.rework}</div>` : "") +
-        `<div class="card-foot"><span class="owner"><span class="mini-avatar">${esc(avatar(t.owner))}</span>${esc(t.owner)}</span>` +
+        `<div class="card-foot"><span class="owner">${avs}<span class="owner-name">${esc(ovTxt)}</span></span>` +
         `<span class="tag">${esc(deadlineTag(t))}</span></div>`;
 
       c.onclick = () => openDetail(t);
@@ -958,18 +1004,6 @@ function updateStats(){
   document.getElementById("progress").style.width = pct + "%";
   document.getElementById("doing").textContent = doing;
   document.getElementById("reviewCnt").textContent = rev;
-
-  // 下一个节点：到功能冻结还有几天（没开赛就显示距开赛）
-  const msEl = document.getElementById("nextMs"), noteEl = document.getElementById("nextMsNote");
-  msEl.textContent = `第 ${FREEZE_DAY} 天`;
-  if(!jamStarted()){
-    noteEl.textContent = `功能冻结 · 距开赛 ${Math.ceil((jamStartMs()-Date.now())/DAY_MS)} 天`;
-  }else{
-    const left = FREEZE_DAY - jamDayNum();
-    noteEl.textContent = left > 0 ? `功能冻结 · 还剩 ${left} 天`
-                       : left === 0 ? "功能冻结 · 就是今天"
-                       : `功能冻结 · 已过 ${-left} 天`;
-  }
 }
 
 /* ============================================================
@@ -982,9 +1016,10 @@ function renderTeam(){
   if(!box) return;
 
   // 有任务的人 + 预设成员，按"在手任务数"降序，让人一眼看到谁最忙
-  const names = [...new Set([...MEMBERS, ...tasks.map(t => t.owner)])].sort();
+  const names = [...new Set([...MEMBERS, ...tasks.flatMap(t => t.owners)])].sort();
   const rows = names.map(n => {
-    const mine = tasks.filter(t => t.owner === n);
+    // 多人协作的任务，在每个人的名下都要出现
+    const mine = tasks.filter(t => t.owners.includes(n));
     const by = st => mine.filter(t => t.status === st);
     return { name:n, mine, doing:by("doing").length, review:by("review").length,
              todo:by("todo").length, done:by("done").length };
@@ -1009,7 +1044,9 @@ function renderTeam(){
         ).map(t =>
           `<div class="mtask" data-id="${esc(t.id)}">` +
             `<span class="dot ${t.status}"></span>` +
-            `<span class="mt">${esc(t.title)}</span>` +
+            `<span class="mt">${esc(t.title)}` +
+              (t.owners.length > 1 ? `<i class="co" title="${esc(t.owners.join("、"))}">＋${t.owners.length - 1}</i>` : "") +
+            `</span>` +
             `<span class="priority ${t.priority.toLowerCase()}">${t.priority}</span>` +
           `</div>`
         ).join("")
@@ -1134,10 +1171,30 @@ async function removeTask(t){
 }
 
 function openCreate(){
+  resetCreateForm();          // 每次打开都从干净状态开始，不留上次填的东西
   document.getElementById("modal").style.display = "flex";
   document.getElementById("newTitle").focus();
 }
-function closeModal(){ document.getElementById("modal").style.display = "none"; }
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+  closeCyberMenus();   // 别让下拉菜单保持展开状态留到下次打开
+}
+
+/* 把「新建任务」弹窗恢复成初始状态：标题/描述清空，所有下拉回到默认项。
+   负责人是多选，默认只勾第一个成员（和以前单位负责人时的默认行为保持一致）。 */
+function resetCreateForm(){
+  document.getElementById("newTitle").value = "";
+  document.getElementById("newDesc").value  = "";
+  const owner  = document.getElementById("newOwner");
+  const status = document.getElementById("newStatus");
+  const pri    = document.getElementById("newPriority");
+  const type   = document.getElementById("newType");
+  [...owner.options].forEach((o, i) => o.selected = (i === 0));
+  status.selectedIndex = 0;
+  pri.selectedIndex    = 0;
+  type.selectedIndex   = 0;
+  syncSelects();              // 自绘下拉是直接改 selected 的，得手动同步
+}
 
 async function createTask(){
   const title = document.getElementById("newTitle").value.trim();
@@ -1150,9 +1207,11 @@ async function createTask(){
 
   const now = new Date();
   const status = document.getElementById("newStatus").value;
+  const owners = pickedOwners(document.getElementById("newOwner"));
   const payload = {
     title,
-    owner:    document.getElementById("newOwner").value,
+    owners,                       // 多人协作
+    owner: owners[0] || "",       // 老字段一起写，别的读法不会炸
     status,
     priority: document.getElementById("newPriority").value,
     type:     document.getElementById("newType").value,
@@ -1163,10 +1222,9 @@ async function createTask(){
   };
   try{
     await addDoc(collection(db, COLLECTION), payload);
-    document.getElementById("newTitle").value = "";
-    document.getElementById("newDesc").value = "";
-    closeModal();
-    showToast("任务已创建");
+    resetCreateForm();
+    closeModal();                 // 建完自动退回看板
+    showToast("已创建任务：" + title);
   }catch(e){
     console.error(e);
     showToast("创建失败：" + (e.code || e.message), true);
@@ -1193,8 +1251,19 @@ function openDetail(t){
     tsel.appendChild(o);
   }
 
+  // 负责人是多选。下拉里的候选来自 MEMBERS，万一这条任务的人不在名单里（老数据），
+  // 临时补一个选项，否则勾不上、一保存就把人丢了。关闭时清掉。
+  const osel2 = document.getElementById("dOwner");
+  t.owners.forEach(o => {
+    if(![...osel2.options].some(op => op.value === o)){
+      const op = document.createElement("option");
+      op.value = o; op.textContent = o; op.dataset.extra = "1";
+      osel2.appendChild(op);
+    }
+  });
+  [...osel2.options].forEach(op => op.selected = t.owners.includes(op.value));
+
   document.getElementById("dTitle").value    = t.title;
-  document.getElementById("dOwner").value    = t.owner;
   document.getElementById("dStatus").value   = t.status;
   document.getElementById("dPriority").value = t.priority;
   document.getElementById("dType").value     = t.type;
@@ -1223,8 +1292,10 @@ function openDetail(t){
 function closeDetail(){
   document.getElementById("detailModal").style.display = "none";
   closeCyberMenus();
+  // 别把临时补的选项留到下一次打开
   const legacy = document.getElementById("dType").querySelector("option[data-legacy]");
-  if(legacy) legacy.remove();   // 别把临时选项留到下一次打开
+  if(legacy) legacy.remove();
+  document.querySelectorAll("#dOwner option[data-extra]").forEach(o => o.remove());
   detailId = null;
 }
 async function saveDetail(){
@@ -1233,8 +1304,10 @@ async function saveDetail(){
   const title = document.getElementById("dTitle").value.trim();
   if(!title){ showToast("任务名不能为空", true); return; }
 
+  const owners = pickedOwners(document.getElementById("dOwner"));
   const next = {
-    owner:    document.getElementById("dOwner").value,
+    owners,
+    owner:    owners[0] || "",    // 老字段一起写
     status:   document.getElementById("dStatus").value,
     priority: document.getElementById("dPriority").value,
     type:     document.getElementById("dType").value,
@@ -1247,8 +1320,8 @@ async function saveDetail(){
   }
   try{
     await updateDoc(doc(db, COLLECTION, t.id), patch);
-    closeDetail();
-    showToast("已保存");
+    closeDetail();                // 存完自动退回看板
+    showToast("已保存：" + title);
   }catch(e){
     showToast("保存失败：" + (e.code || e.message), true);
   }
@@ -1297,13 +1370,13 @@ function renderGantt(){
       return `<div class="${started && i+1 === today ? "today" : ""}">第${i+1}天<br><span style="font-size:9px">${fmtDay(dd.getTime())}</span></div>`;
     }).join("") + `</div></div>`;
 
-  // 按负责人分组，组内按状态/优先级
-  const owners = [...new Set(tasks.map(t => t.owner))].sort(
-    (a,b) => tasks.filter(x=>x.owner===b).length - tasks.filter(x=>x.owner===a).length
+  // 按负责人分组，组内按状态/优先级。多人协作的任务在每个负责人的分组里都画一遍
+  const owners = [...new Set(tasks.flatMap(t => t.owners))].sort(
+    (a,b) => tasks.filter(x=>x.owners.includes(b)).length - tasks.filter(x=>x.owners.includes(a)).length
   );
 
   const rows = owners.map(owner => {
-    const mine = tasks.filter(t => t.owner === owner).sort((a,b) =>
+    const mine = tasks.filter(t => t.owners.includes(owner)).sort((a,b) =>
       (STATUS_IDS.indexOf(a.status) - STATUS_IDS.indexOf(b.status)) ||
       (PRI_RANK[a.priority] - PRI_RANK[b.priority]) ||
       String(a.title).localeCompare(String(b.title), "zh"));
@@ -1353,13 +1426,15 @@ function renderGantt(){
 function showToast(msg, isErr, undoable){
   const x = document.getElementById("toast");
   document.getElementById("toastMsg").textContent = msg;
-  x.className = "toast" + (isErr ? " err" : "") + (undoable ? " undoable" : "");
+  // ok = 纯粹的"办成了"提示（新建/保存/删除），给它一条绿色描边，一眼能认出是成功不是报错
+  const ok = !isErr && !undoable;
+  x.className = "toast" + (isErr ? " err" : "") + (undoable ? " undoable" : "") + (ok ? " ok" : "");
   x.classList.add("show");
   clearTimeout(window.tt);
   window.tt = setTimeout(() => {
     x.classList.remove("show");
     if(undoable) lastMove = null;   // 过了撤销窗口就作废
-  }, undoable ? 6000 : (isErr ? 4200 : 1800));
+  }, undoable ? 6000 : (isErr ? 4600 : 3000));
 }
 
 window.openCreate   = openCreate;
@@ -1398,9 +1473,10 @@ function enhanceSelects(){
   document.querySelectorAll("select").forEach(sel => {
     if(sel.dataset.cy) return;
     sel.dataset.cy = "1";
+    const multi = !!sel.multiple;    // 负责人下拉是多选
 
     const wrap = document.createElement("div");
-    wrap.className = "cyber-select";
+    wrap.className = "cyber-select" + (multi ? " multi" : "");
     sel.parentNode.insertBefore(wrap, sel);
     wrap.appendChild(sel);
 
@@ -1412,56 +1488,77 @@ function enhanceSelects(){
     const menu = document.createElement("div");
     menu.className = "cs-menu";
     menu.setAttribute("role", "listbox");
+    if(multi) menu.setAttribute("aria-multiselectable", "true");
     wrap.appendChild(btn);
     wrap.appendChild(menu);
 
+    let cur = Math.max(0, sel.selectedIndex);   // 键盘光标位置
+
+    const label = () => {
+      const picked = [...sel.options].filter(o => o.selected).map(o => o.text);
+      if(!picked.length) return multi ? "选择成员…" : "";
+      return multi ? picked.join("、") : picked[0];
+    };
+    const setOpen = on => {
+      wrap.classList.toggle("open", on);
+      btn.setAttribute("aria-expanded", on ? "true" : "false");
+    };
     const sync = () => {
-      const opt = sel.options[sel.selectedIndex];
-      btn.innerHTML = `<span>${esc(opt ? opt.text : "")}</span><i class="cs-arrow"></i>`;
-      menu.innerHTML = [...sel.options].map(o =>
-        `<div class="cs-opt${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" ` +
-        `data-v="${esc(o.value)}">${esc(o.text)}</div>`).join("");
+      btn.innerHTML = `<span>${esc(label())}</span><i class="cs-arrow"></i>`;
+      if(cur >= sel.options.length) cur = Math.max(0, sel.options.length - 1);
+      menu.innerHTML = [...sel.options].map((o, i) =>
+        `<div class="cs-opt${o.selected ? " on" : ""}${i === cur ? " cur" : ""}" role="option" ` +
+        `aria-selected="${o.selected}" data-i="${i}">` +
+        (multi ? `<i class="cs-box"></i>` : "") +
+        `<span class="cs-txt">${esc(o.text)}</span></div>`).join("");
     };
     sel._csSync = sync;
 
-    const pick = i => {
-      if(i < 0 || i >= sel.options.length) return;
-      sel.selectedIndex = i;
-      sync();
-      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    const commit = () => sel.dispatchEvent(new Event("change", { bubbles: true }));
+
+    const choose = idx => {
+      const o = sel.options[idx];
+      if(!o) return;
+      cur = idx;
+      if(multi){
+        o.selected = !o.selected;      // 勾选式：可以连着勾好几个，选完不关
+        sync();
+        commit();
+      }else{
+        sel.selectedIndex = idx;
+        sync();
+        setOpen(false);
+        commit();                      // 触发 onchange="render()"
+      }
     };
 
     btn.onclick = e => {
       e.stopPropagation();               // 别让下面的"点外面就关"立刻把它关掉
       const wasOpen = wrap.classList.contains("open");
       closeCyberMenus();
-      if(!wasOpen){ wrap.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }
+      setOpen(!wasOpen);
     };
     // 键盘：原生 select 被藏起来了，方向键/回车要在这里补回来，不然只剩鼠标能用
     btn.onkeydown = e => {
       const k = e.key;
       if(k === "ArrowDown" || k === "ArrowUp"){
         e.preventDefault();
-        if(!wrap.classList.contains("open")){ closeCyberMenus(); wrap.classList.add("open"); btn.setAttribute("aria-expanded", "true"); return; }
-        pick(sel.selectedIndex + (k === "ArrowDown" ? 1 : -1));
+        if(!wrap.classList.contains("open")){ closeCyberMenus(); setOpen(true); return; }
+        cur = Math.min(Math.max(cur + (k === "ArrowDown" ? 1 : -1), 0), sel.options.length - 1);
+        sync();
       }else if(k === "Enter" || k === " "){
         e.preventDefault();
-        if(wrap.classList.contains("open")) wrap.classList.remove("open");
-        else { closeCyberMenus(); wrap.classList.add("open"); }
-        btn.setAttribute("aria-expanded", wrap.classList.contains("open") ? "true" : "false");
+        if(wrap.classList.contains("open")) choose(cur);
+        else { closeCyberMenus(); setOpen(true); }
       }else if(k === "Escape"){
         e.stopPropagation();               // 别把整个弹窗一起关了
-        wrap.classList.remove("open");
-        btn.setAttribute("aria-expanded", "false");
+        setOpen(false);
       }
     };
     menu.onclick = e => {
       const o = e.target.closest(".cs-opt");
       if(!o) return;
-      sel.value = o.dataset.v;
-      wrap.classList.remove("open");
-      sync();
-      sel.dispatchEvent(new Event("change", { bubbles: true }));  // 触发 onchange="render()"
+      choose(Number(o.dataset.i));
     };
 
     // 选项被 JS 重建时（renderBoard 会重建负责人下拉）自动跟上
@@ -1515,6 +1612,7 @@ document.addEventListener("click", closeCyberMenus);
     // Esc 是直接关 DOM，绕过了 closeDetail()，临时选项要在这里一并清掉
     const legacy = document.querySelector("#dType option[data-legacy]");
     if(legacy) legacy.remove();
+    document.querySelectorAll("#dOwner option[data-extra]").forEach(o => o.remove());
     detailId = null; rejectCtx = null;
   });
 
