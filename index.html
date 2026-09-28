@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN" data-page-node-id="tEBcngqniZEFEimGM2PNuo">
+<head data-page-node-id="S1kC41XyfNCuXTe7vYO3IU">
+<meta charset="UTF-8" data-page-node-id="7r67x9MzaMOb4qhN6MtYbi">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="RURDF2ht6rThCjwrwkdWLs">
 <title>上一休六工作室 · Game Jam 看板</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" data-page-node-id="7qVFJiOmAZHb5AYairrKCD">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin data-page-node-id="IM9z9x98bnloGsfiAEMbhE">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet" data-page-node-id="zWw7dxyTCcSFYGuKZWHEDe">
 <style>
 :root{
   /* ============ 视觉规范：取自 Personal_Website / src/index.css「霓虹赛博档案」 ============ */
@@ -59,6 +59,13 @@ body::after{
 ::-webkit-scrollbar-track{background:#020203;border-left:1px solid rgba(0,243,255,.1);box-shadow:inset 0 0 10px #000}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--neon-cyan),var(--neon-purple),var(--neon-pink));border:2px solid #020203}
 ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--neon-pink),var(--neon-cyan))}
+::-webkit-scrollbar-corner{background:#020203}
+/* 面板内部（看板 / 弹窗）的滚动条收细降噪：
+   满饱和的霓虹渐变条放在窄容器里很吵，这里只留一根低透明度的青线 */
+.board-wrap::-webkit-scrollbar,.modal::-webkit-scrollbar{width:7px;height:7px}
+.board-wrap::-webkit-scrollbar-track,.modal::-webkit-scrollbar-track{background:rgba(0,243,255,.04);border:0;box-shadow:none}
+.board-wrap::-webkit-scrollbar-thumb,.modal::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border:0}
+.board-wrap::-webkit-scrollbar-thumb:hover,.modal::-webkit-scrollbar-thumb:hover{background:rgba(0,243,255,.6)}
 
 .app{position:relative;z-index:1;min-height:100vh}
 
@@ -153,9 +160,42 @@ h1{margin:0 0 5px;font-family:var(--cyber);font-size:24px;font-weight:700;letter
 .search:focus,select:focus,.form input:focus,.form textarea:focus{border-color:var(--neon-cyan);box-shadow:0 0 16px rgba(0,243,255,.25)}
 select{cursor:pointer}
 
+/* ============ 自绘下拉 ============
+   原生 <select> 的展开面板是系统画的（Windows 上是浅灰），CSS 碰不到。
+   做法：原生 select 留在 DOM 里当唯一数据源（JS 读 .value 的地方一行都不用改），
+   外面套一层自绘按钮 + 菜单，选中时回写 value 并补发 change。 */
+.cyber-select{position:relative}
+.cyber-select>select{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0;padding:0;border:0}
+/* 原来靠 .form select{margin-top:6px} 撑开标签和控件，换成自绘外壳后要补回来 */
+.form .cyber-select{margin-top:6px}
+.cs-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(3,3,5,.7);border:1px solid rgba(0,243,255,.22);color:var(--text-main);
+  padding:10px 12px;font-family:var(--sans);font-size:14px;text-align:left;cursor:pointer;white-space:nowrap;
+  transition:border-color .25s,box-shadow .25s}
+.cs-btn>span{overflow:hidden;text-overflow:ellipsis}
+.cs-btn:hover{border-color:rgba(0,243,255,.45)}
+.cyber-select.open>.cs-btn{border-color:var(--neon-cyan);box-shadow:0 0 16px rgba(0,243,255,.25)}
+.cs-arrow{width:7px;height:7px;flex:0 0 auto;border-right:1.5px solid var(--neon-cyan);border-bottom:1.5px solid var(--neon-cyan);
+  transform:rotate(45deg) translate(-2px,-2px);transition:transform .25s}
+.cyber-select.open .cs-arrow{transform:rotate(-135deg) translate(-2px,-2px)}
+.cs-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:6;max-height:232px;overflow-y:auto;
+  background:rgba(5,5,10,.98);border:1px solid rgba(0,243,255,.4);
+  box-shadow:0 0 26px rgba(0,243,255,.22),0 18px 40px rgba(0,0,0,.75);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.cyber-select.open .cs-menu{display:block}
+.cs-menu::-webkit-scrollbar{width:6px}
+.cs-menu::-webkit-scrollbar-track{background:transparent}
+.cs-menu::-webkit-scrollbar-thumb{background:rgba(0,243,255,.3);border:0}
+.cs-opt{padding:9px 12px;font-size:13px;color:#c9cfda;cursor:pointer;border-left:2px solid transparent;
+  transition:background .15s,color .15s,border-color .15s}
+.cs-opt:hover{background:rgba(0,243,255,.1);color:var(--neon-cyan);border-left-color:var(--neon-cyan)}
+.cs-opt.on{color:var(--neon-cyan);border-left-color:var(--neon-cyan);background:rgba(0,243,255,.07)}
+.cs-opt.on::after{content:'●';float:right;font-size:7px;line-height:1.9;text-shadow:0 0 8px var(--neon-cyan)}
+
 /* ============ 看板 ============ */
-.board-wrap{overflow-x:auto;padding-bottom:8px}
-.board{display:grid;grid-template-columns:repeat(4,minmax(250px,1fr));gap:12px;min-width:1060px}
+.board-wrap{overflow-x:auto;overflow-y:hidden;padding-bottom:8px}
+/* 用 minmax(0,1fr) 让 4 列永远塞得下：原来的 min-width:1060px 在窄窗口会顶出一条横向拖拽条 */
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .column{position:relative;min-height:470px;background:var(--glass);border:1px solid rgba(0,243,255,.3);
   box-shadow:0 0 15px rgba(0,243,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   transition:border-color .2s,box-shadow .2s,background .2s}
@@ -291,16 +331,18 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 /* ============ 弹窗（原站玻璃面板 + 对角霓虹装饰）============ */
 .overlay{display:none;position:fixed;inset:0;background:rgba(2,2,3,.82);z-index:20;align-items:center;justify-content:center;
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
-.modal{position:relative;width:min(520px,92vw);max-height:90vh;overflow:auto;padding:22px;
-  background:rgba(3,3,5,.93);border:1px solid rgba(0,243,255,.4);
+/* 不再用四角方框装饰：它和 modal 自身的青色描边叠在一起会变成"奇怪的方块"，
+   而且 position:absolute + right/bottom:-1px 会顶出一条横向拖拽条。
+   改成标题左侧的霓虹竖条（和 .stat::after、原站 .section-title 是同一套手法）。 */
+.modal{position:relative;width:min(520px,92vw);max-height:88vh;overflow-y:auto;overflow-x:hidden;padding:24px;
+  background:rgba(3,3,5,.94);border:1px solid rgba(0,243,255,.4);
   box-shadow:0 0 40px rgba(0,243,255,.2),0 30px 90px #000;
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:22px;height:22px;pointer-events:none;
-  border-top:2px solid var(--neon-cyan);border-left:2px solid var(--neon-cyan);box-shadow:0 0 12px rgba(0,243,255,.6)}
-.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:22px;height:22px;pointer-events:none;
-  border-bottom:2px solid var(--neon-pink);border-right:2px solid var(--neon-pink);box-shadow:0 0 12px rgba(255,0,127,.6)}
-.modal h2{margin:0 0 18px;font-family:var(--cyber);font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#fff;
-  text-shadow:0 0 12px rgba(0,243,255,.5)}
+.modal h2{position:relative;margin:0 0 20px;padding-left:14px;font-family:var(--cyber);font-size:15px;
+  letter-spacing:3px;text-transform:uppercase;color:#fff;text-shadow:0 0 12px rgba(0,243,255,.5)}
+.modal h2::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:3px;
+  background:linear-gradient(180deg,var(--neon-cyan),var(--neon-pink));
+  box-shadow:0 0 10px rgba(0,243,255,.7)}
 .form{display:grid;gap:12px}
 .form label{font-size:11px;color:var(--text-muted);display:block;letter-spacing:.5px}
 .form input,.form select,.form textarea{width:100%;margin-top:6px}
@@ -335,138 +377,140 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
   .nav{display:none}
   main{padding:16px 12px}
 }
+/* 窄屏下给列一个可用的最小宽度，这时才让 .board-wrap 出横向滚动条 */
+@media(max-width:760px){.board{grid-template-columns:repeat(4,minmax(215px,1fr))}}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
-<body>
-<div class="app">
-<header>
-  <div class="logo">JAM<span>BOARD</span></div>
-  <div class="nav">
-    <button class="active" data-view="board"    onclick="setView('board')">看板</button>
-    <button               data-view="timeline" onclick="setView('timeline')">时间轴</button>
-    <button               data-view="team"     onclick="setView('team')">团队</button>
+<body data-page-node-id="aFZ4FI1RxkXd8EWhNNGNGv">
+<div class="app" data-page-node-id="NxZMBSFcCarSbcTGkVtqFS">
+<header data-page-node-id="3Y3aNcCn0rxJWBjSUueDfL">
+  <div class="logo" data-page-node-id="c2xtRie7Sv0Qc0BAC297c6">JAM<span data-page-node-id="J964bN3nQFEDH7hKL7tQOw">BOARD</span></div>
+  <div class="nav" data-page-node-id="yQydpGe4F2WYbzEF0P8Itr">
+    <button class="active" data-view="board"    onclick="setView('board')" data-page-node-id="rP4ukDGP5O6iaRvbPKN4h2">看板</button>
+    <button               data-view="timeline" onclick="setView('timeline')" data-page-node-id="FvYGsY2A7X6iOiztEKQYfj">时间轴</button>
+    <button               data-view="team"     onclick="setView('team')" data-page-node-id="xHyIusWanDsKUF5VKWVNHa">团队</button>
   </div>
-  <div class="header-right">
-    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
-    <span class="badge" id="dayBadge">–</span>
-    <div class="avatar">PM</div>
+  <div class="header-right" data-page-node-id="1bA9Y1IibuqJBfA6V80I25">
+    <span class="badge sync-wait" id="syncBadge" data-page-node-id="yGmK8KPIZPkWCrDHtAxl31">● 连接中…</span>
+    <span class="badge" id="dayBadge" data-page-node-id="aMDojZyW1w22EHqYOrsY47">–</span>
+    <div class="avatar" data-page-node-id="e4lQawcaM9rYeSY1uqAtiN">PM</div>
   </div>
 </header>
 
-<main>
-  <div class="banner" id="banner">
-    <span id="bannerMsg"></span>
-    <button class="btn go" onclick="retryConnect()">重试连接</button>
+<main data-page-node-id="7amL07OEP8DzNEgaZiTA7u">
+  <div class="banner" id="banner" data-page-node-id="MvtvqFMIcsjQtSO0XzotGp">
+    <span id="bannerMsg" data-page-node-id="42IBgVSMNLFYyGdB4RXlwu"></span>
+    <button class="btn go" onclick="retryConnect()" data-page-node-id="j3yhgBMps11ll3XL3EilhB">重试连接</button>
   </div>
 
   <!-- ========== 看板 ========== -->
-  <section class="view active" id="view-board">
-    <div class="top">
-      <div><h1>上一休六工作室</h1></div>
-      <div class="actions">
-        <button class="btn primary" onclick="openCreate()">＋ 新建任务</button>
+  <section class="view active" id="view-board" data-page-node-id="wHvAF9bOilziMmOcjLuRA7">
+    <div class="top" data-page-node-id="woCxiYVHLuDDTwZ5STaDnJ">
+      <div data-page-node-id="xnFeM44NNhKU6gTnZHDCav"><h1 data-page-node-id="Kd8k6dBCqbW3HCKOfiLIHc">上一休六工作室</h1></div>
+      <div class="actions" data-page-node-id="cEPug1ZPGihwqtJqU8Jzxf">
+        <button class="btn primary" onclick="openCreate()" data-page-node-id="Ax0urZtlb8aVuAnLqIlY99">＋ 新建任务</button>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-label">任务总数<span class="sub">TOTAL TASKS</span></div><div class="stat-value" id="total">0</div><div class="stat-note" id="priBreak">P0 0 · P1 0 · P2 0</div></div>
-      <div class="stat"><div class="stat-label">完成度<span class="sub">COMPLETION</span></div><div class="stat-value" id="completion">0%</div><div class="progress"><i id="progress" style="width:0%"></i></div></div>
-      <div class="stat"><div class="stat-label">进行中<span class="sub">IN PROGRESS</span></div><div class="stat-value" id="doing">0</div><div class="stat-note">WIP 上限 5</div></div>
-      <div class="stat"><div class="stat-label">待验收<span class="sub">REVIEW</span></div><div class="stat-value" id="reviewCnt">0</div><div class="stat-note">等 PM 确认</div></div>
-      <div class="stat"><div class="stat-label">下一个节点<span class="sub">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px" id="nextMs">–</div><div class="stat-note" id="nextMsNote">功能冻结</div></div>
+    <div class="stats" data-page-node-id="Odljq0zAEpr2ihqGJ2kpJH">
+      <div class="stat" data-page-node-id="OAdB8BpHpXVNLRAHVYcVnU"><div class="stat-label" data-page-node-id="OSrdL6lySXhIiLBv6KBRz4">任务总数<span class="sub" data-page-node-id="ZL0wtfB6gXYWCi7TQPTRi0">TOTAL TASKS</span></div><div class="stat-value" id="total" data-page-node-id="H26mXZuQOo4P3h5vP0EufL">0</div><div class="stat-note" id="priBreak" data-page-node-id="W4avqCTRtk2ZTEUEBmuMuq">P0 0 · P1 0 · P2 0</div></div>
+      <div class="stat" data-page-node-id="hiEOxHCMfw0rzHshIJuMWH"><div class="stat-label" data-page-node-id="h7jd3hdZDK5uYtY5sOgcLC">完成度<span class="sub" data-page-node-id="ty0NXEZsVheZx0mjTktcmn">COMPLETION</span></div><div class="stat-value" id="completion" data-page-node-id="rOB5GQCfq7azaQw7JG0I5R">0%</div><div class="progress" data-page-node-id="zbDE7MRq2JK6BWPIBrBu63"><i id="progress" style="width:0%" data-page-node-id="BPVNM7ZTGDhlcP3jfmBJSB"></i></div></div>
+      <div class="stat" data-page-node-id="d8OfH0z5wfZVkcLy1p4h06"><div class="stat-label" data-page-node-id="EISVxW9pjdME0TmKwvDOTx">进行中<span class="sub" data-page-node-id="gWWXqWRWqmyeI5sQKOzXT6">IN PROGRESS</span></div><div class="stat-value" id="doing" data-page-node-id="QxrAp0oOEDZOxgJFMQgAhi">0</div><div class="stat-note" data-page-node-id="PEdOPjqSbIIHVHKz03Zkdd">WIP 上限 5</div></div>
+      <div class="stat" data-page-node-id="CUGDtC9V5V4O4No6zfQjyr"><div class="stat-label" data-page-node-id="AV5vC4U4dngbPv23F5BYQS">待验收<span class="sub" data-page-node-id="PyK24tsK3UWY07qk0b248r">REVIEW</span></div><div class="stat-value" id="reviewCnt" data-page-node-id="xjvr8LGoud8J4qihny6Ekg">0</div><div class="stat-note" data-page-node-id="sdqH6klAhm6SPEHGH10TsZ">等 PM 确认</div></div>
+      <div class="stat" data-page-node-id="cDDwPZpwVEvsleOQ14iklP"><div class="stat-label" data-page-node-id="LNYxzaee1Jq8YCt4VhsIwt">下一个节点<span class="sub" data-page-node-id="Nv4nV1lPZw9eP5egVLjAI2">NEXT MILESTONE</span></div><div class="stat-value" style="font-size:20px" id="nextMs" data-page-node-id="Xa2Ii2PCHrADPzoGMw1KUY">–</div><div class="stat-note" id="nextMsNote" data-page-node-id="9F4LX2nZ6sXFVUGk1aMdI2">功能冻结</div></div>
     </div>
 
-    <div class="toolbar">
-      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()">
-      <select id="priorityFilter" onchange="render()"><option value="all">全部优先级</option><option>P0</option><option>P1</option><option>P2</option></select>
-      <select id="ownerFilter" onchange="render()"><option value="all">全部成员</option></select>
+    <div class="toolbar" data-page-node-id="YmMAjprgpZsNenZ1xUkR1x">
+      <input class="search" id="search" placeholder="搜索任务、负责人、类型…" oninput="render()" data-page-node-id="f16B7Ve76aQls35cqkWo79">
+      <select id="priorityFilter" onchange="render()" data-page-node-id="oyMqeYBAtd2M10TMUAyKMB"><option value="all" data-page-node-id="ZnfnIngbEskUXnSKjzfGJE">全部优先级</option><option data-page-node-id="naQpvXxm0HBrpyjcXZeMnM">P0</option><option data-page-node-id="o1Fea0Jcoq1fQM4Z3WtMcD">P1</option><option data-page-node-id="2uqQzlfzwXl86QV7lQ8CWG">P2</option></select>
+      <select id="ownerFilter" onchange="render()" data-page-node-id="6IPCmoIjLNU6JKK4OvwnKH"><option value="all" data-page-node-id="aVbFz90f6oDAWzP4Bna1Pr">全部成员</option></select>
     </div>
 
-    <div class="board-wrap"><div class="board" id="board"></div></div>
+    <div class="board-wrap" data-page-node-id="Srde9KMhaza4MnbAJjolfZ"><div class="board" id="board" data-page-node-id="MSiwgWINW1o7wpNgBej9Ao"></div></div>
   </section>
 
   <!-- ========== 时间轴（甘特图）========== -->
-  <section class="view" id="view-timeline">
-    <div class="top">
-      <div>
-        <h1>时间轴<span class="sub">TIMELINE</span></h1>
-        <div class="section-sub">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
+  <section class="view" id="view-timeline" data-page-node-id="7WFgStbHnlU6NTpIvHTmcJ">
+    <div class="top" data-page-node-id="Pn8a35rJsv8B5gaLUlSoCU">
+      <div data-page-node-id="3oeGQOiwjQMpAhi9imKpuk">
+        <h1 data-page-node-id="khY3UmuGeWoCEhFq2nGXwU">时间轴<span class="sub" data-page-node-id="jYn21bHZh1Qb12DGX9Kolp">TIMELINE</span></h1>
+        <div class="section-sub" data-page-node-id="arHhVUZISWjqYIHFexckCr">每一段 = 任务在某个状态里待了多久；数据来自看板上的拖动，是实时记录的</div>
       </div>
-      <div class="actions"><button class="btn" onclick="renderGantt()">刷新</button></div>
+      <div class="actions" data-page-node-id="6OPXUwb101LI63NNsBEONF"><button class="btn" onclick="renderGantt()" data-page-node-id="0iviswAgBFHtuIjbePEzyc">刷新</button></div>
     </div>
-    <div class="gantt-legend" id="ganttLegend"></div>
-    <div class="gantt" id="gantt"></div>
+    <div class="gantt-legend" id="ganttLegend" data-page-node-id="iVtAiSYM5MmxCpDi53VbTn"></div>
+    <div class="gantt" id="gantt" data-page-node-id="0lbMYmcBfluskITHgmq3he"></div>
   </section>
 
   <!-- ========== 团队 ========== -->
-  <section class="view" id="view-team">
-    <div class="top">
-      <div>
-        <h1>团队<span class="sub">TEAM</span></h1>
-        <div class="section-sub">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
+  <section class="view" id="view-team" data-page-node-id="beDBuYKW7SQ0NzMBkeoHuf">
+    <div class="top" data-page-node-id="Nf9RHxRF29tCkhUUkh7cgf">
+      <div data-page-node-id="w4XBns4XnyEDoaGYFxOvmw">
+        <h1 data-page-node-id="2irFOAU5BGgAOmc9gxrm9Q">团队<span class="sub" data-page-node-id="7le0BV6Lg0DstzSMFXb4n1">TEAM</span></h1>
+        <div class="section-sub" data-page-node-id="tayAUpCDBSN0dNHSbP90JU">每个人手上具体有哪些任务、分别停在哪一步。点任务可以查看和修改</div>
       </div>
     </div>
-    <div class="team" id="team"></div>
+    <div class="team" id="team" data-page-node-id="n6itZhMsOZD8QembwI3pPg"></div>
   </section>
 </main>
 </div>
 
-<div class="overlay" id="modal">
-  <div class="modal">
-    <h2>新建任务</h2>
-    <div class="form">
-      <label>任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段"></label>
-      <label>负责人<select id="newOwner"></select></label>
-      <label>初始状态<select id="newStatus"></select></label>
-      <label>优先级<select id="newPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="newType"></select></label>
-      <label>描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
+<div class="overlay" id="modal" data-page-node-id="DUldG3WPKQIuw81TBgh3gA">
+  <div class="modal" data-page-node-id="MaDdz5oq7YzdXVt02JLmin">
+    <h2 data-page-node-id="qoZ0g74vmNxLpQhBJMTQML">新建任务</h2>
+    <div class="form" data-page-node-id="PQqqDeqcabAm4hFyPZUJTz">
+      <label data-page-node-id="3BpdqELjGKq0wZzGZSJJXr">任务名称<input id="newTitle" placeholder="例如：实现 Boss 第二阶段" data-page-node-id="nmuQqnckrVTpxhbKtkrjoY"></label>
+      <label data-page-node-id="KDXMNrDHpE6DFIZwesFBMw">负责人<select id="newOwner" data-page-node-id="7EA2ZZkDHABbRUhjDED9nY"></select></label>
+      <label data-page-node-id="Hz3PO6DPgSptOdJPetX1Zb">初始状态<select id="newStatus" data-page-node-id="o4Ex4OiNjS3AceiaCxUEFa"></select></label>
+      <label data-page-node-id="gZv9A0l9q6EzOmY3AnyFJb">优先级<select id="newPriority" data-page-node-id="4SJNo4noQrb4ds3LlAJ8Dx"><option data-page-node-id="cHTXlBDdhgTgsFBVOzRMNO">P0</option><option data-page-node-id="155pDPwLUOC2hJ6lSa8G9o">P1</option><option data-page-node-id="rIRuQ98fhvHQyWXInuTGAW">P2</option></select></label>
+      <label data-page-node-id="QiClXBuKYb7DXlBiOsO7E7">类型<select id="newType" data-page-node-id="0DiBtNWEEif0dzOvXOdDlX"></select></label>
+      <label data-page-node-id="7jrlL6PJC09XNSSC6bAaCF">描述（验收标准）<textarea id="newDesc" placeholder="做完了怎么算做完？"></textarea></label>
     </div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="createTask()">创建</button></div>
+    <div class="modal-actions" data-page-node-id="wWqERRlPWM62dbkeb4MlG2"><button class="btn" onclick="closeModal()" data-page-node-id="N7Bnh3Yc0lPi4i2nS6Rhmf">取消</button><button class="btn primary" onclick="createTask()" data-page-node-id="kYH1ExykVN9TVyaP3XLoib">创建</button></div>
   </div>
 </div>
-<div class="overlay" id="rejectModal">
-  <div class="modal">
-    <h2>验收不合格 · 打回</h2>
-    <div class="form">
-      <label>哪里不行？（会记在卡片上，返工的人一眼看到）
+<div class="overlay" id="rejectModal" data-page-node-id="PHjipWuPbPBQHVZYuXAKgs">
+  <div class="modal" data-page-node-id="0dL9qFHRWc73rPSVGDSecX">
+    <h2 data-page-node-id="6pEcmamLMC6uXZNZKLvVJl">验收不合格 · 打回</h2>
+    <div class="form" data-page-node-id="ruBAHzSPcDDViLRbcogGRL">
+      <label data-page-node-id="8h9XaI6vuas34rZKWfiS6j">哪里不行？（会记在卡片上，返工的人一眼看到）
         <textarea id="rejectNote" placeholder="例如：受击没有硬直，打击感很软；跳跃落地没有缓冲"></textarea>
       </label>
     </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeReject()">取消</button>
-      <button class="btn primary" onclick="confirmReject()">打回</button>
+    <div class="modal-actions" data-page-node-id="7V8KN9sa3CEK0krryqrVSZ">
+      <button class="btn" onclick="closeReject()" data-page-node-id="rMJAncdA77sCCdn5dIdrAW">取消</button>
+      <button class="btn primary" onclick="confirmReject()" data-page-node-id="SGBXMk0b69gum4kcblNFqS">打回</button>
     </div>
   </div>
 </div>
-<div class="overlay" id="detailModal">
-  <div class="modal">
-    <h2>任务详情</h2>
-    <div class="form two">
-      <label class="span2">任务名称<input id="dTitle"></label>
-      <label>负责人<select id="dOwner"></select></label>
-      <label>状态<select id="dStatus"></select></label>
-      <label>优先级<select id="dPriority"><option>P0</option><option>P1</option><option>P2</option></select></label>
-      <label>类型<select id="dType"></select></label>
-      <label class="span2">描述（验收标准）<textarea id="dDesc"></textarea></label>
+<div class="overlay" id="detailModal" data-page-node-id="r5mdeln8hACSETfYoPaSMS">
+  <div class="modal" data-page-node-id="AxCYBSdawTAjMCy7jjyJOT">
+    <h2 data-page-node-id="6TTDABPhFqEjZlCL2fYONp">任务详情</h2>
+    <div class="form two" data-page-node-id="outDNfSkIh2cbBlau1bWMA">
+      <label class="span2" data-page-node-id="kjfzCRhlexFsggLDojxaW9">任务名称<input id="dTitle" data-page-node-id="HIloR4hKp7d98h0xaNLumN"></label>
+      <label data-page-node-id="Y7i9F3Z72B11QlyZCDPBcB">负责人<select id="dOwner" data-page-node-id="KxMRLpoxjcwvRZmYHF76sY"></select></label>
+      <label data-page-node-id="kfo8RNcRchXMfcz5HyKE2C">状态<select id="dStatus" data-page-node-id="2CjhW1T3rj2SWfkpoXnm4m"></select></label>
+      <label data-page-node-id="Rx0UE0l3SO2S6baC9ag6yt">优先级<select id="dPriority" data-page-node-id="8VecVYc8AdYEgVVkCqIhHE"><option data-page-node-id="xX3dxCTFGaCaBDDf1H1cmd">P0</option><option data-page-node-id="XNs4EAvWWWm9BQezYhJQ0y">P1</option><option data-page-node-id="dbwkwNUhKCVMjuJEF1EcOW">P2</option></select></label>
+      <label data-page-node-id="OcADSLEtRrZGMSNKSqtVSB">类型<select id="dType" data-page-node-id="SmqM0Ki9mFTAyIDbpfpHCE"></select></label>
+      <label class="span2" data-page-node-id="E7Om7LgvuEAHLXBzMLfRB7">描述（验收标准）<textarea id="dDesc"></textarea></label>
     </div>
-    <div class="hist">
-      <div class="hist-title">阶段记录<span class="sub">STATUS HISTORY</span></div>
-      <div id="dHist"></div>
+    <div class="hist" data-page-node-id="Ka37jhjx184zn7tcGBCvE4">
+      <div class="hist-title" data-page-node-id="Da7HBXfPmctkE7eTcC0IAm">阶段记录<span class="sub" data-page-node-id="8yc5sdFURdw158QBRQdxmo">STATUS HISTORY</span></div>
+      <div id="dHist" data-page-node-id="zqMEK2Ld4qqcX54V3jyGfL"></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn danger" onclick="deleteDetail()">删除任务</button>
-      <button class="btn" onclick="closeDetail()">取消</button>
-      <button class="btn primary" onclick="saveDetail()">保存</button>
+    <div class="modal-actions" data-page-node-id="KU4G4rkLHmVVoKRG9D5XDm">
+      <button class="btn danger" onclick="deleteDetail()" data-page-node-id="4SFAYARj7PSHznC61NeChT">删除任务</button>
+      <button class="btn" onclick="closeDetail()" data-page-node-id="PEdqrGlfSiJtA9LoGMX6Ah">取消</button>
+      <button class="btn primary" onclick="saveDetail()" data-page-node-id="ufoMSotpOsXDRPJv4BHrPM">保存</button>
     </div>
   </div>
 </div>
-<div class="toast" id="toast">
-  <span id="toastMsg"></span>
-  <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
+<div class="toast" id="toast" data-page-node-id="lkDS5lF06otQKEFdPMRFK1">
+  <span id="toastMsg" data-page-node-id="bgJePhh3fAr9OeHlU5dIJX"></span>
+  <button class="undo" id="undoBtn" onclick="undoMove()" data-page-node-id="3iFiujgRu2OqzfXtaEcRu5">撤销</button>
 </div>
 
 <script type="module">
@@ -526,9 +570,15 @@ const DAY_MS = 86400000;
 const TYPE_DEFS = [
   {value:"Programming", zh:"程序", en:"Programming"},
   {value:"Art",         zh:"美术", en:"Art"},
-  {value:"Design",      zh:"策划", en:"Design"},
-  {value:"Production",  zh:"制作", en:"Production"}
+  {value:"Design",      zh:"策划", en:"Design"}
 ];
+/* 已停用的类型（2026-09-28 按用户要求从下拉里去掉「制作」）。
+   新建/编辑时不再可选，但**老数据必须还能显示正确**，也绝不能因为下拉里没有这项
+   就在保存时被静默改成第一个类型——openDetail() 里会给它临时补一个选项。 */
+const TYPE_RETIRED = [
+  {value:"Production", zh:"制作", en:"Production"}
+];
+const ALL_TYPES = TYPE_DEFS.concat(TYPE_RETIRED);
 
 function normalizeStatus(raw){
   const s = String(raw==null?"":raw).trim().toLowerCase();
@@ -541,12 +591,12 @@ function normalizePriority(raw){
 }
 function typeZh(raw){
   const v = String(raw==null?"":raw).trim();
-  const hit = TYPE_DEFS.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
+  const hit = ALL_TYPES.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
   return hit ? hit.zh : (v || "未分类");
 }
 function typeEn(raw){
   const v = String(raw==null?"":raw).trim();
-  const hit = TYPE_DEFS.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
+  const hit = ALL_TYPES.find(t => t.value.toLowerCase() === v.toLowerCase() || t.zh === v);
   return hit ? hit.en : v;
 }
 
@@ -1130,6 +1180,19 @@ let detailId = null;
 
 function openDetail(t){
   detailId = t.id;
+
+  // 老任务可能还用着已停用的类型（制作）。下拉里没这项的话 select 会回落到第一项，
+  // 一保存就把类型静默改掉了——所以临时补一个选项，且只在这一条任务打开期间存在。
+  const tsel = document.getElementById("dType");
+  const hasOpt = [...tsel.options].some(o => o.value === t.type);
+  if(!TYPE_DEFS.some(d => d.value === t.type) && !hasOpt){
+    const o = document.createElement("option");
+    o.value = t.type;
+    o.dataset.legacy = "1";
+    o.textContent = `${typeZh(t.type)} · ${typeEn(t.type)}（已停用）`;
+    tsel.appendChild(o);
+  }
+
   document.getElementById("dTitle").value    = t.title;
   document.getElementById("dOwner").value    = t.owner;
   document.getElementById("dStatus").value   = t.status;
@@ -1155,9 +1218,13 @@ function openDetail(t){
       `<span class="ht">${fmtDT(t.createdAt)}</span><span>创建任务</span></div>`;
 
   document.getElementById("detailModal").style.display = "flex";
+  syncSelects();   // 上面是直接赋 .value，不会触发 change；自绘下拉要手动同步一次
 }
 function closeDetail(){
   document.getElementById("detailModal").style.display = "none";
+  closeCyberMenus();
+  const legacy = document.getElementById("dType").querySelector("option[data-legacy]");
+  if(legacy) legacy.remove();   // 别把临时选项留到下一次打开
   detailId = null;
 }
 async function saveDetail(){
@@ -1321,6 +1388,101 @@ document.addEventListener("mousemove", e => {
 });
 
 /* ============================================================
+   自绘下拉
+   ------------------------------------------------------------
+   原生 <select> 的展开面板由系统绘制（Windows 上是浅灰底），CSS 改不到。
+   这里保留原生 select 作为唯一数据源——JS 里读 .value 的地方一行都不用动——
+   只在它外面套一层自绘的按钮 + 菜单，选中时回写 value 并补发 change。
+   ============================================================ */
+function enhanceSelects(){
+  document.querySelectorAll("select").forEach(sel => {
+    if(sel.dataset.cy) return;
+    sel.dataset.cy = "1";
+
+    const wrap = document.createElement("div");
+    wrap.className = "cyber-select";
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+
+    const btn  = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cs-btn";
+    btn.setAttribute("aria-haspopup", "listbox");
+    btn.setAttribute("aria-expanded", "false");
+    const menu = document.createElement("div");
+    menu.className = "cs-menu";
+    menu.setAttribute("role", "listbox");
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    const sync = () => {
+      const opt = sel.options[sel.selectedIndex];
+      btn.innerHTML = `<span>${esc(opt ? opt.text : "")}</span><i class="cs-arrow"></i>`;
+      menu.innerHTML = [...sel.options].map(o =>
+        `<div class="cs-opt${o.selected ? " on" : ""}" role="option" aria-selected="${o.selected}" ` +
+        `data-v="${esc(o.value)}">${esc(o.text)}</div>`).join("");
+    };
+    sel._csSync = sync;
+
+    const pick = i => {
+      if(i < 0 || i >= sel.options.length) return;
+      sel.selectedIndex = i;
+      sync();
+      sel.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+
+    btn.onclick = e => {
+      e.stopPropagation();               // 别让下面的"点外面就关"立刻把它关掉
+      const wasOpen = wrap.classList.contains("open");
+      closeCyberMenus();
+      if(!wasOpen){ wrap.classList.add("open"); btn.setAttribute("aria-expanded", "true"); }
+    };
+    // 键盘：原生 select 被藏起来了，方向键/回车要在这里补回来，不然只剩鼠标能用
+    btn.onkeydown = e => {
+      const k = e.key;
+      if(k === "ArrowDown" || k === "ArrowUp"){
+        e.preventDefault();
+        if(!wrap.classList.contains("open")){ closeCyberMenus(); wrap.classList.add("open"); btn.setAttribute("aria-expanded", "true"); return; }
+        pick(sel.selectedIndex + (k === "ArrowDown" ? 1 : -1));
+      }else if(k === "Enter" || k === " "){
+        e.preventDefault();
+        if(wrap.classList.contains("open")) wrap.classList.remove("open");
+        else { closeCyberMenus(); wrap.classList.add("open"); }
+        btn.setAttribute("aria-expanded", wrap.classList.contains("open") ? "true" : "false");
+      }else if(k === "Escape"){
+        e.stopPropagation();               // 别把整个弹窗一起关了
+        wrap.classList.remove("open");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    };
+    menu.onclick = e => {
+      const o = e.target.closest(".cs-opt");
+      if(!o) return;
+      sel.value = o.dataset.v;
+      wrap.classList.remove("open");
+      sync();
+      sel.dispatchEvent(new Event("change", { bubbles: true }));  // 触发 onchange="render()"
+    };
+
+    // 选项被 JS 重建时（renderBoard 会重建负责人下拉）自动跟上
+    new MutationObserver(sync).observe(sel, { childList: true });
+    sel.addEventListener("change", sync);
+    sync();
+  });
+}
+/* 直接给 select.value 赋值不会触发 change，改完要手动调一次 */
+function syncSelects(){ document.querySelectorAll("select").forEach(s => s._csSync && s._csSync()); }
+function closeCyberMenus(){
+  document.querySelectorAll(".cyber-select.open").forEach(w => {
+    w.classList.remove("open");
+    const b = w.querySelector(".cs-btn");
+    if(b) b.setAttribute("aria-expanded", "false");
+  });
+}
+
+document.addEventListener("click", closeCyberMenus);
+
+/* ============================================================
    8) 启动
    ============================================================ */
 (function boot(){
@@ -1334,6 +1496,8 @@ document.addEventListener("mousemove", e => {
   ["newStatus","dStatus"].forEach(id => document.getElementById(id).innerHTML = statusOpts);
   ["newType","dType"].forEach(id => document.getElementById(id).innerHTML = typeOpts);
 
+  enhanceSelects();  // 选项填好之后再套自绘外壳（原生 select 留在里面当数据源）
+
   render();  // 先画出骨架，别让首屏空着
 
   // 按 URL 的 #hash 决定打开哪个视图（方便直接把"时间轴"链接发给别人）
@@ -1343,10 +1507,14 @@ document.addEventListener("mousemove", e => {
   // Esc 关闭弹窗
   document.addEventListener("keydown", e => {
     if(e.key !== "Escape") return;
+    closeCyberMenus();
     ["modal","detailModal","rejectModal"].forEach(id => {
       const el = document.getElementById(id);
       if(el.style.display === "flex") el.style.display = "none";
     });
+    // Esc 是直接关 DOM，绕过了 closeDetail()，临时选项要在这里一并清掉
+    const legacy = document.querySelector("#dType option[data-legacy]");
+    if(legacy) legacy.remove();
     detailId = null; rejectCtx = null;
   });
 
