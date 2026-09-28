@@ -409,7 +409,11 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 /* 窄屏下给列一个可用的最小宽度，这时才让 .board-wrap 出横向滚动条 */
 @media(max-width:760px){.board{grid-template-columns:repeat(4,minmax(215px,1fr))}}
 /* ============ 开屏动画：Glitch 解码揭示（本会话首次访问播放） ============ */
-#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden}
+#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;
+  /* 兜底：内联脚本万一被阻塞的字体/CDN 拖住没跑起来，4 秒后 CSS 自己把开屏收掉，
+     绝不允许一个黑屏把看板永远挡住（正常流程 2 秒内就移除了，这条不会生效） */
+  animation:intro-failsafe 0s 4s forwards}
+@keyframes intro-failsafe{to{visibility:hidden;opacity:0;pointer-events:none}}
 .intro-curtain{position:absolute;left:0;width:100%;height:50.5%;z-index:1;background:#020203;
   background-image:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(0,243,255,.05) 3px,transparent 4px);
   transition:transform .6s cubic-bezier(.76,0,.24,1)}
@@ -898,6 +902,17 @@ function normalizeDueDay(v){
   const n = Number(v);
   return Number.isFinite(n) && n >= 1 && n <= JAM_DAYS ? Math.round(n) : 0;
 }
+/* 老数据兼容：上一版把截止存成 "YYYY-MM-DD"（字段 `due`），读的时候换算成赛程第几天。
+   换算不出来 / 不在赛程内 → 0（当没设置）。注意只在 `dueDay` 完全没写过时才走这里，
+   否则用户在新版里清空截止后，老值又会顶回来。 */
+function dueDayFromLegacy(due){
+  if(due == null || due === "") return 0;
+  const m = String(due).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return 0;
+  const t = Date.parse(`${m[1]}-${m[2]}-${m[3]}T00:00:00Z`);
+  if(isNaN(t)) return 0;
+  return normalizeDueDay(Math.round((t - (jamStartMs() + 8 * 3600 * 1000)) / DAY_MS) + 1);
+}
 /* 第 n 天对应的真实日期，只用在 tooltip 里 */
 function jamDayDate(n){
   const ms = jamStartMs() + (n - 1) * DAY_MS + 8 * 3600 * 1000;   // 挪到北京墙上时间再取 UTC 字段
@@ -1047,7 +1062,7 @@ function startFirestore(){
           priority: normalizePriority(v.priority),
           type: v.type || "Programming",
           status,
-          dueDay: normalizeDueDay(v.dueDay),
+          dueDay: v.dueDay == null ? dueDayFromLegacy(v.due) : normalizeDueDay(v.dueDay),
           desc: v.desc || v.description || "",
           rework: Number(v.rework) || 0,
           reviewNote: v.reviewNote || "",
