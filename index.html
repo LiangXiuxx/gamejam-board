@@ -716,7 +716,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-28.4";
+const BUILD      = "2026-09-28.5";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -963,7 +963,31 @@ function showBanner(html){
 function hideBanner(){
   document.getElementById("banner").classList.remove("show");
 }
-function retryConnect(){ location.reload(); }
+/* 把 Firestore 的报错翻译成"该去干什么"。
+   原来不分青红皂白都让人去发布规则 —— 规则明明是好的时候，这句话会把人带偏。 */
+function firestoreAdvice(err){
+  const s = String((err && (err.code || err.name || "")) + " " + ((err && err.message) || ""));
+  if(/permission-denied/i.test(s))
+    return { why: "Firestore 规则拒绝了这次读取",
+             how: "去 Firebase 控制台 → Firestore Database → Rules，发布仓库里的 firestore.rules" };
+  if(/unavailable|network|fetch|timeout|aborted|econn|offline|websocket/i.test(s))
+    return { why: "网络连不上 Firestore（firestore.googleapis.com），长连接被掐断",
+             how: "检查网络或代理。页面会自己重连，也可以点右边的「重试连接」" };
+  if(/not-found|does not exist/i.test(s))
+    return { why: "项目里还没有 Firestore 数据库",
+             how: "去 Firebase 控制台 → Firestore Database → 创建数据库" };
+  if(/api[-_]?key|invalid-argument/i.test(s))
+    return { why: "firebaseConfig 里的 apiKey 不对",
+             how: "去控制台项目设置里重新复制整段配置，别手打" };
+  return { why: "未知错误", how: "把下面的错误码记下来一起排查" };
+}
+
+/* 手动点「重试连接」：立刻重连，不用刷新页面（退避计数清零） */
+function retryConnect(){
+  if(!db){ location.reload(); return; }   // 连 SDK 都没起来，刷新更稳
+  fsAttempt = 0;
+  listenFirestore();
+}
 
 function jamStartMs(){ return new Date(JAM_START + "T00:00:00+08:00").getTime(); }
 function jamEndMs(){ return jamStartMs() + JAM_DAYS * DAY_MS; }
@@ -1041,12 +1065,34 @@ function setView(name, push){
   if(name === "team")     renderTeam();
 }
 
+/* 断线自动重连。Firestore 用的是长连接，国内网络下偶尔会被掐断；
+   断了就掉进离线演示模式、所有写操作被拒。以前只能手动刷新页面，
+   现在自己按 3s/6s/9s…（上限 30s）退避重试，恢复了自动回到实时数据。 */
+let fsStop = null, fsRetryTimer = null, fsAttempt = 0;
+
 function startFirestore(){
-  initializeApp(firebaseConfig);
-  db = getFirestore();
+  try{
+    initializeApp(firebaseConfig);
+    db = getFirestore();
+  }catch(e){
+    console.error("[firebase init]", e);
+    fallBack("Firebase 初始化失败，已切到离线演示数据（改动不会保存）", e);
+    return;
+  }
+  listenFirestore();
+}
+
+function listenFirestore(){
+  if(fsStop){ try{ fsStop(); }catch(e){} fsStop = null; }
+  clearTimeout(fsRetryTimer);
   const col = collection(db, COLLECTION);
-  onSnapshot(col,
+  fsStop = onSnapshot(col,
     snap => {
+      if(!live){
+        showToast("已重新连上 Firestore");   // 断线恢复时给个明确反馈
+      }
+      fsAttempt = 0;
+      clearTimeout(fsRetryTimer);
       live = true;
       booting = false;
       tasks = snap.docs.map(d => {
@@ -1077,9 +1123,23 @@ function startFirestore(){
     },
     err => {
       console.error("[firestore]", err);
-      fallBack("Firestore 读取失败，已切到本地演示数据（改动不会保存）", err);
+      fallBack("连接 Firestore 失败，已切到离线演示数据（改动不会保存）", err);
+      scheduleReconnect();
     }
   );
+}
+
+/* 退避重连：3s → 6s → 9s …（封顶 30s）。放后台自己跑，不打断看板 */
+function scheduleReconnect(){
+  clearTimeout(fsRetryTimer);
+  fsAttempt++;
+  const wait = Math.min(30000, 3000 * fsAttempt);
+  const el = document.getElementById("retryHint");
+  if(el) el.textContent = `（${Math.round(wait / 1000)} 秒后自动重试）`;
+  fsRetryTimer = setTimeout(() => {
+    if(live) return;
+    listenFirestore();
+  }, wait);
 }
 
 function fallBack(msg, err){
@@ -1102,11 +1162,12 @@ function fallBack(msg, err){
   });
   setSync("demo", "○ 未连接");
   const code = err ? (err.code || err.message || "") : "";
+  const adv  = firestoreAdvice(err);
   showBanner(
-    `<b>未连接 Firestore</b> · 当前是离线演示模式，下面显示的是内置示例数据，` +
-    `<b>你的任何改动刷新后都会丢失</b>。` +
-    (code ? `原因：<code>${esc(code)}</code>。` : "") +
-    `去 Firebase 控制台 → Firestore Database → Rules 发布规则，然后点右侧「重试连接」。`
+    `<b>未连接 Firestore</b> · 当前是离线演示模式，下面是内置示例数据，` +
+    `<b>你的任何改动都不会保存</b>。<br>` +
+    `原因：${esc(adv.why)}${code ? `（<code>${esc(code)}</code>）` : ""}<br>` +
+    `怎么办：${esc(adv.how)} <span id="retryHint"></span>`
   );
   render();
   showToast(msg + (code ? "  · " + code : ""), true);
