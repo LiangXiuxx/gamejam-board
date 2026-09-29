@@ -351,9 +351,16 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 
 /* 离线横幅 */
 .banner{display:none;margin:0 0 16px;padding:13px 15px;background:rgba(255,0,127,.08);border:1px solid rgba(255,0,127,.5);
-  color:#ffd0e0;font-size:12.5px;line-height:1.65;align-items:center;gap:12px;flex-wrap:wrap;
+  color:#ffd0e0;font-size:12.5px;line-height:1.65;flex-direction:column;gap:11px;
   box-shadow:0 0 24px rgba(255,0,127,.2)}
 .banner.show{display:flex}
+.banner-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%}
+/* 诊断结果：等宽字体，保留换行，方便整段截图发出来 */
+#diagBox{display:none;width:100%;margin:0;padding:11px 13px;background:rgba(2,2,3,.65);
+  border:1px solid rgba(0,243,255,.25);color:#b9c2cf;
+  font:11px/1.75 ui-monospace,Consolas,"Courier New",monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow-y:auto}
+#diagBox.show{display:block}
 .banner b{color:var(--neon-pink);text-shadow:0 0 8px rgba(255,0,127,.6)}
 .banner code{background:rgba(255,0,127,.12);border:1px solid rgba(255,0,127,.3);padding:1px 6px;color:#ffc2d8;font-size:11.5px}
 .banner .btn{padding:7px 13px;font-size:10px;margin-left:auto;flex:0 0 auto}
@@ -590,8 +597,12 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 
 <main>
   <div class="banner" id="banner">
-    <span id="bannerMsg"></span>
-    <button class="btn go" onclick="retryConnect()">重试连接</button>
+    <div class="banner-row">
+      <span id="bannerMsg"></span>
+      <button class="btn" onclick="runDiag()">诊断</button>
+      <button class="btn go" onclick="retryConnect()">重试连接</button>
+    </div>
+    <pre id="diagBox"></pre>
   </div>
 
   <!-- ========== 看板 ========== -->
@@ -705,7 +716,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 import {
-  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc,
+  getFirestore, initializeFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc,
   doc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
@@ -723,7 +734,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-28.6";
+const BUILD      = "2026-09-29.1";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -996,6 +1007,68 @@ function retryConnect(){
   listenFirestore();
 }
 
+/* ============================================================
+   一键诊断：到底卡在哪一段
+   ------------------------------------------------------------
+   连不上的原因可能是【SDK 的 CDN 被墙】【Firestore 接口不通】【规则拒绝】
+   【实时长连接被掐断】…… 光看一句"未连接"分不出来。
+   这里逐段实测，把结果打在横幅里，用户截图发出来就能定位。
+   ============================================================ */
+const FB_VER = "12.19.0";    // 和上面 import 的版本保持一致
+
+async function runDiag(){
+  const box = document.getElementById("diagBox");
+  if(!box) return;
+  const lines = [];
+  box.classList.add("show");
+  box.textContent = "诊断中…（最多等 30 秒）";
+  const flush = () => { box.textContent = lines.join("\n"); };
+
+  const probe = async (name, fn, ms) => {
+    const t0 = Date.now();
+    try{
+      const r = await Promise.race([
+        fn(),
+        new Promise((_, rej) => setTimeout(
+          () => rej(new Error("超时：" + Math.round((ms || 12000) / 1000) + " 秒没有任何响应")), ms || 12000))
+      ]);
+      lines.push("✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]");
+    }catch(e){
+      lines.push("❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]");
+    }
+    flush();
+  };
+
+  // 1) Firebase SDK 本身能不能下载下来
+  await probe("下载 Firebase SDK（www.gstatic.com）", async () => {
+    const r = await fetch(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`, { cache: "no-store" });
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    return "正常";
+  });
+
+  // 2) Firestore 的普通 HTTPS 接口（等价于用 curl 直读）
+  await probe("直连 Firestore 接口（firestore.googleapis.com）", async () => {
+    const p = encodeURIComponent(firebaseConfig.projectId);
+    const k = encodeURIComponent(firebaseConfig.apiKey);
+    const r = await fetch(`https://firestore.googleapis.com/v1/projects/${p}/databases/(default)/documents/tasks?pageSize=1&key=${k}`, { cache: "no-store" });
+    if(r.status === 403) throw new Error("能连上，但 HTTP 403 —— 是规则拒绝了读取");
+    if(!r.ok)          throw new Error("HTTP " + r.status);
+    return "正常（能连上，且有读权限）";
+  });
+
+  // 3) SDK 的实时监听状态
+  await probe("Firestore 实时监听", async () => {
+    if(live) return "已连上（顶部徽标是 ● 已同步）";
+    throw new Error("未连上。若上面两项都正常，说明被掐断的是实时长连接");
+  });
+
+  lines.push("");
+  lines.push(live
+    ? "结论：连接正常，可以正常新建/修改任务。"
+    : "结论：把上面这段整体截图发出来，就能定位卡在哪一段。");
+  flush();
+}
+
 function jamStartMs(){ return new Date(JAM_START + "T00:00:00+08:00").getTime(); }
 function jamEndMs(){ return jamStartMs() + JAM_DAYS * DAY_MS; }
 function dayOf(ms){ return Math.floor((ms - jamStartMs()) / DAY_MS) + 1; }   // 第几天，1 起
@@ -1079,12 +1152,24 @@ let fsStop = null, fsRetryTimer = null, fsAttempt = 0;
 
 function startFirestore(){
   try{
-    initializeApp(firebaseConfig);
-    db = getFirestore();
+    const app = initializeApp(firebaseConfig);
+    /* 走长轮询，不用 WebChannel 流式连接。
+       很多网络 / 代理 / 企业网关会把"流式响应"掐断，而普通 HTTPS 请求是通的 ——
+       症状就是「REST 接口测着好好的，页面却连不上、或者连上又断」。
+       5 人小队的看板对这点延迟不敏感，换连接稳定。 */
+    db = initializeFirestore(app, {
+      experimentalForceLongPolling:   true,
+      experimentalAutoDetectLongPolling: false
+    });
   }catch(e){
     console.error("[firebase init]", e);
-    fallBack("Firebase 初始化失败，已切到离线演示数据（改动不会保存）", e);
-    return;
+    try{
+      db = getFirestore();       // 万一这版 SDK 不认上面的选项，退回默认传输
+    }catch(e2){
+      console.error("[firebase init:fallback]", e2);
+      fallBack("Firebase 初始化失败，已切到离线演示数据（改动不会保存）", e);
+      return;
+    }
   }
   listenFirestore();
 }
@@ -1798,6 +1883,7 @@ window.openCreate   = openCreate;
 window.closeModal   = closeModal;
 window.createTask   = createTask;
 window.retryConnect = retryConnect;
+window.runDiag      = runDiag;
 window.setView      = setView;
 window.closeReject  = closeReject;
 window.confirmReject= confirmReject;
