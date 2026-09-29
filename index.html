@@ -355,12 +355,17 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
   box-shadow:0 0 24px rgba(255,0,127,.2)}
 .banner.show{display:flex}
 .banner-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%}
-/* 诊断结果：等宽字体，保留换行，方便整段截图发出来 */
-#diagBox{display:none;width:100%;margin:0;padding:11px 13px;background:rgba(2,2,3,.65);
+/* 顶部状态徽标可以点，点开连接诊断（离线横幅只在断线时才出现，光靠它不够） */
+.badge[role=button]{cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.badge[role=button]:hover{border-color:var(--neon-cyan);box-shadow:0 0 14px rgba(0,243,255,.35)}
+.badge[role=button]:focus-visible{outline:1px solid var(--neon-cyan);outline-offset:2px}
+
+/* 连接诊断弹窗 */
+.diag-hint{font-size:11.5px;color:var(--text-muted);line-height:1.75;margin:-8px 0 14px}
+#diagBox{margin:0 0 18px;padding:12px 14px;min-height:100px;background:rgba(2,2,3,.6);
   border:1px solid rgba(0,243,255,.25);color:#b9c2cf;
-  font:11px/1.75 ui-monospace,Consolas,"Courier New",monospace;
-  white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow-y:auto}
-#diagBox.show{display:block}
+  font:11.5px/1.8 ui-monospace,Consolas,"Courier New",monospace;
+  white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow-y:auto}
 .banner b{color:var(--neon-pink);text-shadow:0 0 8px rgba(255,0,127,.6)}
 .banner code{background:rgba(255,0,127,.12);border:1px solid rgba(255,0,127,.3);padding:1px 6px;color:#ffc2d8;font-size:11.5px}
 .banner .btn{padding:7px 13px;font-size:10px;margin-left:auto;flex:0 0 auto}
@@ -589,7 +594,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
     <button               data-view="team"     onclick="setView('team')">团队</button>
   </div>
   <div class="header-right">
-    <span class="badge sync-wait" id="syncBadge">● 连接中…</span>
+    <span class="badge sync-wait" id="syncBadge" role="button" tabindex="0" title="点击查看连接诊断" onclick="openDiag()">● 连接中…</span>
     <span class="badge" id="dayBadge">–</span>
     <div class="avatar">PM</div>
   </div>
@@ -599,10 +604,9 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
   <div class="banner" id="banner">
     <div class="banner-row">
       <span id="bannerMsg"></span>
-      <button class="btn" onclick="runDiag()">诊断</button>
+      <button class="btn" onclick="openDiag()">诊断</button>
       <button class="btn go" onclick="retryConnect()">重试连接</button>
     </div>
-    <pre id="diagBox"></pre>
   </div>
 
   <!-- ========== 看板 ========== -->
@@ -708,6 +712,19 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
     </div>
   </div>
 </div>
+<div class="overlay" id="diagModal">
+  <div class="modal">
+    <h2>连接诊断</h2>
+    <div class="diag-hint">逐段实测：能不能下载 Firebase SDK、
+      能不能直连 Firestore、实时监听是否连上。
+      结果可以整段截图发出来。</div>
+    <pre id="diagBox"></pre>
+    <div class="modal-actions">
+      <button class="btn" onclick="runDiag()">重新诊断</button>
+      <button class="btn primary" onclick="closeDiag()">关闭</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast">
   <span id="toastMsg"></span>
   <button class="undo" id="undoBtn" onclick="undoMove()">撤销</button>
@@ -734,7 +751,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-29.1";
+const BUILD      = "2026-09-29.2";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -1016,11 +1033,22 @@ function retryConnect(){
    ============================================================ */
 const FB_VER = "12.19.0";    // 和上面 import 的版本保持一致
 
+/* 常驻入口：点顶部状态徽标，或离线横幅上的「诊断」，都会开这个弹窗 */
+function openDiag(){
+  const m = document.getElementById("diagModal");
+  if(!m) return;
+  m.style.display = "flex";
+  runDiag();          // 打开就自动跑一遍
+}
+function closeDiag(){
+  const m = document.getElementById("diagModal");
+  if(m) m.style.display = "none";
+}
+
 async function runDiag(){
   const box = document.getElementById("diagBox");
   if(!box) return;
   const lines = [];
-  box.classList.add("show");
   box.textContent = "诊断中…（最多等 30 秒）";
   const flush = () => { box.textContent = lines.join("\n"); };
 
@@ -1884,6 +1912,8 @@ window.closeModal   = closeModal;
 window.createTask   = createTask;
 window.retryConnect = retryConnect;
 window.runDiag      = runDiag;
+window.openDiag     = openDiag;
+window.closeDiag    = closeDiag;
 window.setView      = setView;
 window.closeReject  = closeReject;
 window.confirmReject= confirmReject;
@@ -2080,7 +2110,7 @@ window.addEventListener("unhandledrejection", e => {
   document.addEventListener("keydown", e => {
     if(e.key !== "Escape") return;
     closeCyberMenus();
-    ["modal","detailModal","rejectModal"].forEach(id => {
+    ["modal","detailModal","rejectModal","diagModal"].forEach(id => {
       const el = document.getElementById(id);
       if(el.style.display === "flex") el.style.display = "none";
     });
