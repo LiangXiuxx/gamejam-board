@@ -362,6 +362,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 
 /* 连接诊断弹窗 */
 .diag-hint{font-size:11.5px;color:var(--text-muted);line-height:1.75;margin:-8px 0 14px}
+.diag-hint b{color:#c9cfda;font-weight:500}
 #diagBox{margin:0 0 18px;padding:12px 14px;min-height:100px;background:rgba(2,2,3,.6);
   border:1px solid rgba(0,243,255,.25);color:#b9c2cf;
   font:11.5px/1.8 ui-monospace,Consolas,"Courier New",monospace;
@@ -715,11 +716,10 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 <div class="overlay" id="diagModal">
   <div class="modal">
     <h2>连接诊断</h2>
-    <div class="diag-hint">逐段实测：能不能下载 Firebase SDK、
-      能不能直连 Firestore、实时监听是否连上。
-      结果可以整段截图发出来。</div>
+    <div class="diag-hint">逐段实测四件事：<b>能不能下载 Firebase SDK</b>、<b>能不能读 Firestore</b>、<b>能不能写 Firestore</b>、<b>SDK 实时监听是否连上</b>。全部跑完要十几秒（每项最多等 12 秒），跑完后点「复制结果」整段发出来即可。</div>
     <pre id="diagBox"></pre>
     <div class="modal-actions">
+      <button class="btn" onclick="copyDiag()">复制结果</button>
       <button class="btn" onclick="runDiag()">重新诊断</button>
       <button class="btn primary" onclick="closeDiag()">关闭</button>
     </div>
@@ -751,7 +751,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-30.1";
+const BUILD      = "2026-09-30.2";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -1049,11 +1049,17 @@ async function runDiag(){
   const box = document.getElementById("diagBox");
   if(!box) return;
   const lines = [];
-  box.textContent = "诊断中…（最多等 30 秒）";
-  const flush = () => { box.textContent = lines.join("\n"); };
+  box.textContent = "开始诊断…（共 4 项，每项最多等 12 秒，请等全部跑完）";
+  const flush = () => { box.textContent = lines.join("\n"); box.scrollTop = box.scrollHeight; };
 
   const ok = { sdk:false, read:false, live:false, write:false };
+  const TOTAL = 4;
+  let step = 0;
   const probe = async (key, name, fn, ms) => {
+    step++;
+    // 先占一行"进行中"，跑完再原地替换 —— 否则用户看到只有一行会以为已经跑完了
+    lines.push(`⏳ 第 ${step}/${TOTAL} 项：${name} …`);
+    flush();
     const t0 = Date.now();
     try{
       const r = await Promise.race([
@@ -1062,9 +1068,9 @@ async function runDiag(){
           () => rej(new Error("超时：" + Math.round((ms || 12000) / 1000) + " 秒没有任何响应")), ms || 12000))
       ]);
       if(key) ok[key] = true;
-      lines.push("✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]");
+      lines[lines.length - 1] = "✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]";
     }catch(e){
-      lines.push("❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]");
+      lines[lines.length - 1] = "❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]";
     }
     flush();
   };
@@ -1138,7 +1144,32 @@ async function runDiag(){
   }else{
     lines.push("把上面这段整体截图发出来。");
   }
+  lines.push("");
+  lines.push("（以上就是全部结果 —— 点「复制结果」整段发出来，别只发第一行）");
   flush();
+}
+
+/* 一键复制诊断结果：用户之前老是只把第一行发过来 */
+async function copyDiag(){
+  const box = document.getElementById("diagBox");
+  if(!box) return;
+  const text = (box.textContent || "").trim();
+  if(!text || text.indexOf("开始诊断") === 0 || text.indexOf("诊断中") === 0){
+    showToast("还没跑完，等全部 4 项结束再复制", true);
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(text);
+    showToast("诊断结果已复制，直接粘出来就行");
+  }catch(e){
+    // 剪贴板 API 被拒时退回手动选中
+    const r = document.createRange();
+    r.selectNodeContents(box);
+    const s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    showToast("已全选，按 Ctrl+C 复制", false);
+  }
 }
 
 function jamStartMs(){ return new Date(JAM_START + "T00:00:00+08:00").getTime(); }
@@ -1985,6 +2016,7 @@ window.retryConnect = retryConnect;
 window.runDiag      = runDiag;
 window.openDiag     = openDiag;
 window.closeDiag    = closeDiag;
+window.copyDiag     = copyDiag;
 window.setView      = setView;
 window.closeReject  = closeReject;
 window.confirmReject= confirmReject;
