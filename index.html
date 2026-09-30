@@ -751,7 +751,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-29.2";
+const BUILD      = "2026-09-30.1";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -1007,7 +1007,7 @@ function firestoreAdvice(err){
              how: "去 Firebase 控制台 → Firestore Database → Rules，发布仓库里的 firestore.rules" };
   if(/unavailable|network|fetch|timeout|aborted|econn|offline|websocket/i.test(s))
     return { why: "网络连不上 Firestore（firestore.googleapis.com），长连接被掐断",
-             how: "检查网络或代理。页面会自己重连，也可以点右边的「重试连接」" };
+             how: "检查网络或代理。页面会自己重连，也可以点「重试连接」" };
   if(/not-found|does not exist/i.test(s))
     return { why: "项目里还没有 Firestore 数据库",
              how: "去 Firebase 控制台 → Firestore Database → 创建数据库" };
@@ -1052,7 +1052,8 @@ async function runDiag(){
   box.textContent = "诊断中…（最多等 30 秒）";
   const flush = () => { box.textContent = lines.join("\n"); };
 
-  const probe = async (name, fn, ms) => {
+  const ok = { sdk:false, read:false, live:false, write:false };
+  const probe = async (key, name, fn, ms) => {
     const t0 = Date.now();
     try{
       const r = await Promise.race([
@@ -1060,6 +1061,7 @@ async function runDiag(){
         new Promise((_, rej) => setTimeout(
           () => rej(new Error("超时：" + Math.round((ms || 12000) / 1000) + " 秒没有任何响应")), ms || 12000))
       ]);
+      if(key) ok[key] = true;
       lines.push("✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]");
     }catch(e){
       lines.push("❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]");
@@ -1067,33 +1069,75 @@ async function runDiag(){
     flush();
   };
 
+  const API = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(firebaseConfig.projectId)}` +
+              `/databases/(default)/documents/tasks`;
+  const KEY = encodeURIComponent(firebaseConfig.apiKey);
+
   // 1) Firebase SDK 本身能不能下载下来
-  await probe("下载 Firebase SDK（www.gstatic.com）", async () => {
+  await probe("sdk", "下载 Firebase SDK（www.gstatic.com）", async () => {
     const r = await fetch(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`, { cache: "no-store" });
     if(!r.ok) throw new Error("HTTP " + r.status);
     return "正常";
   });
 
-  // 2) Firestore 的普通 HTTPS 接口（等价于用 curl 直读）
-  await probe("直连 Firestore 接口（firestore.googleapis.com）", async () => {
-    const p = encodeURIComponent(firebaseConfig.projectId);
-    const k = encodeURIComponent(firebaseConfig.apiKey);
-    const r = await fetch(`https://firestore.googleapis.com/v1/projects/${p}/databases/(default)/documents/tasks?pageSize=1&key=${k}`, { cache: "no-store" });
+  // 2) 读：Firestore 的普通 HTTPS 接口（等价于用 curl 直读）
+  await probe("read", "读取 Firestore（firestore.googleapis.com）", async () => {
+    const r = await fetch(`${API}?pageSize=1&key=${KEY}`, { cache: "no-store" });
     if(r.status === 403) throw new Error("能连上，但 HTTP 403 —— 是规则拒绝了读取");
     if(!r.ok)          throw new Error("HTTP " + r.status);
     return "正常（能连上，且有读权限）";
   });
 
-  // 3) SDK 的实时监听状态
-  await probe("Firestore 实时监听", async () => {
+  // 3) 写：建一条临时记录再删掉。这一步直接回答"到底能不能写进去"
+  await probe("write", "写入 Firestore（会建一条临时记录，随后自动删除）", async () => {
+    const id  = "__diag_probe__" + Date.now();
+    const body = { fields: {
+      title:    { stringValue: "__diag_probe__（诊断用，会自动删除）" },
+      status:   { stringValue: "todo" },
+      priority: { stringValue: "P0" },
+      type:     { stringValue: "Programming" },
+      owner:    { stringValue: "诊断" },
+      desc:     { stringValue: "runDiag 写入探测" }
+    }};
+    const w = await fetch(`${API}?documentId=${id}&key=${KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if(!w.ok){
+      const t = await w.text().catch(() => "");
+      throw new Error("HTTP " + w.status + " " + t.slice(0, 170));
+    }
+    try{
+      await fetch(`${API}/${id}?key=${KEY}`, { method: "DELETE" });
+      return "正常（能写入，临时记录已删除）";
+    }catch(e){
+      return "能写入，但临时记录 " + id + " 没删掉，请手动删";
+    }
+  });
+
+  // 4) SDK 的实时监听状态
+  await probe("live", "Firestore 实时监听（SDK）", async () => {
     if(live) return "已连上（顶部徽标是 ● 已同步）";
-    throw new Error("未连上。若上面两项都正常，说明被掐断的是实时长连接");
+    throw new Error("未连上（徽标不是「已同步」）");
   });
 
   lines.push("");
-  lines.push(live
-    ? "结论：连接正常，可以正常新建/修改任务。"
-    : "结论：把上面这段整体截图发出来，就能定位卡在哪一段。");
+  lines.push("—— 结论 ——");
+  if(ok.read && ok.write && live){
+    lines.push("读写都正常，可以正常新建/修改任务。");
+  }else if(!ok.read){
+    lines.push("连 Firestore 的接口都进不去 → 你当前的网络访问不了 firestore.googleapis.com。");
+    lines.push("这是网络层的问题，代码解决不了：换一个能访问 Google 的网络（代理 / VPN / 手机热点）。");
+  }else if(!ok.write){
+    lines.push("读得到、但写不进去 → 网络能到 Firestore，写入这一段被拦住了。");
+    lines.push("可能是代理/网关只放行了 GET，也可能规则拒了写。把整段截图发出来。");
+  }else if(!live){
+    lines.push("接口能通但 SDK 没连上 → 被掐断的是实时长连接，页面会自己重试；");
+    lines.push("如果一直不行，点「重试连接」，或刷新页面。");
+  }else{
+    lines.push("把上面这段整体截图发出来。");
+  }
   flush();
 }
 
@@ -1176,7 +1220,7 @@ function setView(name, push){
 /* 断线自动重连。Firestore 用的是长连接，国内网络下偶尔会被掐断；
    断了就掉进离线演示模式、所有写操作被拒。以前只能手动刷新页面，
    现在自己按 3s/6s/9s…（上限 30s）退避重试，恢复了自动回到实时数据。 */
-let fsStop = null, fsRetryTimer = null, fsAttempt = 0;
+let fsStop = null, fsRetryTimer = null, fsFirstTimer = null, fsAttempt = 0;
 
 function startFirestore(){
   try{
@@ -1205,14 +1249,32 @@ function startFirestore(){
 function listenFirestore(){
   if(fsStop){ try{ fsStop(); }catch(e){} fsStop = null; }
   clearTimeout(fsRetryTimer);
+  clearTimeout(fsFirstTimer);
+  /* 看门狗：onSnapshot 连不上时是**静默重试**的，不一定触发 error 回调。
+     所以再加一道超时判断，迟迟拿不到服务器快照就按"连不上"处理。 */
+  fsFirstTimer = setTimeout(() => {
+    if(live) return;
+    fallBack("连接 Firestore 超时：服务器一直没有回应", { code: "timeout" });
+    scheduleReconnect();
+  }, 15000);
   const col = collection(db, COLLECTION);
   fsStop = onSnapshot(col,
     snap => {
+      /* ⚠️ 关键：onSnapshot 第一次回调给的是**本地缓存**快照（metadata.fromCache === true），
+         服务器还没回话。之前没看这个标记，于是服务器完全连不上时也会把 live 置成 true ——
+         表现为徽标显示「● 已同步」、离线横幅不出现（诊断入口也就跟着藏起来了），
+         但所有写入都在本地排队、promise 永远不 settle，用户看到的就是按钮一直卡在「创建中…」。
+         所以只有拿到**服务器快照**才算真的连上。 */
+      if(snap.metadata && snap.metadata.fromCache){
+        setSync("wait", "◌ 连接中…");
+        return;
+      }
       if(!live){
         showToast("已重新连上 Firestore");   // 断线恢复时给个明确反馈
       }
       fsAttempt = 0;
       clearTimeout(fsRetryTimer);
+      clearTimeout(fsFirstTimer);
       live = true;
       booting = false;
       tasks = snap.docs.map(d => {
@@ -1520,7 +1582,7 @@ async function undoMove(){
   const m = lastMove;
   lastMove = null;
   if(!m) return;
-  if(!live){ showToast("离线演示模式：无法撤销", true); return; }
+  if(!live){ showToast("还没连上 Firestore，没法撤销", true); return; }
   try{
     await updateDoc(doc(db, COLLECTION, m.id), {
       status: m.from,
@@ -1569,7 +1631,7 @@ async function confirmReject(){
 }
 
 async function removeTask(t){
-  if(!live){ showToast("离线演示模式：无法删除", true); return; }
+  if(!live){ showToast("还没连上 Firestore，没法删除", true); return; }
   if(!confirm(`删除任务「${t.title}」？\n此操作不可撤销。`)) return;
   try{
     await deleteDoc(doc(db, COLLECTION, t.id));
@@ -1607,6 +1669,19 @@ function resetCreateForm(){
   syncSelects();              // 自绘下拉是直接改 selected 的，得手动同步
 }
 
+/* 写入超时保护。
+   写通道不通时 Firestore 不会报错，而是把写入**无限排队**，promise 永远不 settle ——
+   界面就一直卡在"创建中…"，用户完全不知道发生了什么。给它一个上限。 */
+const WRITE_TIMEOUT_MS = 15000;
+function withTimeout(p, ms, msg){
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(msg || "操作超时")), ms || WRITE_TIMEOUT_MS);
+    p.then(v => { clearTimeout(t); resolve(v); },
+           e => { clearTimeout(t); reject(e); });
+  });
+}
+const WRITE_TIMEOUT_MSG = "写入超时：15 秒没收到 Firestore 确认，多半是网络连不上（点顶部状态徽标看诊断）";
+
 /* 提交按钮的"处理中"状态：写入可能要等几秒，没有反馈的话用户会以为点了没反应 */
 function setBusy(btn, busy, text){
   if(!btn) return;
@@ -1625,7 +1700,7 @@ async function createTask(){
     if(!title){ showToast("任务名不能为空", true); return; }
 
     if(!live){
-      showToast("离线演示模式：无法保存。请先在 Firebase 控制台发布 Firestore 规则，再点「重试连接」", true);
+      showToast("还没连上 Firestore，没法保存。点顶部状态徽标看「诊断」，确认卡在哪一段", true);
       return;
     }
 
@@ -1648,11 +1723,9 @@ async function createTask(){
 
     setBusy(btn, true, "创建中…");
     // 写入如果卡住，也要让用户看见，不能干等
-    const slow = setTimeout(() => showToast("写入较慢，还在等 Firestore 响应…检查一下网络", true), 8000);
     try{
-      await addDoc(collection(db, COLLECTION), payload);
+      await withTimeout(addDoc(collection(db, COLLECTION), payload), WRITE_TIMEOUT_MS, WRITE_TIMEOUT_MSG);
     }finally{
-      clearTimeout(slow);
       setBusy(btn, false);
     }
   }catch(e){
@@ -1773,11 +1846,9 @@ async function saveDetail(){
     }
 
     setBusy(btn, true, "保存中…");
-    const slow = setTimeout(() => showToast("写入较慢，还在等 Firestore 响应…检查一下网络", true), 8000);
     try{
-      await updateDoc(doc(db, COLLECTION, t.id), patch);
+      await withTimeout(updateDoc(doc(db, COLLECTION, t.id), patch), WRITE_TIMEOUT_MS, WRITE_TIMEOUT_MSG);
     }finally{
-      clearTimeout(slow);
       setBusy(btn, false);
     }
   }catch(e){
@@ -1802,12 +1873,12 @@ async function deleteDetail(){
   const id = t.id;
   if(!confirm(`删除任务「${t.title}」？\n此操作不可撤销。`)) return;
   closeDetail();
-  if(!live){ showToast("离线演示模式：无法删除", true); return; }
+  if(!live){ showToast("还没连上 Firestore，没法删除", true); return; }
   try{
-    await deleteDoc(doc(db, COLLECTION, id));
+    await withTimeout(deleteDoc(doc(db, COLLECTION, id)), WRITE_TIMEOUT_MS, WRITE_TIMEOUT_MSG);
     showToast("已删除：" + t.title);
   }catch(e){
-    showToast("删除失败：" + (e.code || e.message), true);
+    showToast("删除失败：" + ((e && (e.code || e.message)) || e), true);
   }
 }
 
