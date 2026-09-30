@@ -716,7 +716,7 @@ i.en{font-style:normal;font-family:var(--cyber);font-size:8.5px;letter-spacing:1
 <div class="overlay" id="diagModal">
   <div class="modal">
     <h2>连接诊断</h2>
-    <div class="diag-hint">逐段实测四件事：<b>能不能下载 Firebase SDK</b>、<b>能不能读 Firestore</b>、<b>能不能写 Firestore</b>、<b>SDK 实时监听是否连上</b>。全部跑完要十几秒（每项最多等 12 秒），跑完后点「复制结果」整段发出来即可。</div>
+    <div class="diag-hint">逐段实测四件事：<b>能不能下载 Firebase SDK</b>、<b>能不能读 Firestore</b>、<b>能不能写 Firestore</b>、<b>SDK 实时监听是否连上</b>。每项最多等 6 秒，全部跑完约 10~20 秒。<b>请等最上面那行变成「诊断完成」</b>，跑完会自动把结果复制到剪贴板，直接粘贴发出来即可。</div>
     <pre id="diagBox"></pre>
     <div class="modal-actions">
       <button class="btn" onclick="copyDiag()">复制结果</button>
@@ -751,7 +751,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-30.2";
+const BUILD      = "2026-09-30.3";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -1048,31 +1048,38 @@ function closeDiag(){
 async function runDiag(){
   const box = document.getElementById("diagBox");
   if(!box) return;
-  const lines = [];
-  box.textContent = "开始诊断…（共 4 项，每项最多等 12 秒，请等全部跑完）";
-  const flush = () => { box.textContent = lines.join("\n"); box.scrollTop = box.scrollHeight; };
+  const lines   = [];
+  const ok      = { sdk:false, read:false, live:false, write:false };
+  const TOTAL   = 4;
+  const TIMEOUT = 6000;     // 每项上限。原来 12 秒，两项超时就要等 24 秒，用户等不住
+  let step = 0, current = 0, done = false;
 
-  const ok = { sdk:false, read:false, live:false, write:false };
-  const TOTAL = 4;
-  let step = 0;
+  /* 顶部固定一行状态。之前没有这行 —— 用户看到中间几行结果就以为跑完了，
+     连着两次只把第一行复制过来。现在只要还没跑完，第一行一定写着"诊断中"。 */
+  const render = () => {
+    const head = done
+      ? "【诊断完成】—— 点下面的「复制结果」整段发出来"
+      : `【诊断中… 第 ${Math.max(current, 1)}/${TOTAL} 项】还没跑完，请等出现「诊断完成」`;
+    box.textContent = head + "\n====================================\n" + lines.join("\n");
+    box.scrollTop = box.scrollHeight;
+  };
+
   const probe = async (key, name, fn, ms) => {
-    step++;
-    // 先占一行"进行中"，跑完再原地替换 —— 否则用户看到只有一行会以为已经跑完了
-    lines.push(`⏳ 第 ${step}/${TOTAL} 项：${name} …`);
-    flush();
+    step++; current = step;
+    render();
     const t0 = Date.now();
     try{
       const r = await Promise.race([
         fn(),
         new Promise((_, rej) => setTimeout(
-          () => rej(new Error("超时：" + Math.round((ms || 12000) / 1000) + " 秒没有任何响应")), ms || 12000))
+          () => rej(new Error("超时：" + Math.round((ms || TIMEOUT) / 1000) + " 秒没有任何响应")), ms || TIMEOUT))
       ]);
       if(key) ok[key] = true;
-      lines[lines.length - 1] = "✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]";
+      lines.push("✅ " + name + "\n     " + r + "    [" + (Date.now() - t0) + "ms]");
     }catch(e){
-      lines[lines.length - 1] = "❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]";
+      lines.push("❌ " + name + "\n     " + ((e && (e.code || e.message)) || String(e)) + "    [" + (Date.now() - t0) + "ms]");
     }
-    flush();
+    render();
   };
 
   const API = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(firebaseConfig.projectId)}` +
@@ -1145,8 +1152,21 @@ async function runDiag(){
     lines.push("把上面这段整体截图发出来。");
   }
   lines.push("");
-  lines.push("（以上就是全部结果 —— 点「复制结果」整段发出来，别只发第一行）");
-  flush();
+  lines.push("（以上为完整结果）");
+  done = true;
+  render();
+
+  /* 跑完自动复制一次。用户两次都在中途手动复制，干脆替他做掉 ——
+     浏览器可能因为"没有用户手势"拒绝，拒绝就退回按钮 / 手动选中。 */
+  let copied = false;
+  try{
+    await navigator.clipboard.writeText(box.textContent);
+    copied = true;
+  }catch(e){ /* 忽略，下面给手动路径 */ }
+  lines.push(copied
+    ? "（已自动复制到剪贴板 —— 直接粘贴发出来就行）"
+    : "（浏览器不让自动复制 —— 点下面的「复制结果」按钮，或在这里按 Ctrl+A 再 Ctrl+C）");
+  render();
 }
 
 /* 一键复制诊断结果：用户之前老是只把第一行发过来 */
