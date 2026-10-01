@@ -751,7 +751,7 @@ const firebaseConfig = {
 
 // 版本号：每次改动 +1。用来快速判断"页面是不是缓存了旧版"
 // （悬停右上角 PM 头像能看到，控制台也会打印）
-const BUILD      = "2026-09-30.3";
+const BUILD      = "2026-10-01.1";
 
 const COLLECTION = "tasks";      // ← 你 Firestore 里放任务的那个集合名
 const JAM_START  = "2026-10-01"; // ← 开赛日期（含当天），改这里所有"第 N 天"和甘特图横轴都会跟着变
@@ -1882,6 +1882,7 @@ async function saveDetail(){
 
     const owners = pickedOwners(document.getElementById("dOwner"));
     const next = {
+      title,                       // ← 别漏：漏了就是"改了名字没生效"
       owners,
       owner:    owners[0] || "",    // 老字段一起写
       status:   document.getElementById("dStatus").value,
@@ -1891,6 +1892,13 @@ async function saveDetail(){
       desc:     document.getElementById("dDesc").value.trim()
     };
     const patch = { ...next, updatedAt: serverTimestamp() };
+    // 只打真变了的字段，以后出现"改了没生效"直接看控制台
+    try{
+      const changed = Object.keys(next).filter(k =>
+        JSON.stringify(next[k]) !== JSON.stringify(k === "owner" ? (t.owner || "") : t[k])
+      );
+      console.log("[saveDetail] 提交字段:", changed.map(k => k + ": " + JSON.stringify(t[k]) + " → " + JSON.stringify(next[k])).join(" | ") || "(无变化)");
+    }catch(_){}
     if(next.status !== t.status){
       patch.history = pushHistory(t, next.status).map(h => ({ to: h.to, at: new Date(h.at) }));
       if(next.status === "done") patch.reviewNote = "";
